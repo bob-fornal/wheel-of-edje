@@ -1,0 +1,78 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="style/spinner.css" />
+	</head>
+	
+	<body>
+		<img id="eddie" class="eddie hidden" src="images/eddie.png" />
+
+		<canvas class="spinner" width="400" height="400"></canvas>
+		<canvas class="dongle" width="400" height="400"></canvas>
+
+		<div class="left" onClick="toggleSpin('counter-clockwise')"></div>
+		<div class="right" onClick="toggleSpin('clockwise')"></div>
+
+		<div class="winner-wrapper hidden" onClick="closeWinner()">
+			<div class="winner-card">
+				<div class="content">
+					<div class="header"><span id="prize-who"></span> won ...</div>
+					<div class="prize">
+						<span id="prize"></span><span>!</span>
+					</div>	
+				</div>
+			</div>
+		</div>
+
+		<img class="menu-icon" onClick="toggleMenu()" src="images/settings.png" />
+		<div class="menu-wrapper hidden" onClick="toggleMenu(event)">
+			<div class="menu">
+				<div class="title">MENU</div>
+
+				<div class="section group-mode">
+					<div class="section title">Group Spin</div>
+
+					<div>
+						<input type="checkbox" id="group" name="group" />
+						<label for="group">Enabled Group List</label>	
+					</div>
+					<div class="content panel-group-content"></div>
+				</div>
+
+				<div class="section sound">
+					<div class="section title">Sounds</div>
+
+					<div>
+						<input type="radio" id="metronome" name="sound" value="metronome" />
+						<label for="metronome">Metronome</label>	
+					</div>
+					<div>
+						<input type="radio" id="zippo" name="sound" value="zippo" checked />
+						<label for="zippo">Zippo</label>	
+					</div>
+				</div>
+
+				<div class="section panels">
+					<div class="section title">Reward Panels</div>
+
+					<div class="content panel-content"></div>
+				</div>
+			</div>
+		</div>
+
+		<img class="group-icon disabled hidden" src="images/group-gray.png" />
+		<img class="group-icon enabled" onClick="toggleGroup()" src="images/group.png" />
+		<div class="group-active-person hidden"></div>
+		<div class="group-menu-wrapper hidden" onClick="toggleGroup(event)">
+			<div class="group-menu"></div>
+		</div>
+
+		<script src="js/storage.js"></script>
+		<script src="js/sounds.js"></script>
+		<script src="js/menu.js"></script>
+		<script src="js/winner.js"></script>
+		<script src="js/spinner.js"></script>
+		<script>
+			init();
+		</script>
+	</body>
+</html>
