@@ -126,13 +126,15 @@ html, body {
     font-family: Calibri;
     position: fixed;
     bottom: 30px;
-    left: 30px;
     right: 45px;
     top: 45px;
     border: 3px solid black;
     background-color: white;
     padding: 25px;
     border-radius: 10px;
+
+    width: 40%;
+    min-width: 450px;
 
     Z-INDEX: 20000
 }
@@ -155,14 +157,24 @@ html, body {
     margin-bottom: 10px;
 }
 
-.spinner, .dongle {
+.spinner, .dongle, .overlay {
     position: fixed;
     top: 20px;
     left: 20px;
 }
+.spinner {
+    z-index: 10;
+}
+.dongle {
+    z-index: 20;
+}
+.overlay {
+    z-index: 30;
+}
 
 .left, .right {
     position: fixed;
+    z-index: 100;
 }
 .left {
     top: 0;

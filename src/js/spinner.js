@@ -31,7 +31,7 @@ let state = {
 };
 
 const configure = () => {
-	const canvas = document.getElementsByClassName('spinner')[0];
+	const canvas = document.querySelector('.spinner');
 	const ctx = canvas.getContext('2d');
 	
 	const narrower = ((window.innerWidth < window.innerHeight) ? window.innerWidth : window.innerHeight) - 40;
@@ -47,15 +47,22 @@ const configure = () => {
 	ctx.canvas.width = narrower;
 	ctx.canvas.height = narrower;
 	
-	const dongle = document.getElementsByClassName('dongle')[0];
+	const dongle = document.querySelector('.dongle');
 	const dctx = dongle.getContext('2d');
 	
 	dctx.canvas.width = narrower;
 	dctx.canvas.height = narrower;
 	
+	const overlay = document.querySelector('.overlay');
+	const octx = overlay.getContext('2d');
+
+	octx.canvas.width = narrower;
+	octx.canvas.height = narrower;
+
 	if (adjustDirection === 'widthOffset') {
 		canvas.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		dongle.setAttribute('style', `left: ${direction.widthOffset}px;`);
+		overlay.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		
 		const eddie = document.getElementById('eddie');
 		eddie.setAttribute('style', `left: ${direction.widthOffset + 10}px;`);
@@ -63,13 +70,13 @@ const configure = () => {
 	} else {
 		canvas.setAttribute('style', `top: ${direction.heightOffset}px;`);
 		dongle.setAttribute('style', `top: ${direction.heightOffset}px;`);	
+		overlay.setAttribute('style', `top: ${direction.heightOffset}px;`);	
 	}
 
-
-	return { canvas, ctx, dongle, dctx, narrower };
+	return { canvas, ctx, dongle, dctx, overlay, octx, narrower };
 };
 
-const { canvas, ctx, dongle, dctx, narrower } = configure();
+const { canvas, ctx, dongle, dctx, overlay, octx, narrower } = configure();
 
 const fixed = {
 	width: narrower / 2,
@@ -194,6 +201,26 @@ const show = (start, spin, display = true) => {
 	return start;
 };
 
+const fillOverlay = () => {
+	const canvas_width = octx.canvas.width;
+	const canvas_height = octx.canvas.height;
+
+	const offsetCenterX = (canvas_width / 2) - 7;
+	const offsetCenterY = (canvas_height / 2) + 9;
+
+	drawStar({
+		ctx: octx,
+		cx: offsetCenterX,
+		cy: offsetCenterY,
+		spikes: 4,
+		outerRadius: 10,
+		innerRadius: 3,
+		strokeColor: 'rgba(0, 0, 0, 0.5)',
+		fillColor: 'rgba(255, 255, 255, 0.7)',
+		lineWidth: 3
+	});
+};
+
 const init = () => {
 	console.log('initialized');
 	handleGroupChange();
@@ -201,6 +228,8 @@ const init = () => {
 	show(startingRotation);
 
 	drawCenter(startingRotation);
+
+	fillOverlay();
 };
 
 	const startDongleBounce = (offsetInitialTime = 0) => {
