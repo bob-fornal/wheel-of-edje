@@ -11,7 +11,8 @@ html, body {
 
 .winner-wrapper,
 .menu-wrapper,
-.group-menu-wrapper {
+.group-menu-wrapper,
+.prizes-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -115,6 +116,11 @@ html, body {
     text-orientation: mixed;
 }
 
+.group-menu .see-prizes {
+    border-bottom: 1px solid silver;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
 .group-menu .clear-prizes {
     border-top: 1px solid silver;
     padding-top: 0.5rem;
@@ -187,4 +193,34 @@ html, body {
     left: 50%;
     height: 100%;
     width: 50%;
+}
+
+.prizes {
+    position: fixed;
+    left: 10%;
+    top: 10%;
+    bottom: 10%;
+    right: 10%;
+    background-color: #bee767;
+    border: 3px solid black;
+    border-radius: 20px;
+    padding: 2rem;
+}
+.prizes .title {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid silver;
+    padding: 0 0 1rem;
+    text-align: center;
+}
+.prizes .content {
+    font-size: 16pt;
+}
+.prize-row .prize-won {
+    display: inline-block;
+    width: 65%;
+}
+
+.prize-row .name {
+    display: inline-block;
+    width: 30%;
 }

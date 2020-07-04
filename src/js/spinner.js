@@ -213,7 +213,9 @@ const fillOverlay = () => {
 		ctx: octx,
 		angle1: 310, angle2: 100, angle3: 130, angle4: 280,
 		cx: cx_center, cy: cy_center, radius: fixed.height - 5,
-		fillStyle: 'rgba(200, 200, 200, 0.10)'
+		fillStyle: 'rgba(200, 200, 200, 0.10)',
+		strokeStyle: 'rgba(255, 255, 255, 0.15)',
+		lineWidth: 10
 	});
 
 	drawStar({

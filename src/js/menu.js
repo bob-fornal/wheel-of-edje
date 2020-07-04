@@ -71,11 +71,47 @@ const toggleGroup = (event = null) => {
 };
 
     const clearPrizes = (event = null) => {
+        for (let i = 0, len = group.length; i < len; i++) {
+            group[i].prize = null;
+        }
+        storage.saveGroup(group);
+        displayGroupInMenu();
+        toggleGroup();
         console.log('clear prizes here');
     };
 
     const seePrizes = () => {
+        const prizesWrapper = document.querySelector('.prizes-wrapper');
+        const prizes = document.querySelector('.prizes .content');
+
+        prizes.innerHTML = '';
+        for (let i = 0, len = group.length; i < len; i++) {
+            if (group[i].enabled === true) {
+                const divNode = document.createElement('div');
+                divNode.classList.add('prize-row');
+
+                const nameNode = document.createElement('div');
+                nameNode.classList.add('name');
+                nameNode.innerText = group[i].person;
+
+                const prizeNode = document.createElement('div');
+                prizeNode.classList.add('prize-won');
+                prizeNode.innerText = (group[i].prize === null) ? 'NO SPIN' : group[i].prize;
+
+                divNode.appendChild(nameNode);
+                divNode.appendChild(prizeNode);
+                prizes.appendChild(divNode);
+            }
+        }
+        toggleGroup();
+        prizesWrapper.classList.remove('hidden');
+
         console.log('display prizes here');
+    };
+
+    const closePrizes = () => {
+        const prizesWrapper = document.querySelector('.prizes-wrapper');
+        prizesWrapper.classList.add('hidden');
     };
 
 const displayGroupInMenu = () => {
@@ -84,6 +120,12 @@ const displayGroupInMenu = () => {
 
     if (state.groupMenu === true) {
         groupMenu.innerHTML = '';
+
+        const divNode3 = document.createElement('div');
+        divNode3.classList.add('see-prizes');
+        divNode3.innerText = 'SEE PRIZES';
+        divNode3.onclick = seePrizes;
+        groupMenu.appendChild(divNode3);
 
         for (let i = 0, len = group.length; i < len; i++) {
             if (group[i].enabled === true) {
@@ -104,12 +146,6 @@ const displayGroupInMenu = () => {
         divNode2.innerText = 'CLEAR PRIZES';
         divNode2.onclick = clearPrizes;
         groupMenu.appendChild(divNode2);
-
-        const divNode3 = document.createElement('div');
-        divNode3.classList.add('see-prizes');
-        divNode3.innerText = 'SEE PRIZES';
-        divNode3.onclick = seePrizes;
-        groupMenu.appendChild(divNode3);
 
         const divNode4 = document.createElement('div');
         divNode4.classList.add('cancel');

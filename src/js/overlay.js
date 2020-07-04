@@ -45,7 +45,8 @@ const drawLightGlare = ({
     ctx,
     angle1 = 0, angle2 = 90, angle3 = 180, angle4 = 270,
     cx, cy, radius,
-    fillStyle
+    fillStyle,
+    strokeStyle = null, lineWidth = 5
 }) => {
     const pt1 = getPointXY(angle1, cx, cy, radius);
     const pt2= getPointXY(angle2, cx, cy, radius);
@@ -59,4 +60,9 @@ const drawLightGlare = ({
     ctx.arc(cx, cy, radius, angle4 * fixed.PI / 180, angle1 * fixed.PI / 180);
     ctx.fillStyle = fillStyle;
     ctx.fill();
+    if (strokeStyle !== null) {
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+    }
 };
