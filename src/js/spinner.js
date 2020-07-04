@@ -202,21 +202,25 @@ const show = (start, spin, display = true) => {
 };
 
 const fillOverlay = () => {
-	const canvas_width = octx.canvas.width;
-	const canvas_height = octx.canvas.height;
+	const cx_center = octx.canvas.width / 2;
+	const cy_center = octx.canvas.height / 2;
 
-	const offsetCenterX = (canvas_width / 2) - 7;
-	const offsetCenterY = (canvas_height / 2) + 9;
+	const offsetCenterX = cx_center - fixed.radius + 5;
+	const offsetCenterY = cy_center - (fixed.radius / 2) + 5;
+	console.log({ offsetCenterX, offsetCenterY });
+
+	drawLightGlare({
+		ctx: octx,
+		angle1: 310, angle2: 100, angle3: 130, angle4: 280,
+		cx: cx_center, cy: cy_center, radius: fixed.height - 5,
+		fillStyle: 'rgba(200, 200, 200, 0.10)'
+	});
 
 	drawStar({
 		ctx: octx,
-		cx: offsetCenterX,
-		cy: offsetCenterY,
-		spikes: 4,
-		outerRadius: 10,
-		innerRadius: 3,
-		strokeColor: 'rgba(0, 0, 0, 0.5)',
-		fillColor: 'rgba(255, 255, 255, 0.7)',
+		cx: offsetCenterX, cy: offsetCenterY,
+		spikes: 4, outerRadius: 10, innerRadius: 3,
+		strokeColor: 'rgba(0, 0, 0, 0.5)', fillColor: 'rgba(255, 255, 0, 0.7)',
 		lineWidth: 3
 	});
 };
