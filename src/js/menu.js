@@ -23,8 +23,19 @@ const toggleMenu = (event = null) => {
     const menuState = menu.classList.toggle('hidden');
 
     if (menuState === false) { // HIDDEN
+        menuSetSoundState();
         menuAddListOfPanels();
         menuWatchGroupSpin();
+    }
+};
+
+const menuSetSoundState = () => {
+    const sounds = document.querySelectorAll('[name=sound]');
+    for (let i = 0, len = sounds.length; i < len; i++) {
+        if (sounds[i].value === state.activeSound) {
+            sounds[i].checked = true;
+            break;
+        }
     }
 };
 
@@ -45,7 +56,6 @@ const toggleMenu = (event = null) => {
     };
 
 const handleIndividualSelection = (name) => {
-    console.log(name);
     let individual = null;
     for (let i = 0, len = group.length; i < len; i++) {
         if (group[i].person === name) {
@@ -184,7 +194,7 @@ const setGlobalGroupState = (state) => {
             group.checked = groupChecked;    
         }
 
-        const content = document.getElementsByClassName('panel-group-content')[0];
+        const content = document.querySelector('.panel-group-content');
         content.innerHTML = '';
 
         setGlobalGroupState(groupChecked);

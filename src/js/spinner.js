@@ -207,7 +207,6 @@ const fillOverlay = () => {
 
 	const offsetCenterX = cx_center - fixed.radius + 5;
 	const offsetCenterY = cy_center - (fixed.radius / 2) + 5;
-	console.log({ offsetCenterX, offsetCenterY });
 
 	drawLightGlare({
 		ctx: octx,
@@ -230,6 +229,8 @@ const fillOverlay = () => {
 const init = () => {
 	console.log('initialized');
 	handleGroupChange();
+
+	initSounds();
 	
 	show(startingRotation);
 

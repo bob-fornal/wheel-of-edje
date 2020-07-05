@@ -21,7 +21,9 @@ const storage = {
         { person: 'Bill', enabled: true, prize: null },
         { person: 'Dave', enabled: true, prize: null },
         { person: 'Wendy', enabled: true, prize: null }
-    ]
+    ],
+
+    activeSoundSample: 'metronome'
 };
 
 storage.getPie = (key = 'default') => {
@@ -42,6 +44,19 @@ storage.getGroup = (key = 'group-default') => {
 };
 
 storage.saveGroup = (data, key = 'group-default') => {
+    storage.store.setItem(key, JSON.stringify(data));
+    return data;
+};
+
+storage.getActiveSound = (key = 'sound-default') => {
+    const data = storage.store.getItem(key);
+    if (data === null) {
+        return storage.saveActiveSound(storage.activeSoundSample, key);
+    }
+    return JSON.parse(data);
+};
+
+storage.saveActiveSound = (data, key = 'sound-default') => {
     storage.store.setItem(key, JSON.stringify(data));
     return data;
 };
