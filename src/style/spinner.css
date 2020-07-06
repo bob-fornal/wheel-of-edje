@@ -164,6 +164,18 @@ html, body {
     background-color: silver;
     margin-bottom: 1rem;
     padding: 0.5rem 0.5rem 1rem 0.5rem;
+    position: relative;
+}
+.edit img {
+    width: 40px;
+}
+.edit {
+    cursor: pointer;
+    width: 40px;
+    display: inline-block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }
 
 .spinner, .dongle, .overlay {

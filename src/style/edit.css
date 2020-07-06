@@ -1,0 +1,115 @@
+
+.return {
+    box-sizing: border-box;
+    position: fixed;
+    width: 80px;
+    top: 0;
+    left: 0;
+    margin: 20px;
+    display: inline-block;
+    cursor: pointer;
+}
+.wrapper {
+    box-sizing: border-box;
+    position: fixed;
+    width: calc(100% - 140px);
+    top: 0;
+    left: 120px;
+    padding: 20px;
+    margin: 20px 20px 20px 0;
+    display: inline-block;
+    border: 2px solid black;
+    font-family: Calibri;
+    height: calc(100% - 40px);
+}
+    .wrapper .title {
+        font-size: 18pt;
+        font-weight: bold;
+        border-bottom: 1px solid silver;
+    }
+
+    .wrapper .addition-button {
+        margin: 1rem 0;
+        border: 3px solid black;
+        border-radius: 9px;
+        display: inline-block;
+        background-color: #bee767;
+        cursor: pointer;
+    }
+    .wrapper .addition-button .left {
+        padding: 0.5rem 1rem;
+        border-right: 1px solid silver;
+        display: inline-block;
+    }
+    .wrapper .addition-button .right {
+        padding: 0.5rem 1rem;
+        display: inline-block;
+    }
+
+    .wrapper .content {
+        border-top: 1px solid silver;
+        overflow-y: auto;
+        height: calc(100% - 107px);
+        position: relative;
+    }
+
+    .wrapper .content .element {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid silver;
+        cursor: pointer;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    .wrapper .content .element.selected {
+        border: 3px solid #5555ff;
+        padding-top: 55px;
+        cursor: default;
+        box-sizing: border-box;
+    }
+    .wrapper .content .element:not(.selected):hover {
+        background-color: #bbbbbb;
+    }
+    .wrapper .content .element .row {
+        position: relative;
+    }
+
+        .wrapper .content .element .label {
+            display: inline-block;
+            font-weight: bold;
+            font-size: 14pt;
+            width: 200px;
+        }
+        .wrapper .content .element .element-content {
+            display: inline-block;
+        }
+        .wrapper .content .element .color-view {
+            height: 1rem;
+            width: 3rem;
+            border: 2px solid black;
+            display: inline-block;
+            top: 50%;
+            transform: translate(0, -50%);
+            position: absolute;            
+        }
+
+
+    .hidden {
+        display: none;
+    }
+    .wrapper .content .editor-node {
+        background-color: #8888ff;
+        position: absolute;
+        height: 45px;
+        padding: 10px 10px 10px 2rem;
+        width: 100%;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+    }
+
+    .wrapper .content .editor-node .editor-icon {
+        height: 25px;
+        margin-right: 1rem;
+        cursor: pointer;
+    }
