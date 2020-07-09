@@ -39,14 +39,11 @@ const storage = {
 };
 
 storage.getPie = (key = 'pie-default') => {
-    // const data = storage.store.getItem(key);
-    // if (data === null) {
-    //     return storage.savePie(storage.sample, key);
-    // }
-    // return JSON.parse(data);
-    const data = database.ref('/pie-default').once('value');
-    console.log(data);
-    return data;
+    const data = storage.store.getItem(key);
+    if (data === null) {
+        return storage.savePie(storage.sample, key);
+    }
+    return JSON.parse(data);
 };
 
 storage.savePie = (data, key = 'pie-default') => {
