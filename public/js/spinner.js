@@ -1,13 +1,7 @@
-const pie = storage.getPie();
-const group = storage.getGroup();
 
-const getTotal = () => {
-	return pie.reduce((a, b) => {
-		if (b.enabled === false) return a;
-		return a + b.data;
-	}, 0);
-};
-let pieTotal =  getTotal();
+let pie = null;
+let group = null;
+let pieTotal = 0;
 
 let state = {
 	spinning: false,
@@ -227,15 +221,21 @@ const fillOverlay = () => {
 };
 
 const init = () => {
-	console.log('initialized');
-	handleGroupChange();
-
-	initSounds();
+	pie = storage.getPie();
+	group = storage.getGroup();
 	
+	const getTotal = () => {
+		return pie.reduce((a, b) => {
+			if (b.enabled === false) return a;
+			return a + b.data;
+		}, 0);
+	};
+	pieTotal = getTotal();
+
+	handleGroupChange();
+	initSounds();
 	show(startingRotation);
-
 	drawCenter(startingRotation);
-
 	fillOverlay();
 };
 
@@ -294,7 +294,6 @@ const init = () => {
 		const doInitialBackStep = (initialBackstepRandom <= 5);
 		const backstepRandom = getRandomArbitrary(1, 10);
 		const doBackStep = (backstepRandom <= 3);
-		console.log({ totalTime, times, doInitialBackStep, doBackStep });
 
 		let offsetInitialTime = 0;
 		// Otional Random back-step
@@ -356,7 +355,6 @@ const init = () => {
 		// Turn off spin
 		setTimeout(() => {
 			stopSpinningCycle();
-			console.log(state.winning);
 			openWinner(state.winning);
 		}, totalTime);
 	};

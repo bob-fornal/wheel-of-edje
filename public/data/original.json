@@ -1,4 +1,5 @@
 {
+    "edit-type-default": "LIST",
     "sound-default": "metronome",
     "pie-default": [
         { "data": 10, "text": "Gift Card", "additionalText": "", "color": "#1e3d00", "fcolor": "#ffffff", "enabled": true },

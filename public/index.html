@@ -32,17 +32,6 @@
 			<div class="menu">
 				<div class="title">MENU</div>
 
-				<div class="section group-mode">
-					<div class="title">Group Spin</div>
-					<div class="edit group-mode" onClick="editGroupMode()"><img src="images/edit.png" /></div>
-
-					<div>
-						<input type="checkbox" id="group" name="group" />
-						<label for="group">Enabled Group List</label>	
-					</div>
-					<div class="content panel-group-content"></div>
-				</div>
-
 				<div class="section sound">
 					<div class="title">Sounds</div>
 
@@ -56,12 +45,24 @@
 					</div>
 				</div>
 
+				<div class="section group-mode">
+					<div class="title">Group Spin</div>
+					<div class="edit group-mode" onClick="editGroupMode()"><img src="images/edit.png" /></div>
+
+					<div>
+						<input type="checkbox" id="group" name="group" />
+						<label for="group">Enabled Group List</label>	
+					</div>
+					<div class="content panel-group-content"></div>
+				</div>
+
 				<div class="section panels">
 					<div class="title">Reward Panels</div>
 					<div class="edit panels" onClick="editPanels()"><img src="images/edit.png" /></div>
 
 					<div class="content panel-content"></div>
 				</div>
+
 			</div>
 		</div>
 
@@ -108,7 +109,19 @@
 							<p>There is an option for a "group" to be defined and a person selected
 							for each spin. When this is done, the information is recorded and can be
 							displayed when spinning is done. Spinning needs to occur for each individual
-							listed</p>
+							listed.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Editing Panels and Groups</div>
+						<div class="content">
+							<p>There are two types of data that can be edited: Panels and Groups.</p>
+							<p>Panels need quite a bit of data, so there is only a list view available.
+							The panel editor does display a preview of the text, foreground color, and
+							background color.</p>
+							<p>Groups, defined previously, are simpler. A basic list has the individual's
+							name and storage space for the prize won. Because of this, there is a CSV
+							option available in the editor.</p>
 						</div>
 					</div>
 					<div class="section">
@@ -147,8 +160,5 @@
 		<script src="js/winner.js"></script>
 		<script src="js/overlay.js"></script>
 		<script src="js/spinner.js"></script>
-		<script>
-			init();
-		</script>
 	</body>
 </html>

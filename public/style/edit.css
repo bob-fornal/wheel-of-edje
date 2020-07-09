@@ -21,6 +21,7 @@
     border: 2px solid black;
     font-family: Calibri;
     height: calc(100% - 40px);
+    max-width: 1080px;
 }
     .wrapper .title {
         font-size: 18pt;
@@ -28,13 +29,24 @@
         border-bottom: 1px solid silver;
     }
 
-    .tooling .preview-available {
-        margin: 1rem 1rem 0 0;
+    .tooling .preview-available,
+    .tooling .enter-to-save {
         border: 3px solid silver;
         border-radius: 9px;
         display: inline-block;
         background-color: white;
     }
+    .tooling .preview-available {
+        margin: 1rem 1rem 0 0;
+    }
+    .tooling .enter-to-save {
+        margin: 1rem 0 0 0;
+    }
+        .tooling .preview-available .left,
+        .tooling .enter-to-save .left {
+            background-color: silver;
+        }
+
     .tooling .addition-button {
         margin: 1rem 0;
         border: 3px solid black;
@@ -42,6 +54,13 @@
         display: inline-block;
         background-color: #bee767;
         cursor: pointer;
+    }
+    .tooling .edit-as-type {
+        margin: 1rem 0;
+        border: 3px solid black;
+        border-radius: 9px;
+        display: inline-block;
+        background-color: #bee767;
     }
     .tooling .delete-all-button {
         margin: 1rem 0;
@@ -51,15 +70,36 @@
         background-color: #e76767;
         cursor: pointer;
     }
+        .tooling .addition-button .right,
+        .tooling .delete-all-button .right {
+            font-weight: bold;
+        }
 
     .tooling .left {
         padding: 0.5rem 1rem;
         border-right: 1px solid silver;
         display: inline-block;
+        cursor: pointer;
+        margin: 0;
+    }
+    .tooling .middle {
+        font-weight: bold;
+        padding: 0.5rem;
+        border-right: 1px solid silver;
+        display: inline-block;
+        margin: 0;
     }
     .tooling .right {
         padding: 0.5rem 1rem 0.5rem 0.75rem;
         display: inline-block;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .tooling .left.selected,
+    .tooling .right.selected {
+        font-weight: bold;
+        cursor: default;
     }
 
     .wrapper .content {
@@ -70,7 +110,8 @@
         position: relative;
     }
 
-    .wrapper .content .element {
+    .wrapper .content .element,
+    .wrapper .content .element-addition {
         box-sizing: border-box;
         padding: 0.5rem 1rem;
         border-bottom: 1px solid silver;
@@ -78,6 +119,16 @@
         position: relative;
         display: inline-block;
         width: 100%;
+    }
+    .wrapper .content .element-addition {
+        border: 3px solid #006600;
+        padding-top: 55px;
+        cursor: default !important;
+        box-sizing: border-box;
+    }
+    .wrapper .content .element-addition [datatype=string-view],
+    .wrapper .content .element-addition [datatype=color-view] {
+        display: none;
     }
 
     .wrapper .content .element.selected {
@@ -89,18 +140,20 @@
     .wrapper .content .element:not(.selected):hover {
         background-color: #bbbbbb;
     }
-    .wrapper .content .element:not(.selected) [type=string-edit] {
+    .wrapper .content .element:not(.selected) [datatype=string-edit] {
         display: none;
     }
-    .wrapper .content .element.selected [type=string-view] {
+    .wrapper .content .element.selected [datatype=string-view] {
         display: none;
     }
 
-    .wrapper .content .element .row {
+    .wrapper .content .element .row,
+    .wrapper .content .element-addition .row {
         position: relative;
     }
 
-        .wrapper .content .element .label {
+        .wrapper .content .element .label,
+        .wrapper .content .element-addition .label {
             display: inline-block;
             font-weight: bold;
             font-size: 14pt;
@@ -109,7 +162,7 @@
         .wrapper .content .element .element-content {
             display: inline-block;
         }
-        .wrapper .content .element .color-view {
+        .wrapper .content .element [datatype=color-view] {
             height: 1rem;
             width: 3rem;
             border: 2px solid black;
@@ -118,10 +171,16 @@
             transform: translate(0, -50%);
             position: absolute;            
         }
-
+        .wrapper .content .element:not(.selected) [datatype=color-edit] {
+            display: none;
+        }
+        .wrapper .content .element.selected [datatype=color-view] {
+            display: none;
+        }
+    
 
     .hidden {
-        display: none;
+        display: none !important;
     }
     .wrapper .content .editor-node {
         background-color: #8888ff;
@@ -137,10 +196,16 @@
     .wrapper .content .editor-node .editor-icon {
         height: 25px;
         margin-right: 1rem;
+    }
+    .wrapper .content .editor-node .editor-icon.disabled {
+        cursor: default;
+    }
+    .wrapper .content .editor-node .editor-icon:not(.disabled) {
         cursor: pointer;
     }
 
-    .element .panel-preview {
+    .element .panel-preview,
+    .element-addition .panel-preview {
         display: inline-block;
         position: absolute;
         right: 0;
@@ -152,17 +217,34 @@
         top: 0;
         width: 30%;
     }
-    .element.selected .panel-preview {
+    .element.selected .panel-preview,
+    .element-addition .panel-preview {
         top: 45px;
         width: calc(30% - 1px);
     }
-    .element .panel-preview .panel-text {
+    .element .panel-preview .panel-text,
+    .element-addition .panel-preview .panel-text {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
         width: calc(100% - 2rem);
     }
     .element .panel-preview .panel-text .panel-main-text,
-    .element .panel-preview .panel-text .panel-additional-text {
+    .element .panel-preview .panel-text .panel-additional-text,
+    .element-addition .panel-preview .panel-text .panel-main-text,
+    .element-addition .panel-preview .panel-text .panel-additional-text {
         text-align: center;
+    }
+
+    .content .csv-input {
+        font-size: 14pt;
+        font-family: Calibri;
+        margin-top: 1rem;
+    }
+    .content .csv-save-button {
+        width: 40px;
+        position: relative;
+        left: 280px;
+        top: 10px;
+        cursor: pointer;
     }

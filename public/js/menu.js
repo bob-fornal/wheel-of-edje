@@ -87,7 +87,6 @@ const toggleGroup = (event = null) => {
         storage.saveGroup(group);
         displayGroupInMenu();
         toggleGroup();
-        console.log('clear prizes here');
     };
 
     const seePrizes = () => {
@@ -118,8 +117,6 @@ const toggleGroup = (event = null) => {
         }
         toggleGroup();
         prizesWrapper.classList.remove('hidden');
-
-        console.log('display prizes here');
     };
 
     const closePrizes = () => {

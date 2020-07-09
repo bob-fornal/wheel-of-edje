@@ -10,7 +10,6 @@ const soundRadios = document.querySelectorAll('input[type=radio][name="sound"]')
 
 const initSounds = () => {
     state.activeSound = storage.getActiveSound();
-    console.log(state.activeSound);
 };
 
 const changeHandler = (event) => {
