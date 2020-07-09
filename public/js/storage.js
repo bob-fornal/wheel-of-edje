@@ -1,6 +1,4 @@
 
-const database = firebase.database();
-
 const storage = {
     store: window.localStorage,
     init: () => {},
