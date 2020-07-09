@@ -1,4 +1,5 @@
 .DS_Store
 .firebaserc
+.firebase/
 database.rules.json
 firebase.json

@@ -43,7 +43,6 @@ const configure = () => {
 		heightOffset: 20
 	};
 	direction[adjustDirection] = ((wider - narrower) / 2) + 20;
-	console.log(direction);
 	
 	ctx.canvas.width = narrower;
 	ctx.canvas.height = narrower;
