@@ -104,9 +104,12 @@ const toggleGroup = (event = null) => {
                 nameNode.classList.add('name');
                 nameNode.innerText = group[i].person;
 
+                let prizeString = (group[i].prize === null) ? 'NO SPIN' : group[i].prize;
+                prizeString += (group[i].additional === '') ? '' : ` (${ group[i].additional })`
+
                 const prizeNode = document.createElement('div');
                 prizeNode.classList.add('prize-won');
-                prizeNode.innerText = (group[i].prize === null) ? 'NO SPIN' : group[i].prize;
+                prizeNode.innerText = (group[i].prize === null) ? 'NO SPIN' : prizeString;
 
                 divNode.appendChild(nameNode);
                 divNode.appendChild(prizeNode);
@@ -261,4 +264,15 @@ const menuAddListOfPanels = (node) => {
         // Need Weight (data), Color, and Foreground color (fcolor)
         content.appendChild(divNode);
     }
+};
+
+const toggleHelp = (event = null) => {
+    const allow = ['help-icon', 'help-wrapper'];
+    if (state.spinning === true) return;
+    if (event !== null && !targetContains(event.target, allow)) return;
+    
+    state.help = !state.help;
+
+    const help = document.querySelector('.help-wrapper');
+    const helpState = help.classList.toggle('hidden');
 };

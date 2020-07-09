@@ -24,6 +24,7 @@ let state = {
 	soundOptions: soundOptions,
 
 	menu: false,
+	help: false,
 
 	groupMode: true,
 	groupMenu: false,
@@ -84,7 +85,7 @@ const fixed = {
 	radius: narrower / 20,
 
 	textMargin: narrower / 20,
-	textOffset: Math.floor(narrower * (4 / 100)),
+	textOffset: Math.floor(narrower * (3 / 100)),
 
 	PI: Math.PI,
 	twoPI: Math.PI * 2,
@@ -208,14 +209,14 @@ const fillOverlay = () => {
 	const offsetCenterX = cx_center - fixed.radius + 5;
 	const offsetCenterY = cy_center - (fixed.radius / 2) + 5;
 
-	drawLightGlare({
-		ctx: octx,
-		angle1: 310, angle2: 100, angle3: 130, angle4: 280,
-		cx: cx_center, cy: cy_center, radius: fixed.height - 5,
-		fillStyle: 'rgba(200, 200, 200, 0.10)',
-		strokeStyle: 'rgba(255, 255, 255, 0.15)',
-		lineWidth: 10
-	});
+	// drawLightGlare({
+	// 	ctx: octx,
+	// 	angle1: 310, angle2: 100, angle3: 130, angle4: 280,
+	// 	cx: cx_center, cy: cy_center, radius: fixed.height - 5,
+	// 	fillStyle: 'rgba(200, 200, 200, 0.10)',
+	// 	strokeStyle: 'rgba(255, 255, 255, 0.15)',
+	// 	lineWidth: 10
+	// });
 
 	drawStar({
 		ctx: octx,
@@ -360,7 +361,6 @@ const init = () => {
 			openWinner(state.winning);
 		}, totalTime);
 	};
-
 
 const startSpinningCycle = () => {
 	state.intervalTime = 10;

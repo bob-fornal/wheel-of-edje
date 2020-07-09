@@ -20,6 +20,9 @@
 					<div class="prize">
 						<span id="prize"></span><span>!</span>
 					</div>	
+					<div class="prize-additional-information hidden">
+						(<span id="prize-additional-information"></span>)
+					</div>	
 				</div>
 			</div>
 		</div>
@@ -67,6 +70,62 @@
 		<div class="group-active-person hidden"></div>
 		<div class="group-menu-wrapper hidden" onClick="toggleGroup(event)">
 			<div class="group-menu"></div>
+		</div>
+
+		<img class="help-icon" onClick="toggleHelp()" src="images/help.png" />
+		<div class="help-wrapper hidden" onClick="toggleHelp(event)">
+			<div class="help">
+				<div class="title">About Wheel-of-EDJE</div>
+				
+				<div class="help-inner-wrapper">
+					<div class="section">
+						<div class="subtitle">Additional Information</div>
+						<div class="content">
+							<p>There is additional data for each panel that is displayed when a spin is
+							complete and the prize displayed, and when the list of prizes for a group is
+							displayed.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Spinning the Wheel</div>
+						<div class="content">
+							<p>Clicking on the <span class="highlight">left</span> or <span class="highlight">right</span>
+							side of the screen will cause the wheel to spin counter-clockwise or clockwise
+							respectively. Alternatively, the <span class="highlight">left</span> and
+							<span class="highlight">right</span> keys will do the same.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Quick Change</div>
+						<div class="content">
+							<p>Panels and people can be quickly removed from the wheel and group list
+							respectively with the checkboxes on the main menu.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Group Spinning</div>
+						<div class="content">
+							<p>There is an option for a "group" to be defined and a person selected
+							for each spin. When this is done, the information is recorded and can be
+							displayed when spinning is done. Spinning needs to occur for each individual
+							listed</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">The Code</div>
+						<div class="content">
+							<p>The code within this project is not minified or mangled to allow it
+							to be examined at any point.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">About</div>
+						<div class="content">
+							<p>Written by Bob Fornal.</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="prizes-wrapper hidden" onClick="closePrizes()">

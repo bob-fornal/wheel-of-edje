@@ -4,35 +4,49 @@ const storage = {
     init: () => {},
 
     sample: [
-        { data: 10, text: 'Pizza Party', color: '#93c760', fcolor: '#ffffff', enabled: true },
-        { data: 10, text: 'Meat Box', color: '#000000', fcolor: '#ffff00', enabled: true },
-        { data: 10, text: 'Prize 3', color: '#6ca437', fcolor: '#ffffff', enabled: true },
-        { data: 10, text: 'Prize 4', color: '#4f861b', fcolor: '#ffffff', enabled: true },
-        { data: 10, text: 'Prize 5', color: '#305e03', fcolor: '#ffffff', enabled: true },
-        { data: 10, text: 'Prize 6', color: '#93c760', fcolor: '#ffffff', enabled: true },
-        { data: 10, text: 'Prize 7', color: '#bee767', fcolor: '#000000', enabled: true },
-        { data: 10, text: 'Prize 8', color: '#6ca437', fcolor: '#ffffff', enabled: true }
+        { data: 10, text: 'Gift Card', additionalText: '', color: '#1e3d00', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: '1 EDJE Store Item', additionalText: 'up to $35', color: '#326204', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Team Pizza Party', additionalText: 'up to 15', color: '#4f861b', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Gift Card', additionalText: '', color: '#1e3d00', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Mystery', additionalText: '', color: '#326204', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Client Fat Friday', additionalText: '3 dozen donuts', color: '#4f861b', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Chad Gives You $50 Cash', additionalText: '1 per QBR', color: '#000000', fcolor: '#ffff00', enabled: true },
+        { data: 10, text: '1 EDJE Store Item', additionalText: 'up to $35', color: '#6da438', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Cupcakes at Client', additionalText: '3 dozen', color: '#97ca66', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Gift Card', additionalText: '', color: '#1e3d00', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Lunch on EDJE', additionalText: 'plus 1, to $50', color: '#326204', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Team Pizza Party', additionalText: 'up to 15', color: '#4f861b', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Client Fat Friday', additionalText: '3 dozen donuts', color: '#6da438', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Gift Card', additionalText: '', color: '#1e3d00', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Steak Dinner From Omaha', additionalText: '$70', color: '#000000', fcolor: '#ffff00', enabled: true },
+        { data: 10, text: '1 EDJE Store Item', additionalText: 'up to $35', color: '#326204', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'White Castle Slider Party', additionalText: '', color: '#4f861b', fcolor: '#ffffff', enabled: true },
+        { data: 10, text: 'Lunch on EDJE', additionalText: 'plus 1, to $50', color: '#6da438', fcolor: '#ffffff', enabled: true }
     ],
 
     groupSample: [
-        { person: 'Bob', enabled: true, prize: null },
-        { person: 'Jason', enabled: true, prize: null },
-        { person: 'Erica', enabled: true, prize: null },
-        { person: 'Bill', enabled: true, prize: null },
-        { person: 'Dave', enabled: true, prize: null },
-        { person: 'Wendy', enabled: true, prize: null }
+        { person: 'Bob', enabled: true, prize: null, additional: null },
+        { person: 'Jason', enabled: true, prize: null, additional: null },
+        { person: 'Erica', enabled: true, prize: null, additional: null },
+        { person: 'Bill', enabled: true, prize: null, additional: null },
+        { person: 'Dave', enabled: true, prize: null, additional: null },
+        { person: 'Wendy', enabled: true, prize: null, additional: null }
     ],
 
     activeSoundSample: 'metronome'
 };
 
-storage.getPie = (key = 'default') => {
+storage.getPie = (key = 'pie-default') => {
     const data = storage.store.getItem(key);
     if (data === null) {
-        storage.store.setItem(key, JSON.stringify(storage.sample));
-        return storage.sample;
+        return storage.savePie(storage.sample, key);
     }
     return JSON.parse(data);
+};
+
+storage.savePie = (data, key = 'pie-default') => {
+    storage.store.setItem(key, JSON.stringify(data));
+    return data;
 };
 
 storage.getGroup = (key = 'group-default') => {

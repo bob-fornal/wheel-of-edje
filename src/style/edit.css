@@ -28,7 +28,14 @@
         border-bottom: 1px solid silver;
     }
 
-    .wrapper .addition-button {
+    .tooling .preview-available {
+        margin: 1rem 1rem 0 0;
+        border: 3px solid silver;
+        border-radius: 9px;
+        display: inline-block;
+        background-color: white;
+    }
+    .tooling .addition-button {
         margin: 1rem 0;
         border: 3px solid black;
         border-radius: 9px;
@@ -36,24 +43,35 @@
         background-color: #bee767;
         cursor: pointer;
     }
-    .wrapper .addition-button .left {
+    .tooling .delete-all-button {
+        margin: 1rem 0;
+        border: 3px solid black;
+        border-radius: 9px;
+        display: inline-block;
+        background-color: #e76767;
+        cursor: pointer;
+    }
+
+    .tooling .left {
         padding: 0.5rem 1rem;
         border-right: 1px solid silver;
         display: inline-block;
     }
-    .wrapper .addition-button .right {
-        padding: 0.5rem 1rem;
+    .tooling .right {
+        padding: 0.5rem 1rem 0.5rem 0.75rem;
         display: inline-block;
     }
 
     .wrapper .content {
         border-top: 1px solid silver;
         overflow-y: auto;
+        overflow-x: hidden;
         height: calc(100% - 107px);
         position: relative;
     }
 
     .wrapper .content .element {
+        box-sizing: border-box;
         padding: 0.5rem 1rem;
         border-bottom: 1px solid silver;
         cursor: pointer;
@@ -61,6 +79,7 @@
         display: inline-block;
         width: 100%;
     }
+
     .wrapper .content .element.selected {
         border: 3px solid #5555ff;
         padding-top: 55px;
@@ -70,6 +89,13 @@
     .wrapper .content .element:not(.selected):hover {
         background-color: #bbbbbb;
     }
+    .wrapper .content .element:not(.selected) [type=string-edit] {
+        display: none;
+    }
+    .wrapper .content .element.selected [type=string-view] {
+        display: none;
+    }
+
     .wrapper .content .element .row {
         position: relative;
     }
@@ -112,4 +138,25 @@
         height: 25px;
         margin-right: 1rem;
         cursor: pointer;
+    }
+
+    .element .panel-preview {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 1rem;
+        border-left: 3px solid black;
+        bottom: 0;
+        width: 30%;
+    }
+    .element .panel-preview .panel-text {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(100% - 2rem);
+    }
+    .element .panel-preview .panel-text .panel-main-text,
+    .element .panel-preview .panel-text .panel-additional-text {
+        text-align: center;
     }
