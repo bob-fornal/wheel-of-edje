@@ -182,7 +182,11 @@ const setGlobalGroupState = (state) => {
 };
 
     const handleGroupSelection = (event) => {
-        console.log(event);
+        const index = +event.target.value;
+        const state = event.target.checked;
+
+        group[index].enabled = state;
+        storage.saveGroup(group);
     };
 
     const handleGroupChange = (event = null) => {
@@ -229,9 +233,12 @@ const menuWatchGroupSpin = () => {
 };
 
     const handlePanelSelection = (event) => {
-        pie[event.target.value].enabled = event.target.checked;
-        pieTotal = getTotal();
+        const index = event.target.value;
+        const state = event.target.checked;
 
+        pie[index].enabled = state;
+        storage.savePie(pie);
+        
         init();
     };
 
