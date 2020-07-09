@@ -144,11 +144,17 @@
         display: inline-block;
         position: absolute;
         right: 0;
-        top: 0;
         padding: 1rem;
         border-left: 3px solid black;
         bottom: 0;
+    }
+    .element:not(.selected) .panel-preview {
+        top: 0;
         width: 30%;
+    }
+    .element.selected .panel-preview {
+        top: 45px;
+        width: calc(30% - 1px);
     }
     .element .panel-preview .panel-text {
         position: absolute;

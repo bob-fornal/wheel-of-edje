@@ -90,7 +90,7 @@ const back = () => {
         const generateAdditionalValueString = (value) => (value === '') ? '' : `(${ value })`;
 
     const handleRowSelection = (event) => {
-       if (event.target.nodeName !== 'DIV') return;
+        if (event.target.nodeName !== 'DIV') return;
 
         if (selected !== null) {
             const editorNode = document.querySelector('.element.selected .editor-node');
@@ -120,9 +120,50 @@ const back = () => {
         editorNode.classList.remove('hidden');
 
         selected = {
+            index: connection.i,
             data: data[connection.i],
             target: target
         };
+    };
+
+    const handleMoveUp = (event) => {
+        event.stopPropagation();
+        if (selected.index === 0) return;
+
+        const hold1 = Object.assign({}, selected.data);
+        const hold2 = Object.assign({}, data[selected.index - 1]);
+
+        data[selected.index] = hold2;
+        data[selected.index - 1] = hold1;
+        selected = null;
+
+        showList();
+        saveFn(data);
+    };
+
+    const handleMoveDown = (event) => {
+        event.stopPropagation();
+        if (selected.index === (data.length - 1)) return;
+
+        const hold1 = Object.assign({}, selected.data);
+        const hold2 = Object.assign({}, data[selected.index + 1]);
+
+        data[selected.index] = hold2;
+        data[selected.index + 1] = hold1;
+        selected = null;
+
+        showList();
+        saveFn(data);
+    };
+
+    const handleDeleteSelection = (event) => {
+        event.stopPropagation();
+
+        data.splice(selected.index, 1);
+        selected = null;
+
+        showList();
+        saveFn(data);
     };
 
     const handleSaveSelection = (event) => {
@@ -139,7 +180,6 @@ const back = () => {
 
             selected.data[key] = value;
         });
-        console.log(data);
 
         selected.target.classList.remove('selected');
         selected = null;
@@ -181,12 +221,14 @@ const back = () => {
             const upNode = document.createElement('img');
             upNode.classList.add('editor-icon', 'up');
             upNode.src = 'images/up.png';
+            upNode.onclick = handleMoveUp;
             upNode.title = 'Move Up';
             editorNode.appendChild(upNode);
     
             const downNode = document.createElement('img');
             downNode.classList.add('editor-icon', 'down');
             downNode.src = 'images/down.png';
+            downNode.onclick = handleMoveDown;
             downNode.title = 'Move Down';
             editorNode.appendChild(downNode);
 
@@ -200,6 +242,7 @@ const back = () => {
             const deleteNode = document.createElement('img');
             deleteNode.classList.add('editor-icon', 'delete');
             deleteNode.src = 'images/trash.png';
+            deleteNode.onclick = handleDeleteSelection;
             deleteNode.title = 'Delete Row';
             editorNode.appendChild(deleteNode);
         
