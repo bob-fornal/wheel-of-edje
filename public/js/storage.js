@@ -9,6 +9,16 @@ const storage = {
     editAsTypeDefault: ''
 };
 
+const iterativeInit = () => {
+    if (typeof init === 'function') {
+        init();
+    } else {
+        setTimeout(() => {
+            iterativeInit();
+        }, 100);
+    }
+};
+
 const configureStorageDefaultData = () => {
     fetch("data/original.json")
         .then(response => response.json())
@@ -18,7 +28,7 @@ const configureStorageDefaultData = () => {
             storage.activeSoundDefault = json['sound-default'];
             storage.editAsTypeDefault = json['edit-type-default'];
 
-            init();
+            iterativeInit();
 
             return json;
         });
