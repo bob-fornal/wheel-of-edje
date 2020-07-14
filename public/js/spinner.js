@@ -164,7 +164,7 @@ const show = (start, spin, display = true) => {
 		
 		if (left < 4.71239 && right >= 4.71239) {
 			state.winning = pie[i];
-			if (display === false) {
+			if (display === false && state.activeSound !== 'SILENT') {
 				sounds[state.activeSound].play();
 			}
 		}

@@ -1,9 +1,10 @@
 const soundOptions = [
-    'metronome', 'zippo'
+    'metronome', 'zippo', 'SILENT'
 ];
 const sounds = {
     metronome: new Audio('../audio/short-metronome.mp3'),
-    zippo: new Audio('../audio/short-zippo.mp3')
+    zippo: new Audio('../audio/short-zippo.mp3'),
+    SILENT: null
 };
 
 const soundRadios = document.querySelectorAll('input[type=radio][name="sound"]');
