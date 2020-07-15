@@ -8,9 +8,9 @@ const storage = {
     editAsTypeDefault: ''
 };
 
-storage.iterativeInit = () => {
-    if (!!spinner && typeof spinner.init === 'function') {
-        spinner.init();
+storage.iterativeInit = (base, fn) => {
+    if (!!base && typeof base[fn] === 'function') {
+        base[fn]();
     } else {
         setTimeout(() => {
             iterativeInit();
@@ -27,7 +27,8 @@ storage.configureStorageDefaultData = () => {
             storage.activeSoundDefault = json['sound-default'];
             storage.editAsTypeDefault = json['edit-type-default'];
 
-            storage.iterativeInit();
+            storage.iterativeInit(spinner, 'init');
+            storage.iterativeInit(winner, 'init');
 
             return json;
         });

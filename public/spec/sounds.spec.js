@@ -19,7 +19,7 @@ describe('sound', () => {
         mockStorage = {
             getActiveSound: () => {},
             saveActiveSound: () => {}
-        }
+        };
         mockEventListener = () => {};
         mockDocument = {
             querySelectorAll: () => {
