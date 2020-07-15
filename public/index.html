@@ -10,8 +10,8 @@
 		<canvas class="dongle" width="400" height="400"></canvas>
 		<canvas class="overlay" width="400" height="400"></canvas>
 
-		<div class="left" onClick="toggleSpin('counter-clockwise')"></div>
-		<div class="right" onClick="toggleSpin('clockwise')"></div>
+		<div class="left" onClick="spinner.toggleSpin('counter-clockwise')"></div>
+		<div class="right" onClick="spinner.toggleSpin('clockwise')"></div>
 
 		<div class="winner-wrapper hidden" onClick="winner.close()">
 			<div class="winner-card">
@@ -97,7 +97,8 @@
 							<p>Clicking on the <span class="highlight">left</span> or <span class="highlight">right</span>
 							side of the screen will cause the wheel to spin counter-clockwise or clockwise
 							respectively. Alternatively, the <span class="highlight">left</span> and
-							<span class="highlight">right</span> keys will do the same.</p>
+							<span class="highlight">right</span> arrow or <span class="highlight">L</span> and
+							<span class="highlight">R</span> keys will do the same.</p>
 						</div>
 					</div>
 					<div class="section">

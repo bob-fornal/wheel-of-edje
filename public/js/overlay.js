@@ -8,10 +8,10 @@ overlay.drawStar = ({
     fillColor = 'skyblue',
     lineWidth = 5
 }) => {
-    var rot = fixed.PI / 2 * 3;
+    var rot = spinner.fixed.PI / 2 * 3;
     var x = cx;
     var y = cy;
-    var step = fixed.PI / spikes;
+    var step = spinner.fixed.PI / spikes;
 
     ctx.beginPath();
     ctx.moveTo(cx, cy - outerRadius);
@@ -38,8 +38,8 @@ overlay.drawStar = ({
 };
 
 overlay.getPointXY = (angle, cx, cy, radius) => {
-    var x = cx + radius * Math.cos(angle * fixed.PI / 180);
-    var y = cy + radius * Math.sin(angle * fixed.PI / 180);
+    var x = cx + radius * Math.cos(angle * spinner.fixed.PI / 180);
+    var y = cy + radius * Math.sin(angle * spinner.fixed.PI / 180);
     return { x, y };
 }
 
@@ -57,9 +57,9 @@ overlay.drawLightGlare = ({
     ctx.beginPath();
     ctx.moveTo(pt1.x, pt1.y);
     ctx.lineTo(pt2.x, pt2.y);
-    ctx.arc(cx, cy, radius, angle2 * fixed.PI / 180, angle3 * fixed.PI / 180);
+    ctx.arc(cx, cy, radius, angle2 * spinner.fixed.PI / 180, angle3 * spinner.fixed.PI / 180);
     ctx.lineTo(pt4.x, pt4.y);
-    ctx.arc(cx, cy, radius, angle4 * fixed.PI / 180, angle1 * fixed.PI / 180);
+    ctx.arc(cx, cy, radius, angle4 * spinner.fixed.PI / 180, angle1 * spinner.fixed.PI / 180);
     ctx.fillStyle = fillStyle;
     ctx.fill();
     if (strokeStyle !== null) {

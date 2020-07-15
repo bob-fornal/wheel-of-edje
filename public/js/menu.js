@@ -14,10 +14,10 @@ menu.targetContains = (target, contains) => {
 
 menu.toggle = (event = null) => {
     const allow = ['menu-icon', 'menu-wrapper'];
-    if (state.spinning === true) return;
+    if (spinner.spinning === true) return;
     if (event !== null && !menu.targetContains(event.target, allow)) return;
     
-    state.menu = !state.menu;
+    spinner.state.menu = !spinner.state.menu;
 
     const menuSelector = document.querySelector('.menu-wrapper');
     const menuState = menuSelector.classList.toggle('hidden');
@@ -32,7 +32,7 @@ menu.toggle = (event = null) => {
 menu.setSoundState = () => {
     const sounds = document.querySelectorAll('[name=sound]');
     for (let i = 0, len = sounds.length; i < len; i++) {
-        if (sounds[i].value === state.activeSound) {
+        if (sounds[i].value === spinner.state.activeSound) {
             sounds[i].checked = true;
             break;
         }
@@ -44,12 +44,12 @@ menu.clearActivePerson = () => {
     active.innerText = '';
     active.classList.add('hidden');
 
-    state.activePerson = null;
+    spinner.state.activePerson = null;
 };
 
 menu.showActivePerson = () => {
     const active = document.querySelector('.group-active-person');
-    active.innerText = state.activePerson.person;
+    active.innerText = spinner.state.activePerson.person;
     active.classList.remove('hidden');
 
     menu.toggleGroup();
@@ -57,14 +57,14 @@ menu.showActivePerson = () => {
 
 menu.handleIndividualSelection = (name) => {
     let individual = null;
-    for (let i = 0, len = group.length; i < len; i++) {
-        if (group[i].person === name) {
-            individual = group[i];
+    for (let i = 0, len = spinner.group.length; i < len; i++) {
+        if (spinner.group[i].person === name) {
+            individual = spinner.group[i];
             break;
         }
     }
 
-    state.activePerson = individual;
+    spinner.state.activePerson = individual;
     menu.showActivePerson();
 };
 
@@ -76,15 +76,15 @@ menu.toggleGroup = (event = null) => {
         if (!menu.targetContains(event.target, allow)) return;
     }
 
-    state.groupMenu = !state.groupMenu;
+    spinner.state.groupMenu = !spinner.state.groupMenu;
     menu.displayGroupInMenu();
 };
 
 menu.clearPrizes = (event = null) => {
-    for (let i = 0, len = group.length; i < len; i++) {
-        group[i].prize = null;
+    for (let i = 0, len = spinner.group.length; i < len; i++) {
+        spinner.group[i].prize = null;
     }
-    storage.saveGroup(group);
+    storage.saveGroup(spinner.group);
     menu.displayGroupInMenu();
     menu.toggleGroup();
 };
@@ -94,21 +94,21 @@ menu.seePrizes = () => {
     const prizes = document.querySelector('.prizes .content');
 
     prizes.innerHTML = '';
-    for (let i = 0, len = group.length; i < len; i++) {
-        if (group[i].enabled === true) {
+    for (let i = 0, len = spinner.group.length; i < len; i++) {
+        if (spinner.group[i].enabled === true) {
             const divNode = document.createElement('div');
             divNode.classList.add('prize-row');
 
             const nameNode = document.createElement('div');
             nameNode.classList.add('name');
-            nameNode.innerText = group[i].person;
+            nameNode.innerText = spinner.group[i].person;
 
-            let prizeString = (group[i].prize === null) ? 'NO SPIN' : group[i].prize;
-            prizeString += (group[i].additional === '') ? '' : ` (${ group[i].additional })`
+            let prizeString = (spinner.group[i].prize === null) ? 'NO SPIN' : spinner.group[i].prize;
+            prizeString += (spinner.group[i].additional === '') ? '' : ` (${ spinner.group[i].additional })`
 
             const prizeNode = document.createElement('div');
             prizeNode.classList.add('prize-won');
-            prizeNode.innerText = (group[i].prize === null) ? 'NO SPIN' : prizeString;
+            prizeNode.innerText = (spinner.group[i].prize === null) ? 'NO SPIN' : prizeString;
 
             divNode.appendChild(nameNode);
             divNode.appendChild(prizeNode);
@@ -128,7 +128,7 @@ menu.displayGroupInMenu = () => {
     const groupMenuWrapper = document.querySelector('.group-menu-wrapper');
     const groupMenu = document.querySelector('.group-menu');
 
-    if (state.groupMenu === true) {
+    if (spinner.state.groupMenu === true) {
         groupMenu.innerHTML = '';
 
         const divNode3 = document.createElement('div');
@@ -137,13 +137,13 @@ menu.displayGroupInMenu = () => {
         divNode3.onclick = menu.seePrizes;
         groupMenu.appendChild(divNode3);
 
-        for (let i = 0, len = group.length; i < len; i++) {
-            if (group[i].enabled === true) {
+        for (let i = 0, len = spinner.group.length; i < len; i++) {
+            if (spinner.group[i].enabled === true) {
                 const divNode = document.createElement('div');
                 divNode.classList.add('individual');
-                divNode.innerText = group[i].person;
-                if (group[i].prize === null) {
-                    divNode.onclick = menu.handleIndividualSelection.bind(this, group[i].person);
+                divNode.innerText = spinner.group[i].person;
+                if (spinner.group[i].prize === null) {
+                    divNode.onclick = menu.handleIndividualSelection.bind(this, spinner.group[i].person);
                 } else {
                     divNode.classList.add('won');
                 }
@@ -171,7 +171,7 @@ menu.setGlobalGroupState = (state) => {
     const groupOffIcon = document.querySelector('.group-icon.disabled');
     const groupOnIcon = document.querySelector('.group-icon.enabled');
 
-    state.groupMode = state;
+    spinner.state.groupMode = state;
     if (state === true) {
         groupOffIcon.classList.add('hidden');
         groupOnIcon.classList.remove('hidden');
@@ -185,17 +185,17 @@ menu.handleGroupSelection = (event) => {
     const index = +event.target.value;
     const state = event.target.checked;
 
-    group[index].enabled = state;
-    storage.saveGroup(group);
+    spinner.group[index].enabled = state;
+    storage.saveGroup(spinner.group);
 };
 
 menu.handleGroupChange = (event = null) => {
-    const groupChecked = (event === null) ? state.groupMode : event.target.checked;
-    state.groupMode = groupChecked;
+    const groupChecked = (event === null) ? spinner.state.groupMode : event.target.checked;
+    spinner.state.groupMode = groupChecked;
 
     if (event === null) {
-        const group = document.getElementById('group');
-        group.checked = groupChecked;    
+        const groupSelector = document.getElementById('group');
+        groupSelector.checked = groupChecked;    
     }
 
     const content = document.querySelector('.panel-group-content');
@@ -203,21 +203,21 @@ menu.handleGroupChange = (event = null) => {
 
     menu.setGlobalGroupState(groupChecked);
     if (groupChecked === true) {
-        for (let i = 0, len = group.length; i < len; i++) {
+        for (let i = 0, len = spinner.group.length; i < len; i++) {
             const divNode = document.createElement('div');
             divNode.classList.add('panel-active');
 
             const inputNode = document.createElement('input')
             inputNode.type = 'checkbox';
-            inputNode.checked = group[i].enabled;
-            inputNode.id = group[i].person;
+            inputNode.checked = spinner.group[i].enabled;
+            inputNode.id = spinner.group[i].person;
             inputNode.name = 'groups';
             inputNode.value = i;
             inputNode.onchange = menu.handleGroupSelection;
     
             const labelNode = document.createElement('label');
             labelNode.setAttribute('for', 'groups'); 
-            labelNode.innerText = group[i].person;
+            labelNode.innerText = spinner.group[i].person;
     
             divNode.appendChild(inputNode);
             divNode.appendChild(labelNode);
@@ -228,39 +228,39 @@ menu.handleGroupChange = (event = null) => {
 };
 
 menu.watchGroupSpin = () => {
-    const group = document.getElementById('group');
-    group.onchange = menu.handleGroupChange;
+    const groupSelector = document.getElementById('group');
+    groupSelector.onchange = menu.handleGroupChange;
 };
 
 menu.handlePanelSelection = (event) => {
     const index = event.target.value;
     const state = event.target.checked;
 
-    pie[index].enabled = state;
-    storage.savePie(pie);
+    spinner.pie[index].enabled = state;
+    storage.savePie(spinner.pie);
     
-    init();
+    spinner.init();
 };
 
 menu.addListOfPanels = (node) => {
     const content = document.getElementsByClassName('panel-content')[0];
     content.innerHTML = '';
 
-    for (let i = 0, len = pie.length; i < len; i++) {
+    for (let i = 0, len = spinner.pie.length; i < len; i++) {
         const divNode = document.createElement('div');
         divNode.classList.add('panel-active')
 
         const inputNode = document.createElement('input')
         inputNode.type = 'checkbox';
-        inputNode.checked = pie[i].enabled;
-        inputNode.id = pie[i].text;
+        inputNode.checked = spinner.pie[i].enabled;
+        inputNode.id = spinner.pie[i].text;
         inputNode.name = 'panels';
         inputNode.value = i;
         inputNode.onchange = menu.handlePanelSelection;
 
         const labelNode = document.createElement('label');
         labelNode.setAttribute('for', 'panels'); 
-        labelNode.innerText = pie[i].text;
+        labelNode.innerText = spinner.pie[i].text;
 
         divNode.appendChild(inputNode);
         divNode.appendChild(labelNode);
@@ -272,10 +272,10 @@ menu.addListOfPanels = (node) => {
 
 menu.toggleHelp = (event = null) => {
     const allow = ['help-icon', 'help-wrapper'];
-    if (state.spinning === true) return;
+    if (spinner.state.spinning === true) return;
     if (event !== null && !menu.targetContains(event.target, allow)) return;
     
-    state.help = !state.help;
+    spinner.state.help = !spinner.state.help;
 
     const help = document.querySelector('.help-wrapper');
     const helpState = help.classList.toggle('hidden');

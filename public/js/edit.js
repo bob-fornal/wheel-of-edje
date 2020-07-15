@@ -12,7 +12,7 @@ const editing = {
     }
 };
 
-if ( typeof module !== 'undefined' && module.hasOwnProperty('exports') )
-{
+// For Unit Testing
+if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
     module.exports = editing;
 }

@@ -9,9 +9,9 @@ const winner = {
 };
 
 winner.open = (data) => {
-    state.winnerOpen = true;
+    spinner.state.winnerOpen = true;
     winner.prize.innerText = data.text;
-    winner.who.innerText = (state.activePerson === null) ? 'You' : state.activePerson.person;
+    winner.who.innerText = (spinner.state.activePerson === null) ? 'You' : spinner.state.activePerson.person;
     winner.card.setAttribute('style', `background-color: ${ data.color }; color: ${ data.fcolor }`);
 
     if (data.additionalText.length > 0) {
@@ -21,17 +21,17 @@ winner.open = (data) => {
 
     winner.wrapper.classList.remove('hidden');
 
-    if (state.activePerson !== null) {
-        state.activePerson.prize = data.text;
-        state.activePerson.additional = data.additionalText;
+    if (spinner.state.activePerson !== null) {
+        spinner.state.activePerson.prize = data.text;
+        spinner.state.activePerson.additional = data.additionalText;
         
         menu.clearActivePerson();
-        storage.saveGroup(group);
+        storage.saveGroup(spinner.group);
     }
 };
 
 winner.close = () => {
-    state.winnerOpen = false;
+    spinner.state.winnerOpen = false;
     winner.wrapper.classList.add('hidden');
     winner.prizeAdditionalNeeded.classList.add('hidden');
 };

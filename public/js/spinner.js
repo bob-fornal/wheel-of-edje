@@ -1,31 +1,37 @@
 
-let pie = null;
-let group = null;
-let pieTotal = 0;
+const spinner = {
+	pie: null,
+	group: null,
+	pieTotal: 0,
+	
+	state: {
+		spinning: false,
+		intervalId: null,
+		spin: -1,
+	
+		winning: -1,
+		winnerOpen: false,
+	
+		intervalTime: 10,
+		degreeRotation: 5,
+	
+		activeSound: 'zippo',
+		soundOptions: sound.soundOptions,
+	
+		menu: false,
+		help: false,
+	
+		groupMode: true,
+		groupMenu: false,
+		activePerson: null
+	},
 
-let state = {
-	spinning: false,
-	intervalId: null,
-	spin: -1,
+	settings: {},
 
-	winning: -1,
-	winnerOpen: false,
-
-	intervalTime: 10,
-	degreeRotation: 5,
-
-	activeSound: 'zippo',
-	soundOptions: sound.soundOptions,
-
-	menu: false,
-	help: false,
-
-	groupMode: true,
-	groupMenu: false,
-	activePerson: null
+	startingRotation: 0
 };
 
-const configure = () => {
+spinner.configure = () => {
 	const canvas = document.querySelector('.spinner');
 	const ctx = canvas.getContext('2d');
 	
@@ -70,149 +76,147 @@ const configure = () => {
 	return { canvas, ctx, dongle, dctx, overlaySelector, octx, narrower };
 };
 
-const { canvas, ctx, dongle, dctx, overlaySelector, octx, narrower } = configure();
+spinner.settings = spinner.configure();
 
-const fixed = {
-	width: narrower / 2,
-	height: narrower / 2,
-	radius: narrower / 20,
+spinner.fixed = {
+	width: spinner.settings.narrower / 2,
+	height: spinner.settings.narrower / 2,
+	radius: spinner.settings.narrower / 20,
 
-	textMargin: narrower / 20,
-	textOffset: Math.floor(narrower * (3 / 100)),
+	textMargin: spinner.settings.narrower / 20,
+	textOffset: Math.floor(spinner.settings.narrower * (3 / 100)),
 
 	PI: Math.PI,
 	twoPI: Math.PI * 2,
 	PI180: 180 / Math.PI,
-	degreeShift: state.degreeRotation * Math.PI / 180,
+	degreeShift: spinner.state.degreeRotation * Math.PI / 180,
 
 	rad360: 6.28319,
 	rad270: 4.71239
 };
 
-let startingRotation = 0;
+spinner.drawCenter = (start) => {
+	spinner.settings.dctx.clearRect(0, 0, spinner.settings.dongle.width, spinner.settings.dongle.height);
 
-const drawCenter = (start) => {
-	dctx.clearRect(0, 0, dongle.width, dongle.height);
+	spinner.settings.dctx.fillStyle = '#0f1f00';
+	spinner.settings.dctx.strokeStyle = "#00ff00";
+	spinner.settings.dctx.lineWidth = 3;
 
- 	dctx.fillStyle = '#0f1f00';
-	dctx.strokeStyle = "#00ff00";
-	dctx.lineWidth = 3;
+	spinner.settings.dctx.beginPath();
+	spinner.settings.dctx.moveTo(spinner.fixed.width, spinner.fixed.height);
+	spinner.settings.dctx.arc(spinner.fixed.width, spinner.fixed.height, spinner.fixed.radius, 0, spinner.fixed.twoPI);
+	spinner.settings.dctx.stroke();	
+	spinner.settings.dctx.fill();
+	spinner.settings.dctx.closePath();
 
-	dctx.beginPath();
-	dctx.moveTo(fixed.width, fixed.height);
-	dctx.arc(fixed.width, fixed.height, fixed.radius, 0, fixed.twoPI);
-	dctx.stroke();	
-	dctx.fill();
-	dctx.closePath();
+	spinner.settings.dctx.fillStyle = '#005500';
 
-	dctx.fillStyle = '#005500';
+	spinner.settings.dctx.beginPath();
+	spinner.settings.dctx.moveTo(spinner.fixed.width, spinner.fixed.height);
+	spinner.settings.dctx.arc(spinner.fixed.width - 5, spinner.fixed.height + 5, spinner.fixed.radius - 20, 0, spinner.fixed.twoPI);
+	spinner.settings.dctx.fill();
+	spinner.settings.dctx.closePath();
 
-	dctx.beginPath();
-	dctx.moveTo(fixed.width, fixed.height);
-	dctx.arc(fixed.width - 5, fixed.height + 5, fixed.radius - 20, 0, fixed.twoPI);
-	dctx.fill();
-	dctx.closePath();
+	spinner.settings.dctx.fillStyle = '#93c760';
 
-	dctx.fillStyle = '#93c760';
+	spinner.settings.dctx.beginPath();
+	spinner.settings.dctx.moveTo(spinner.fixed.width, spinner.fixed.height);
+	spinner.settings.dctx.arc(spinner.fixed.width - 10, spinner.fixed.height + 10, spinner.fixed.radius - 35, 0, spinner.fixed.twoPI);
+	spinner.settings.dctx.fill();
+	spinner.settings.dctx.closePath();
 
-	dctx.beginPath();
-	dctx.moveTo(fixed.width, fixed.height);
-	dctx.arc(fixed.width - 10, fixed.height + 10, fixed.radius - 35, 0, fixed.twoPI);
-	dctx.fill();
-	dctx.closePath();
-
-	drawDongle(start)
+	spinner.drawDongle(start)
 };
 
-const drawDongle = (start) => {
- 	dctx.fillStyle = '#0f1f00';
-	dctx.strokeStyle = "#00ff00";
-	dctx.lineWidth = 3;
+spinner.drawDongle = (start) => {
+	spinner.settings.dctx.fillStyle = '#0f1f00';
+	spinner.settings.dctx.strokeStyle = "#00ff00";
+	spinner.settings.dctx.lineWidth = 3;
  
-	dctx.translate(fixed.width, fixed.height);
-	dctx.rotate( (Math.PI / 180) * (start * state.spin));  //rotate degrees.
-	dctx.translate(-fixed.width, -fixed.height);
+	spinner.settings.dctx.translate(spinner.fixed.width, spinner.fixed.height);
+	spinner.settings.dctx.rotate( (Math.PI / 180) * (start * spinner.state.spin));  //rotate degrees.
+	spinner.settings.dctx.translate(-spinner.fixed.width, -spinner.fixed.height);
 
-	dctx.beginPath();
-	dctx.moveTo(fixed.width - 12, fixed.height - fixed.radius + 5);
-	dctx.lineTo(fixed.width, fixed.height - (fixed.radius * 2));
-	dctx.lineTo(fixed.width + 12, fixed.height - fixed.radius + 5);
-	dctx.stroke();	
-	dctx.fill();
+	spinner.settings.dctx.beginPath();
+	spinner.settings.dctx.moveTo(spinner.fixed.width - 12, spinner.fixed.height - spinner.fixed.radius + 5);
+	spinner.settings.dctx.lineTo(spinner.fixed.width, spinner.fixed.height - (spinner.fixed.radius * 2));
+	spinner.settings.dctx.lineTo(spinner.fixed.width + 12, spinner.fixed.height - spinner.fixed.radius + 5);
+	spinner.settings.dctx.stroke();	
+	spinner.settings.dctx.fill();
 };
 
-const show = (start, spin, display = true) => {
+spinner.show = (start, spin, display = true) => {
 	let lastend = start;
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	spinner.settings.ctx.clearRect(0, 0, spinner.settings.canvas.width, spinner.settings.canvas.height);
 	
-  	for (let i = 0; i < pie.length; i++) {
-		if (pie[i].enabled === false) continue;
-		const fraction = pie[i].data / pieTotal;
+  	for (let i = 0; i < spinner.pie.length; i++) {
+		if (spinner.pie[i].enabled === false) continue;
+		const fraction = spinner.pie[i].data / spinner.pieTotal;
 
-		ctx.fillStyle = pie[i].color;
-		ctx.strokeStyle = "#d2b48c";
-		ctx.lineWidth = 8;
+		spinner.settings.ctx.fillStyle = spinner.pie[i].color;
+		spinner.settings.ctx.strokeStyle = "#d2b48c";
+		spinner.settings.ctx.lineWidth = 8;
 			
-		ctx.beginPath();
-		ctx.moveTo(fixed.width, fixed.height);
-		ctx.arc(fixed.width, fixed.height, fixed.height - 5, lastend, lastend + (fixed.twoPI * fraction), false);
+		spinner.settings.ctx.beginPath();
+		spinner.settings.ctx.moveTo(spinner.fixed.width, spinner.fixed.height);
+		spinner.settings.ctx.arc(spinner.fixed.width, spinner.fixed.height, spinner.fixed.height - 5, lastend, lastend + (spinner.fixed.twoPI * fraction), false);
 
-		let templeft = lastend % fixed.rad360;
-		let tempright = (lastend + (fixed.twoPI * fraction)) % fixed.rad360;
-		const left = (templeft < 0) ? fixed.rad360 + templeft: templeft;
-		const right = (tempright < 0) ? fixed.rad360 + tempright: tempright;
+		let templeft = lastend % spinner.fixed.rad360;
+		let tempright = (lastend + (spinner.fixed.twoPI * fraction)) % spinner.fixed.rad360;
+		const left = (templeft < 0) ? spinner.fixed.rad360 + templeft: templeft;
+		const right = (tempright < 0) ? spinner.fixed.rad360 + tempright: tempright;
 		
 		if (left < 4.71239 && right >= 4.71239) {
-			state.winning = pie[i];
-			if (display === false && state.activeSound !== 'SILENT') {
-				sound.sounds[state.activeSound].play();
+			spinner.state.winning = spinner.pie[i];
+			if (display === false && spinner.state.activeSound !== 'SILENT') {
+				sound.sounds[spinner.state.activeSound].play();
 			}
 		}
 
-		ctx.lineTo(fixed.width, fixed.height);
-		ctx.stroke();
-		ctx.fill();
+		spinner.settings.ctx.lineTo(spinner.fixed.width, spinner.fixed.height);
+		spinner.settings.ctx.stroke();
+		spinner.settings.ctx.fill();
 
-		var radius = fixed.height - fixed.textMargin;
-		var endAngle = lastend + (fixed.PI * fraction) + (fraction / 1.6666667);
-		var setX = fixed.width + Math.cos(endAngle) * radius;
-		var setY = fixed.height + Math.sin(endAngle) * radius;
+		var radius = spinner.fixed.height - spinner.fixed.textMargin;
+		var endAngle = lastend + (spinner.fixed.PI * fraction) + (fraction / 1.6666667);
+		var setX = spinner.fixed.width + Math.cos(endAngle) * radius;
+		var setY = spinner.fixed.height + Math.sin(endAngle) * radius;
 
-		ctx.fillStyle = pie[i].fcolor;
-		ctx.font = fixed.textOffset + 'px Calibri';
+		spinner.settings.ctx.fillStyle = spinner.pie[i].fcolor;
+		spinner.settings.ctx.font = spinner.fixed.textOffset + 'px Calibri';
 
-		ctx.save();
-		ctx.translate(setX, setY);
-		ctx.rotate(endAngle);
-		ctx.textAlign = 'right';
-		ctx.fillText(pie[i].text, 0, 0);
-		ctx.restore();
+		spinner.settings.ctx.save();
+		spinner.settings.ctx.translate(setX, setY);
+		spinner.settings.ctx.rotate(endAngle);
+		spinner.settings.ctx.textAlign = 'right';
+		spinner.settings.ctx.fillText(spinner.pie[i].text, 0, 0);
+		spinner.settings.ctx.restore();
 
-		lastend += fixed.twoPI * fraction;
+		lastend += spinner.fixed.twoPI * fraction;
 	}
 	
-	start += fixed.degreeShift * spin;
+	start += spinner.fixed.degreeShift * spin;
 	return start;
 };
 
-const fillOverlay = () => {
-	const cx_center = octx.canvas.width / 2;
-	const cy_center = octx.canvas.height / 2;
+spinner.fillOverlay = () => {
+	const cx_center = spinner.settings.octx.canvas.width / 2;
+	const cy_center = spinner.settings.octx.canvas.height / 2;
 
-	const offsetCenterX = cx_center - fixed.radius + 5;
-	const offsetCenterY = cy_center - (fixed.radius / 2) + 5;
+	const offsetCenterX = cx_center - spinner.fixed.radius + 5;
+	const offsetCenterY = cy_center - (spinner.fixed.radius / 2) + 5;
 
 	// overlay.drawLightGlare({
-	// 	ctx: octx,
+	// 	ctx: spinner.settings.octx,
 	// 	angle1: 310, angle2: 100, angle3: 130, angle4: 280,
-	// 	cx: cx_center, cy: cy_center, radius: fixed.height - 5,
+	// 	cx: cx_center, cy: cy_center, radius: spinner.fixed.height - 5,
 	// 	fillStyle: 'rgba(200, 200, 200, 0.10)',
 	// 	strokeStyle: 'rgba(255, 255, 255, 0.15)',
 	// 	lineWidth: 10
 	// });
 
 	overlay.drawStar({
-		ctx: octx,
+		ctx: spinner.settings.octx,
 		cx: offsetCenterX, cy: offsetCenterY,
 		spikes: 4, outerRadius: 10, innerRadius: 3,
 		strokeColor: 'rgba(0, 0, 0, 0.5)', fillColor: 'rgba(255, 255, 0, 0.7)',
@@ -220,181 +224,186 @@ const fillOverlay = () => {
 	});
 };
 
-const init = () => {
-	pie = storage.getPie();
-	group = storage.getGroup();
-	
-	const getTotal = () => {
-		return pie.reduce((a, b) => {
-			if (b.enabled === false) return a;
-			return a + b.data;
-		}, 0);
-	};
-	pieTotal = getTotal();
+spinner.getTotal = () => {
+	return spinner.pie.reduce((a, b) => {
+		if (b.enabled === false) return a;
+		return a + b.data;
+	}, 0);
+};
+
+spinner.init = () => {
+	spinner.pie = storage.getPie();
+	spinner.group = storage.getGroup();
+	spinner.pieTotal = spinner.getTotal();
 
 	menu.handleGroupChange();
 	sound.init();
-	show(startingRotation);
-	drawCenter(startingRotation);
-	fillOverlay();
+
+	spinner.show(spinner.startingRotation);
+	spinner.drawCenter(spinner.startingRotation);
+	spinner.fillOverlay();
+
+	document.removeEventListener('keydown', spinner.handleKeydownEvent);
+	setTimeout(() => {
+		document.addEventListener('keydown', spinner.handleKeydownEvent);
+	});
 };
 
-	const startDongleBounce = (offsetInitialTime = 0) => {
-		// Quick rotate direction (counter-clockwise or clockwise)
-		for (let i = 0, len = 10; i < len; i++) {
-			const time = offsetInitialTime + (i * 25);
-			setTimeout(drawCenter.bind(this, i), time);
-		}
-		// Slow rotate back
-		for (let i = 0, len = 10; i < len; i++) {
-			const time = offsetInitialTime + 250 + (i * 100);
-			setTimeout(drawCenter.bind(this, (-1 * i)), time);
-		}
-		
-		// Shorter Quick rotate direction (counter-clockwise or clockwise)
-		for (let i = 0, len = 3; i < len; i++) {
-			const time = offsetInitialTime + 1250 + (i * 25);
-			setTimeout(drawCenter.bind(this, i), time);
-		}
-		// Slow rotate back
-		for (let i = 0, len = 3; i < len; i++) {
-			const time = offsetInitialTime + 1325 + (i * 100);
-			setTimeout(drawCenter.bind(this, (-1 * i)), time);
-		}
-
-	};
-
-	function getRandomArbitrary(min, max) {
-		return Math.random() * (max - min) + min;
+spinner.startDongleBounce = (offsetInitialTime = 0) => {
+	// Quick rotate direction (counter-clockwise or clockwise)
+	for (let i = 0, len = 10; i < len; i++) {
+		const time = offsetInitialTime + (i * 25);
+		setTimeout(spinner.drawCenter.bind(this, i), time);
+	}
+	// Slow rotate back
+	for (let i = 0, len = 10; i < len; i++) {
+		const time = offsetInitialTime + 250 + (i * 100);
+		setTimeout(spinner.drawCenter.bind(this, (-1 * i)), time);
+	}
+	
+	// Shorter Quick rotate direction (counter-clockwise or clockwise)
+	for (let i = 0, len = 3; i < len; i++) {
+		const time = offsetInitialTime + 1250 + (i * 25);
+		setTimeout(spinner.drawCenter.bind(this, i), time);
+	}
+	// Slow rotate back
+	for (let i = 0, len = 3; i < len; i++) {
+		const time = offsetInitialTime + 1325 + (i * 100);
+		setTimeout(spinner.drawCenter.bind(this, (-1 * i)), time);
 	}
 
-	const startRandomSpin = () => {
-		const times = [
-			{ min: 3000, max: 4000, stepMS: 10, calculatedTime: 0, start: 500 },
-			{ min: 1000, max: 0, stepMS: 20, calculatedTime: 0, start: 0 },
-			{ min: 750, max: 0, stepMS: 40, calculatedTime: 0, start: 0 },
-			{ min: 500, max: 0, stepMS: 60, calculatedTime: 0, start: 0 },
-			{ min: 250, max: 0, stepMS: 80, calculatedTime: 0, start: 0 }
-		];
-		for (let i = 0, len = times.length; i < len; i++) {
-			let current = times[i];
-			let next = null;
+};
 
-			current.calculatedTime = Math.floor(getRandomArbitrary(current.min, current.max) / current.stepMS) * current.stepMS;
-			if (i < (len - 1)) {
-				next = times[i + 1];
-				next.max = next.min + current.calculatedTime * (0.5);
-				next.start = current.start + current.calculatedTime;
-			}
+spinner.getRandomArbitrary = (min, max) => {
+	return Math.random() * (max - min) + min;
+};
+
+spinner.startRandomSpin = () => {
+	const times = [
+		{ min: 3000, max: 4000, stepMS: 10, calculatedTime: 0, start: 500 },
+		{ min: 1000, max: 0, stepMS: 20, calculatedTime: 0, start: 0 },
+		{ min: 750, max: 0, stepMS: 40, calculatedTime: 0, start: 0 },
+		{ min: 500, max: 0, stepMS: 60, calculatedTime: 0, start: 0 },
+		{ min: 250, max: 0, stepMS: 80, calculatedTime: 0, start: 0 }
+	];
+	for (let i = 0, len = times.length; i < len; i++) {
+		let current = times[i];
+		let next = null;
+
+		current.calculatedTime = Math.floor(spinner.getRandomArbitrary(current.min, current.max) / current.stepMS) * current.stepMS;
+		if (i < (len - 1)) {
+			next = times[i + 1];
+			next.max = next.min + current.calculatedTime * (0.5);
+			next.start = current.start + current.calculatedTime;
 		}
-		const timeBase = times.reduce((sum, current) => sum + current.calculatedTime, 0);;
-		let totalTime = 3600 + timeBase;
+	}
+	const timeBase = times.reduce((sum, current) => sum + current.calculatedTime, 0);;
+	let totalTime = 3600 + timeBase;
 
-		const initialBackstepRandom = getRandomArbitrary(1, 10);
-		const doInitialBackStep = (initialBackstepRandom <= 5);
-		const backstepRandom = getRandomArbitrary(1, 10);
-		const doBackStep = (backstepRandom <= 3);
+	const initialBackstepRandom = spinner.getRandomArbitrary(1, 10);
+	const doInitialBackStep = (initialBackstepRandom <= 5);
+	const backstepRandom = spinner.getRandomArbitrary(1, 10);
+	const doBackStep = (backstepRandom <= 3);
 
-		let offsetInitialTime = 0;
-		// Otional Random back-step
-		if (doInitialBackStep) {
-			totalTime += 400;
-			offsetInitialTime = 400;
-			const reverse = state.spin * (-1);
-			for (let i = 1, len = 5; i < len; i++) {
-				const time = (i * 100);
-				setTimeout(() => {
-					startingRotation = show(startingRotation, reverse, false);
-				}, time);
-			}
-		}
-
-		// Start Dongle Bounce Here ... to give access to initial run
-		startDongleBounce(offsetInitialTime);
-
-		// Medium rotate for 500 ms
-		for (let i = 0, len = 20; i < len; i++) {
-			const time = offsetInitialTime + (i * 25);
+	let offsetInitialTime = 0;
+	// Otional Random back-step
+	if (doInitialBackStep) {
+		totalTime += 400;
+		offsetInitialTime = 400;
+		const reverse = spinner.state.spin * (-1);
+		for (let i = 1, len = 5; i < len; i++) {
+			const time = (i * 100);
 			setTimeout(() => {
-				startingRotation = show(startingRotation, state.spin, false);
+				spinner.startingRotation = spinner.show(spinner.startingRotation, reverse, false);
 			}, time);
 		}
+	}
 
-		for (let i = 0, i_len = times.length; i < i_len; i++) {
-			const current = times[i];
-			const number = (current.calculatedTime / current.stepMS) + 1;
-			for (let j = 1, j_len = number; j < j_len; j++) {
-				const time = current.start + (j * current.stepMS);
-				setTimeout(() => {
-					startingRotation = show(startingRotation, state.spin, false);
-				}, time);		
-			}
-		}
-		
-		// Slow rotate for 3 seconds
-		for (let i = 1, len = 30; i < len; i++) {
-			const time = 500 + timeBase + (i * 100);
-			setTimeout(() => {
-				startingRotation = show(startingRotation, state.spin, false);
-			}, time);
-		}
+	// Start Dongle Bounce Here ... to give access to initial run
+	spinner.startDongleBounce(offsetInitialTime);
 
-		// Otional Random back-step
-		if (doBackStep) {
-			const backstepTime = totalTime;
-			totalTime += 400;
-			const reverse = state.spin * (-1);
-			for (let i = 1, len = 5; i < len; i++) {
-				const time = backstepTime + (i * 100);
-				setTimeout(() => {
-					startingRotation = show(startingRotation, reverse, false);
-				}, time);
-			}
-		}
-
-		// Turn off spin
+	// Medium rotate for 500 ms
+	for (let i = 0, len = 20; i < len; i++) {
+		const time = offsetInitialTime + (i * 25);
 		setTimeout(() => {
-			stopSpinningCycle();
-			winner.open(state.winning);
-		}, totalTime);
-	};
+			spinner.startingRotation = spinner.show(spinner.startingRotation, spinner.state.spin, false);
+		}, time);
+	}
 
-const startSpinningCycle = () => {
-	state.intervalTime = 10;
-	state.degreeRotation = 5;
+	for (let i = 0, i_len = times.length; i < i_len; i++) {
+		const current = times[i];
+		const number = (current.calculatedTime / current.stepMS) + 1;
+		for (let j = 1, j_len = number; j < j_len; j++) {
+			const time = current.start + (j * current.stepMS);
+			setTimeout(() => {
+				spinner.startingRotation = spinner.show(spinner.startingRotation, spinner.state.spin, false);
+			}, time);		
+		}
+	}
+	
+	// Slow rotate for 3 seconds
+	for (let i = 1, len = 30; i < len; i++) {
+		const time = 500 + timeBase + (i * 100);
+		setTimeout(() => {
+			spinner.startingRotation = spinner.show(spinner.startingRotation, spinner.state.spin, false);
+		}, time);
+	}
 
-	startRandomSpin();
+	// Otional Random back-step
+	if (doBackStep) {
+		const backstepTime = totalTime;
+		totalTime += 400;
+		const reverse = spinner.state.spin * (-1);
+		for (let i = 1, len = 5; i < len; i++) {
+			const time = backstepTime + (i * 100);
+			setTimeout(() => {
+				spinner.startingRotation = spinner.show(spinner.startingRotation, reverse, false);
+			}, time);
+		}
+	}
+
+	// Turn off spin
+	setTimeout(() => {
+		spinner.stopSpinningCycle();
+		winner.open(spinner.state.winning);
+	}, totalTime);
 };
 
-const stopSpinningCycle = () => {
-	clearInterval(state.intervalId);
-	state.intervalId = null;
-	state.spinning = false;
+spinner.startSpinningCycle = () => {
+	spinner.state.intervalTime = 10;
+	spinner.state.degreeRotation = 5;
+
+	spinner.startRandomSpin();
 };
 
-let spinning = false;
-const toggleSpin = (direction) => {
-	if (state.menu === true || state.spinning === true) return;
-
-	state.spin = (direction === 'clockwise') ? 1 : -1;
-	state.spinning = true;
-	startSpinningCycle();
+spinner.stopSpinningCycle = () => {
+	clearInterval(spinner.state.intervalId);
+	spinner.state.intervalId = null;
+	spinner.state.spinning = false;
 };
 
-document.addEventListener('keydown', event => {
+spinner.toggleSpin = (direction) => {
+	if (spinner.state.menu === true || spinner.state.spinning === true) return;
+
+	spinner.state.spin = (direction === 'clockwise') ? 1 : -1;
+	spinner.state.spinning = true;
+	spinner.startSpinningCycle();
+};
+
+spinner.handleKeydownEvent = (event) => {
 	// 39 RIGHT ARROW, 82 L-BUTTON
-	// 37 LEFT ARROW, 76 L-BUTTON
+	// 37 LEFT ARROW, 76 R-BUTTON
 	switch(true) {
 		case event.keyCode === 39 || event.keyCode === 82:
-			toggleSpin('clockwise');
+			spinner.toggleSpin('clockwise');
 			break;
 		case event.keyCode === 37 || event.keyCode === 76:
-			toggleSpin('counter-clockwise');
+			spinner.toggleSpin('counter-clockwise');
 			break;
 		case event.keyCode === 13:
-			if (state.winnerOpen === true) {
+			if (spinner.state.winnerOpen === true) {
 				winner.close();
 			}
 			break;
 	}
-});
+};

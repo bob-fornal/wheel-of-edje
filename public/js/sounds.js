@@ -11,13 +11,13 @@ const sound = {
 };
 
 sound.init = () => {
-    state.activeSound = storage.getActiveSound();
+    spinner.state.activeSound = storage.getActiveSound();
 
     const soundRadios = document.querySelectorAll('input[type=radio][name="sound"]');
     soundRadios.forEach(soundselected => soundselected.addEventListener('change', sound.changeHandler));
 };
 
 sound.changeHandler = (event) => {
-    state.activeSound = event.target.value;
-    storage.saveActiveSound(state.activeSound);
+    spinner.state.activeSound = event.target.value;
+    storage.saveActiveSound(spinner.state.activeSound);
 };

@@ -9,8 +9,8 @@ const storage = {
 };
 
 storage.iterativeInit = () => {
-    if (typeof init === 'function') {
-        init();
+    if (!!spinner && typeof spinner.init === 'function') {
+        spinner.init();
     } else {
         setTimeout(() => {
             iterativeInit();
