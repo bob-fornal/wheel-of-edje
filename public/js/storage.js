@@ -1,7 +1,6 @@
 
 const storage = {
     store: window.localStorage,
-    init: () => {},
 
     pieDefault: [],
     groupDefault: [],
@@ -9,7 +8,7 @@ const storage = {
     editAsTypeDefault: ''
 };
 
-const iterativeInit = () => {
+storage.iterativeInit = () => {
     if (typeof init === 'function') {
         init();
     } else {
@@ -19,7 +18,7 @@ const iterativeInit = () => {
     }
 };
 
-const configureStorageDefaultData = () => {
+storage.configureStorageDefaultData = () => {
     fetch("data/original.json")
         .then(response => response.json())
         .then(json => {
@@ -28,12 +27,15 @@ const configureStorageDefaultData = () => {
             storage.activeSoundDefault = json['sound-default'];
             storage.editAsTypeDefault = json['edit-type-default'];
 
-            iterativeInit();
+            storage.iterativeInit();
 
             return json;
         });
 };
-configureStorageDefaultData();
+
+storage.init = () => {
+    storage.configureStorageDefaultData();
+};
 
 storage.getPie = (key = 'pie-default') => {
     const data = storage.store.getItem(key);

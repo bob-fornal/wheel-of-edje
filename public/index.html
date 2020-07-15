@@ -13,7 +13,7 @@
 		<div class="left" onClick="toggleSpin('counter-clockwise')"></div>
 		<div class="right" onClick="toggleSpin('clockwise')"></div>
 
-		<div class="winner-wrapper hidden" onClick="closeWinner()">
+		<div class="winner-wrapper hidden" onClick="winner.close()">
 			<div class="winner-card">
 				<div class="content">
 					<div class="header"><span id="prize-who"></span> won ...</div>
@@ -27,8 +27,8 @@
 			</div>
 		</div>
 
-		<img class="menu-icon" onClick="toggleMenu()" src="images/settings.png" />
-		<div class="menu-wrapper hidden" onClick="toggleMenu(event)">
+		<img class="menu-icon" onClick="menu.toggle()" src="images/settings.png" />
+		<div class="menu-wrapper hidden" onClick="menu.toggle(event)">
 			<div class="menu">
 				<div class="title">MENU</div>
 
@@ -51,7 +51,7 @@
 
 				<div class="section group-mode">
 					<div class="title">Group Spin</div>
-					<div class="edit group-mode" onClick="editGroupMode()"><img src="images/edit.png" /></div>
+					<div class="edit group-mode" onClick="editing.editGroupMode()"><img src="images/edit.png" /></div>
 
 					<div>
 						<input type="checkbox" id="group" name="group" />
@@ -62,7 +62,7 @@
 
 				<div class="section panels">
 					<div class="title">Reward Panels</div>
-					<div class="edit panels" onClick="editPanels()"><img src="images/edit.png" /></div>
+					<div class="edit panels" onClick="editing.editPanels()"><img src="images/edit.png" /></div>
 
 					<div class="content panel-content"></div>
 				</div>
@@ -71,14 +71,14 @@
 		</div>
 
 		<img class="group-icon disabled hidden" src="images/group-gray.png" />
-		<img class="group-icon enabled" onClick="toggleGroup()" src="images/group.png" />
+		<img class="group-icon enabled" onClick="menu.toggleGroup()" src="images/group.png" />
 		<div class="group-active-person hidden"></div>
-		<div class="group-menu-wrapper hidden" onClick="toggleGroup(event)">
+		<div class="group-menu-wrapper hidden" onClick="menu.toggleGroup(event)">
 			<div class="group-menu"></div>
 		</div>
 
-		<img class="help-icon" onClick="toggleHelp()" src="images/help.png" />
-		<div class="help-wrapper hidden" onClick="toggleHelp(event)">
+		<img class="help-icon" onClick="menu.toggleHelp()" src="images/help.png" />
+		<div class="help-wrapper hidden" onClick="menu.toggleHelp(event)">
 			<div class="help">
 				<div class="title">About Wheel-of-EDJE</div>
 				
@@ -146,7 +146,7 @@
 			</div>
 		</div>
 
-		<div class="prizes-wrapper hidden" onClick="closePrizes()">
+		<div class="prizes-wrapper hidden" onClick="menu.closePrizes()">
 			<div class="prizes">
 				<div class="title">People with Prizes</div>
 				<div class="content"></div>
@@ -165,5 +165,8 @@
 		<script src="js/winner.js"></script>
 		<script src="js/overlay.js"></script>
 		<script src="js/spinner.js"></script>
+		<script>
+			storage.init();
+		</script>
 	</body>
 </html>

@@ -1,35 +1,37 @@
 
-const winnerWrapper = document.querySelector('.winner-wrapper');
-const winnerCard = document.querySelector('.winner-card');
-const winnerPrize = document.querySelector('#prize');
-const winnerPrizeAdditional = document.querySelector('#prize-additional-information');
-const winnerPrizeAdditionalNeeded = document.querySelector('.prize-additional-information');
-const winnerWho = document.querySelector('#prize-who');
+const winner = {
+    wrapper: document.querySelector('.winner-wrapper'),
+    card: document.querySelector('.winner-card'),
+    prize: document.querySelector('#prize'),
+    prizeAdditional: document.querySelector('#prize-additional-information'),
+    prizeAdditionalNeeded: document.querySelector('.prize-additional-information'),
+    who: document.querySelector('#prize-who')
+};
 
-const openWinner = (data) => {
+winner.open = (data) => {
     state.winnerOpen = true;
-    winnerPrize.innerText = data.text;
-    winnerWho.innerText = (state.activePerson === null) ? 'You' : state.activePerson.person;
-    winnerCard.setAttribute('style', `background-color: ${data.color}; color: ${data.fcolor}`);
+    winner.prize.innerText = data.text;
+    winner.who.innerText = (state.activePerson === null) ? 'You' : state.activePerson.person;
+    winner.card.setAttribute('style', `background-color: ${ data.color }; color: ${ data.fcolor }`);
 
     if (data.additionalText.length > 0) {
-        winnerPrizeAdditional.innerText = data.additionalText;
-        winnerPrizeAdditionalNeeded.classList.remove('hidden');
+        winner.prizeAdditional.innerText = data.additionalText;
+        winner.prizeAdditionalNeeded.classList.remove('hidden');
     }
 
-    winnerWrapper.classList.remove('hidden');
+    winner.wrapper.classList.remove('hidden');
 
     if (state.activePerson !== null) {
         state.activePerson.prize = data.text;
         state.activePerson.additional = data.additionalText;
         
-        clearActivePerson();
+        menu.clearActivePerson();
         storage.saveGroup(group);
     }
 };
 
-const closeWinner = () => {
+winner.close = () => {
     state.winnerOpen = false;
-    winnerWrapper.classList.add('hidden');
-    winnerPrizeAdditionalNeeded.classList.add('hidden');
+    winner.wrapper.classList.add('hidden');
+    winner.prizeAdditionalNeeded.classList.add('hidden');
 };

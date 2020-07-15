@@ -15,7 +15,7 @@ let state = {
 	degreeRotation: 5,
 
 	activeSound: 'zippo',
-	soundOptions: soundOptions,
+	soundOptions: sound.soundOptions,
 
 	menu: false,
 	help: false,
@@ -47,8 +47,8 @@ const configure = () => {
 	dctx.canvas.width = narrower;
 	dctx.canvas.height = narrower;
 	
-	const overlay = document.querySelector('.overlay');
-	const octx = overlay.getContext('2d');
+	const overlaySelector = document.querySelector('.overlay');
+	const octx = overlaySelector.getContext('2d');
 
 	octx.canvas.width = narrower;
 	octx.canvas.height = narrower;
@@ -56,7 +56,7 @@ const configure = () => {
 	if (adjustDirection === 'widthOffset') {
 		canvas.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		dongle.setAttribute('style', `left: ${direction.widthOffset}px;`);
-		overlay.setAttribute('style', `left: ${direction.widthOffset}px;`);
+		overlaySelector.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		
 		const eddie = document.getElementById('eddie');
 		eddie.setAttribute('style', `left: ${direction.widthOffset + 10}px;`);
@@ -64,13 +64,13 @@ const configure = () => {
 	} else {
 		canvas.setAttribute('style', `top: ${direction.heightOffset}px;`);
 		dongle.setAttribute('style', `top: ${direction.heightOffset}px;`);	
-		overlay.setAttribute('style', `top: ${direction.heightOffset}px;`);	
+		overlaySelector.setAttribute('style', `top: ${direction.heightOffset}px;`);	
 	}
 
-	return { canvas, ctx, dongle, dctx, overlay, octx, narrower };
+	return { canvas, ctx, dongle, dctx, overlaySelector, octx, narrower };
 };
 
-const { canvas, ctx, dongle, dctx, overlay, octx, narrower } = configure();
+const { canvas, ctx, dongle, dctx, overlaySelector, octx, narrower } = configure();
 
 const fixed = {
 	width: narrower / 2,
@@ -165,7 +165,7 @@ const show = (start, spin, display = true) => {
 		if (left < 4.71239 && right >= 4.71239) {
 			state.winning = pie[i];
 			if (display === false && state.activeSound !== 'SILENT') {
-				sounds[state.activeSound].play();
+				sound.sounds[state.activeSound].play();
 			}
 		}
 
@@ -202,7 +202,7 @@ const fillOverlay = () => {
 	const offsetCenterX = cx_center - fixed.radius + 5;
 	const offsetCenterY = cy_center - (fixed.radius / 2) + 5;
 
-	// drawLightGlare({
+	// overlay.drawLightGlare({
 	// 	ctx: octx,
 	// 	angle1: 310, angle2: 100, angle3: 130, angle4: 280,
 	// 	cx: cx_center, cy: cy_center, radius: fixed.height - 5,
@@ -211,7 +211,7 @@ const fillOverlay = () => {
 	// 	lineWidth: 10
 	// });
 
-	drawStar({
+	overlay.drawStar({
 		ctx: octx,
 		cx: offsetCenterX, cy: offsetCenterY,
 		spikes: 4, outerRadius: 10, innerRadius: 3,
@@ -232,8 +232,8 @@ const init = () => {
 	};
 	pieTotal = getTotal();
 
-	handleGroupChange();
-	initSounds();
+	menu.handleGroupChange();
+	sound.init();
 	show(startingRotation);
 	drawCenter(startingRotation);
 	fillOverlay();
@@ -355,7 +355,7 @@ const init = () => {
 		// Turn off spin
 		setTimeout(() => {
 			stopSpinningCycle();
-			openWinner(state.winning);
+			winner.open(state.winning);
 		}, totalTime);
 	};
 
@@ -393,7 +393,7 @@ document.addEventListener('keydown', event => {
 			break;
 		case event.keyCode === 13:
 			if (state.winnerOpen === true) {
-				closeWinner();
+				winner.close();
 			}
 			break;
 	}

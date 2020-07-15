@@ -1,5 +1,7 @@
 
-const drawStar = ({
+const overlay = {};
+
+overlay.drawStar = ({
     ctx, cx, cy,
     spikes, outerRadius, innerRadius,
     strokeColor = 'blue',
@@ -35,22 +37,22 @@ const drawStar = ({
     ctx.fill();
 };
 
-const getPointXY = (angle, cx, cy, radius) => {
+overlay.getPointXY = (angle, cx, cy, radius) => {
     var x = cx + radius * Math.cos(angle * fixed.PI / 180);
     var y = cy + radius * Math.sin(angle * fixed.PI / 180);
     return { x, y };
 }
 
-const drawLightGlare = ({
+overlay.drawLightGlare = ({
     ctx,
     angle1 = 0, angle2 = 90, angle3 = 180, angle4 = 270,
     cx, cy, radius,
     fillStyle,
     strokeStyle = null, lineWidth = 5
 }) => {
-    const pt1 = getPointXY(angle1, cx, cy, radius);
-    const pt2= getPointXY(angle2, cx, cy, radius);
-    const pt4 = getPointXY(angle4, cx, cy, radius);
+    const pt1 = overlay.getPointXY(angle1, cx, cy, radius);
+    const pt2= overlay.getPointXY(angle2, cx, cy, radius);
+    const pt4 = overlay.getPointXY(angle4, cx, cy, radius);
 
     ctx.beginPath();
     ctx.moveTo(pt1.x, pt1.y);

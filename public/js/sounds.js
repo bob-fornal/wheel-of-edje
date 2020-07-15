@@ -1,21 +1,23 @@
-const soundOptions = [
-    'metronome', 'zippo', 'SILENT'
-];
-const sounds = {
-    metronome: new Audio('../audio/short-metronome.mp3'),
-    zippo: new Audio('../audio/short-zippo.mp3'),
-    SILENT: null
+
+const sound = {
+    soundOptions: [
+        'metronome', 'zippo', 'SILENT'
+    ],
+    sounds: {
+        metronome: new Audio('../audio/short-metronome.mp3'),
+        zippo: new Audio('../audio/short-zippo.mp3'),
+        SILENT: null
+    }    
 };
 
-const soundRadios = document.querySelectorAll('input[type=radio][name="sound"]');
-
-const initSounds = () => {
+sound.init = () => {
     state.activeSound = storage.getActiveSound();
+
+    const soundRadios = document.querySelectorAll('input[type=radio][name="sound"]');
+    soundRadios.forEach(soundselected => soundselected.addEventListener('change', sound.changeHandler));
 };
 
-const changeHandler = (event) => {
+sound.changeHandler = (event) => {
     state.activeSound = event.target.value;
     storage.saveActiveSound(state.activeSound);
 };
-
-soundRadios.forEach(soundselected => soundselected.addEventListener('change', changeHandler));
