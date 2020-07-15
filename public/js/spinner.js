@@ -16,7 +16,7 @@ const spinner = {
 		degreeRotation: 5,
 	
 		activeSound: 'zippo',
-		soundOptions: sound.soundOptions,
+		soundOptions: sound.options,
 	
 		menu: false,
 		help: false,
