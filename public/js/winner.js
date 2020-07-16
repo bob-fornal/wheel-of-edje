@@ -38,11 +38,16 @@ winner.handlePerson = (data, spin = spinner, defMenu = menu, store = storage) =>
         defMenu.clearActivePerson();
         store.saveGroup(spin.group);
     }
-
 };
 
 winner.open = (data, spin = spinner) => {
-    winner.setText(data, spin.state.activePerson);
+    let person;
+    if (!!spin.state.activePerson) {
+        person = spin.state.activePerson.person;
+    } else {
+        person = null;
+    }
+    winner.setText(data, person);
 
     spin.state.winnerOpen = true;
     winner.queries.wrapper.classList.remove('hidden');

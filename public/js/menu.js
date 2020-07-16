@@ -12,14 +12,14 @@ menu.targetContains = (target, contains) => {
     return found;
 };
 
-menu.toggle = (event = null) => {
+menu.toggle = (event = null, spin = spinner, doc = document) => {
     const allow = ['menu-icon', 'menu-wrapper'];
-    if (spinner.spinning === true) return;
+    if (spin.spinning === true) return;
     if (event !== null && !menu.targetContains(event.target, allow)) return;
     
-    spinner.state.menu = !spinner.state.menu;
+    spin.state.menu = !spin.state.menu;
 
-    const menuSelector = document.querySelector('.menu-wrapper');
+    const menuSelector = doc.querySelector('.menu-wrapper');
     const menuState = menuSelector.classList.toggle('hidden');
 
     if (menuState === false) { // HIDDEN
@@ -29,139 +29,146 @@ menu.toggle = (event = null) => {
     }
 };
 
-menu.setSoundState = () => {
-    const sounds = document.querySelectorAll('[name=sound]');
+menu.setSoundState = (spin = spinner, doc = document) => {
+    const sounds = doc.querySelectorAll('[name=sound]');
     for (let i = 0, len = sounds.length; i < len; i++) {
-        if (sounds[i].value === spinner.state.activeSound) {
+        if (sounds[i].value === spin.state.activeSound) {
             sounds[i].checked = true;
             break;
         }
     }
 };
 
-menu.clearActivePerson = () => {
-    const active = document.querySelector('.group-active-person');
+menu.clearActivePerson = (spin = spinner, doc = document) => {
+    const active = doc.querySelector('.group-active-person');
     active.innerText = '';
     active.classList.add('hidden');
 
-    spinner.state.activePerson = null;
+    spin.state.activePerson = null;
 };
 
-menu.showActivePerson = () => {
-    const active = document.querySelector('.group-active-person');
-    active.innerText = spinner.state.activePerson.person;
+menu.showActivePerson = (spin = spinner, doc = document) => {
+    const active = doc.querySelector('.group-active-person');
+    active.innerText = spin.state.activePerson.person;
     active.classList.remove('hidden');
 
     menu.toggleGroup();
 };
 
-menu.handleIndividualSelection = (name) => {
+menu.handleIndividualSelection = (name, event, spin = spinner) => {
     let individual = null;
-    for (let i = 0, len = spinner.group.length; i < len; i++) {
-        if (spinner.group[i].person === name) {
-            individual = spinner.group[i];
+    for (let i = 0, len = spin.group.length; i < len; i++) {
+        if (spin.group[i].person === name) {
+            individual = spin.group[i];
             break;
         }
     }
 
-    spinner.state.activePerson = individual;
+    spin.state.activePerson = individual;
     menu.showActivePerson();
 };
 
-menu.toggleGroup = (event = null) => {
-    const allow = ['group-icon', 'group-menu-wrapper', 'cancel'];
+menu.toggleGroup = (event = null, spin = spinner) => {
+    const allow = ['group-icon', 'group-menu-wrapper', 'clear-prizes', 'cancel'];
     if (event !== null) {
         event.stopPropagation();
         event.preventDefault();
         if (!menu.targetContains(event.target, allow)) return;
     }
 
-    spinner.state.groupMenu = !spinner.state.groupMenu;
+    spin.state.groupMenu = !spin.state.groupMenu;
     menu.displayGroupInMenu();
 };
 
-menu.clearPrizes = (event = null) => {
-    for (let i = 0, len = spinner.group.length; i < len; i++) {
-        spinner.group[i].prize = null;
+menu.clearPrizes = (event = null, spin = spinner, store = storage) => {
+    for (let i = 0, len = spin.group.length; i < len; i++) {
+        spin.group[i].prize = null;
     }
-    storage.saveGroup(spinner.group);
+    store.saveGroup(spin.group);
     menu.displayGroupInMenu();
     menu.toggleGroup();
 };
 
-menu.seePrizes = () => {
-    const prizesWrapper = document.querySelector('.prizes-wrapper');
-    const prizes = document.querySelector('.prizes .content');
+menu.getPrizeString = (datum) => {
+    let prizeString = (datum.prize === null) ? 'NO SPIN' : datum.prize;
+    prizeString += ([null, ''].includes(datum.additional)) ? '' : ` (${ datum.additional })`;
+    return prizeString;
+};
+
+menu.appendPrize = (prizes, datum, doc = document) => {
+    const divNode = doc.createElement('div');
+    divNode.classList.add('prize-row');
+
+    const nameNode = doc.createElement('div');
+    nameNode.classList.add('name');
+    nameNode.innerText = datum.person;
+
+    const prizeNode = doc.createElement('div');
+    prizeNode.classList.add('prize-won');
+    prizeNode.innerText = menu.getPrizeString(datum);
+
+    divNode.appendChild(nameNode);
+    divNode.appendChild(prizeNode);
+    prizes.appendChild(divNode);
+};
+
+menu.seePrizes = (event, spin = spinner, doc = document) => {
+    const prizesWrapper = doc.querySelector('.prizes-wrapper');
+    const prizes = doc.querySelector('.prizes .content');
 
     prizes.innerHTML = '';
-    for (let i = 0, len = spinner.group.length; i < len; i++) {
-        if (spinner.group[i].enabled === true) {
-            const divNode = document.createElement('div');
-            divNode.classList.add('prize-row');
-
-            const nameNode = document.createElement('div');
-            nameNode.classList.add('name');
-            nameNode.innerText = spinner.group[i].person;
-
-            let prizeString = (spinner.group[i].prize === null) ? 'NO SPIN' : spinner.group[i].prize;
-            prizeString += (spinner.group[i].additional === '') ? '' : ` (${ spinner.group[i].additional })`
-
-            const prizeNode = document.createElement('div');
-            prizeNode.classList.add('prize-won');
-            prizeNode.innerText = (spinner.group[i].prize === null) ? 'NO SPIN' : prizeString;
-
-            divNode.appendChild(nameNode);
-            divNode.appendChild(prizeNode);
-            prizes.appendChild(divNode);
+    for (let i = 0, len = spin.group.length; i < len; i++) {
+        if (spin.group[i].enabled === true) {
+            menu.appendPrize(prizes, spin.group[i], doc)
         }
     }
     menu.toggleGroup();
     prizesWrapper.classList.remove('hidden');
 };
 
-menu.closePrizes = () => {
-    const prizesWrapper = document.querySelector('.prizes-wrapper');
+menu.closePrizes = (doc = document) => {
+    const prizesWrapper = doc.querySelector('.prizes-wrapper');
     prizesWrapper.classList.add('hidden');
 };
 
-menu.displayGroupInMenu = () => {
-    const groupMenuWrapper = document.querySelector('.group-menu-wrapper');
-    const groupMenu = document.querySelector('.group-menu');
+menu.appendIndividial = (groupMenu, datum, doc = document) => {
+    const divNode = doc.createElement('div');
+    divNode.classList.add('individual');
+    divNode.innerText = datum.person;
 
-    if (spinner.state.groupMenu === true) {
+    if (datum.prize === null) {
+        divNode.onclick = menu.handleIndividualSelection.bind(this, datum.person);
+    } else {
+        divNode.classList.add('won');
+    }
+    groupMenu.appendChild(divNode);
+};
+
+menu.appendMenuItem = (groupMenu, classItem, text, fn, doc = document) => {
+    const divNode = doc.createElement('div');
+    divNode.classList.add(classItem);
+    divNode.innerText = text;
+    divNode.onclick = fn;
+    groupMenu.appendChild(divNode);
+};
+
+menu.displayGroupInMenu = (spin = spinner, doc = document) => {
+    const groupMenuWrapper = doc.querySelector('.group-menu-wrapper');
+    const groupMenu = doc.querySelector('.group-menu');
+
+    if (spin.state.groupMenu === true) {
         groupMenu.innerHTML = '';
 
-        const divNode3 = document.createElement('div');
-        divNode3.classList.add('see-prizes');
-        divNode3.innerText = 'SEE PRIZES';
-        divNode3.onclick = menu.seePrizes;
-        groupMenu.appendChild(divNode3);
+        menu.appendMenuItem(groupMenu, 'see-prizes', 'SEE PRIZES', menu.seePrizes);
 
-        for (let i = 0, len = spinner.group.length; i < len; i++) {
-            if (spinner.group[i].enabled === true) {
-                const divNode = document.createElement('div');
-                divNode.classList.add('individual');
-                divNode.innerText = spinner.group[i].person;
-                if (spinner.group[i].prize === null) {
-                    divNode.onclick = menu.handleIndividualSelection.bind(this, spinner.group[i].person);
-                } else {
-                    divNode.classList.add('won');
-                }
-                groupMenu.appendChild(divNode);
+        for (let i = 0, len = spin.group.length; i < len; i++) {
+            if (spin.group[i].enabled === true) {
+                menu.appendIndividial(groupMenu, spin.group[i]);
             }
         }
 
-        const divNode2 = document.createElement('div');
-        divNode2.classList.add('clear-prizes');
-        divNode2.innerText = 'CLEAR PRIZES';
-        divNode2.onclick = menu.clearPrizes;
-        groupMenu.appendChild(divNode2);
-
-        const divNode4 = document.createElement('div');
-        divNode4.classList.add('cancel');
-        divNode4.innerText = 'CANCEL';
-        divNode4.onclick = menu.toggleGroup;
-        groupMenu.appendChild(divNode4);
+        menu.appendMenuItem(groupMenu, 'clear-prizes', 'CLEAR PRIZES', menu.clearPrizes);
+        menu.appendMenuItem(groupMenu, 'cancel', 'CANCEL', menu.toggleGroup);
     }
 
     groupMenuWrapper.classList.toggle('hidden');
@@ -280,3 +287,9 @@ menu.toggleHelp = (event = null) => {
     const help = document.querySelector('.help-wrapper');
     const helpState = help.classList.toggle('hidden');
 };
+
+
+// For Unit Testing
+if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
+    module.exports = menu;
+}
