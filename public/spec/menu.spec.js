@@ -1,16 +1,14 @@
 
 const menu = require('../js/menu.js');
+const document = require('./helpers/document.helper.js');
 
 describe('menu', () => {
-    let mockSpinner, mockStorage, mockDocument;
+    let mockSpinner, mockStorage,;
     let dataSounds;
     let storageElements = {};
-    let documentElements = {};
-    let toggleReturnValue = false;
-    let spinner, storage, document;
+    let spinner, storage, doc;
 
     beforeEach(() => {
-        documentElements = [];
         mockSpinner = {
             state: {
                 winnerOpen: false,
@@ -26,66 +24,11 @@ describe('menu', () => {
             }
         };
 
-        documentElements = {
-            createdTypes: []
-        };
-        handleDocumentObjectCreation = () => {
-            let obj = {
-                innerText: '~~~NONE~~~',
-                classList: {
-                    list: []
-                },
-                attributes: {}
-            };
-            
-            obj.setAttribute = (key, values) => {
-                obj.attributes[key] = values;
-            };
-            obj.appendChild = () => {};
-
-            obj.classList.add = (className) => {
-                obj.classList.list.push(className);
-            };
-            obj.classList.remove = (className) => {
-                let list = obj.classList.list;
-                list = list.filter(e => e !== className);
-            };
-            obj.classList.toggle = (className) => {
-                let list = obj.classList.list;
-                if (list.includes(className)) {
-                    obj.classList.remove(className);
-                } else {
-                    obj.classList.add(className);
-                }
-                return toggleReturnValue;
-            }
-
-            return obj;
-        };
-        elementsCreated = 0;
-        mockDocument = {
-            createElement: () => {
-                const creation = handleDocumentObjectCreation();
-                documentElements.createdTypes.push(creation);
-                documentElements[`UNDEFINED-${ elementsCreated }`] = creation;
-                elementsCreated++;
-                return creation;
-            },
-            querySelectorAll: (name) => {
-                if (name === '[name=sound]') {
-                    return dataSounds;
-                }
-                return [];
-            },
-            querySelector: (name) => {
-                documentElements[name] = handleDocumentObjectCreation();
-                return documentElements[name];
-            }
-        };
-
         spinner = mockSpinner;
         storage = mockStorage;
-        document = mockDocument;
+
+        document.init();
+        doc = document.mock;
     });
 
     it('expects menu to exist', () => {
@@ -139,32 +82,32 @@ describe('menu', () => {
         spyOn(menu, 'targetContains').and.returnValue(true);
         spinner.spinning = true;
         spinner.state.menu = true;
-        toggleReturnValue = false;
         spyOn(menu, 'setSoundState').and.stub();
         spyOn(menu, 'addListOfPanels').and.stub();
         spyOn(menu, 'watchGroupSpin').and.stub();
 
-        menu.toggle(event, spinner, document);
+        menu.toggle(event, spinner, doc);
+        const wrapper = doc.getElement('.menu-wrapper');
         expect(spinner.state.menu).toEqual(true);
-        expect(documentElements['.menu-wrapper']).not.toBeDefined();
+        expect(wrapper).not.toBeDefined();
         expect(menu.setSoundState).not.toHaveBeenCalled();
         expect(menu.addListOfPanels).not.toHaveBeenCalled();
         expect(menu.watchGroupSpin).not.toHaveBeenCalled();
     });
 
-    it('expects "toggle" to do nothing if event not null and taget does not contain allowed', () => {
+    it('expects "toggle" to do nothing if event not null and target does not contain allowed', () => {
         const event = { target: {} };
         spyOn(menu, 'targetContains').and.returnValue(false);
         spinner.spinning = false;
         spinner.state.menu = true;
-        toggleReturnValue = false;
         spyOn(menu, 'setSoundState').and.stub();
         spyOn(menu, 'addListOfPanels').and.stub();
         spyOn(menu, 'watchGroupSpin').and.stub();
 
-        menu.toggle(event, spinner, document);
+        menu.toggle(event, spinner, doc);
+        const wrapper = doc.getElement('.menu-wrapper');
         expect(spinner.state.menu).toEqual(true);
-        expect(documentElements['.menu-wrapper']).not.toBeDefined();
+        expect(wrapper).not.toBeDefined();
         expect(menu.setSoundState).not.toHaveBeenCalled();
         expect(menu.addListOfPanels).not.toHaveBeenCalled();
         expect(menu.watchGroupSpin).not.toHaveBeenCalled();
@@ -175,13 +118,13 @@ describe('menu', () => {
         spyOn(menu, 'targetContains').and.returnValue(true);
         spinner.spinning = false;
         spinner.state.menu = true;
-        toggleReturnValue = false;
         spyOn(menu, 'setSoundState').and.stub();
         spyOn(menu, 'addListOfPanels').and.stub();
         spyOn(menu, 'watchGroupSpin').and.stub();
+        doc.configurationFn = e => e.classList.add('hidden');
 
-        menu.toggle(event, spinner, document);
-        const wrapper = documentElements['.menu-wrapper'];
+        menu.toggle(event, spinner, doc);
+        const wrapper = doc.getElement('.menu-wrapper');
         expect(spinner.state.menu).toEqual(false);
         expect(wrapper.classList.list).toEqual(['hidden']);
         expect(menu.setSoundState).toHaveBeenCalled();
@@ -194,13 +137,12 @@ describe('menu', () => {
         spyOn(menu, 'targetContains').and.returnValue(true);
         spinner.spinning = false;
         spinner.state.menu = false;
-        toggleReturnValue = true;
         spyOn(menu, 'setSoundState').and.stub();
         spyOn(menu, 'addListOfPanels').and.stub();
         spyOn(menu, 'watchGroupSpin').and.stub();
 
-        menu.toggle(event, spinner, document);
-        const wrapper = documentElements['.menu-wrapper'];
+        menu.toggle(event, spinner, doc);
+        const wrapper = doc.getElement('.menu-wrapper');
         expect(spinner.state.menu).toEqual(true);
         expect(wrapper.classList.list).toEqual(['hidden']);
         expect(menu.setSoundState).not.toHaveBeenCalled();
@@ -215,8 +157,10 @@ describe('menu', () => {
             { value: 'SILENT', checked: false }
         ];
         spinner.state.activeSound = 'metronome';
-        menu.setSoundState(spinner, document);
-        expect(dataSounds[0].checked).toEqual(true);
+        doc.configurationFn = () => dataSounds;
+
+        const result0 = menu.setSoundState(spinner, doc);
+        expect(result0[0].checked).toEqual(true);
 
         dataSounds = [
             { value: 'metronome', checked: false },
@@ -224,8 +168,10 @@ describe('menu', () => {
             { value: 'SILENT', checked: false }
         ];
         spinner.state.activeSound = 'zippo';
-        menu.setSoundState(spinner, document);
-        expect(dataSounds[1].checked).toEqual(true);
+        doc.configurationFn = () => dataSounds;
+
+        const result1 = menu.setSoundState(spinner, doc);
+        expect(result1[1].checked).toEqual(true);
 
         dataSounds = [
             { value: 'metronome', checked: false },
@@ -233,15 +179,17 @@ describe('menu', () => {
             { value: 'SILENT', checked: false }
         ];
         spinner.state.activeSound = 'SILENT';
-        menu.setSoundState(spinner, document);
-        expect(dataSounds[2].checked).toEqual(true);
+        doc.configurationFn = () => dataSounds;
+
+        const result2 = menu.setSoundState(spinner, doc);
+        expect(result2[2].checked).toEqual(true);
     });
 
     it('expects "clearActivePerson" to hide person and set active person to null', () => {
         spinner.state.activePerson = {};
 
-        menu.clearActivePerson(spinner, document);
-        const active = documentElements['.group-active-person'];
+        menu.clearActivePerson(spinner, doc);
+        const active = doc.getElement('.group-active-person');
         expect(active.innerText).toEqual('');
         expect(active.classList.list).toEqual(['hidden']);
         expect(spinner.state.activePerson).toBeNull();
@@ -251,8 +199,8 @@ describe('menu', () => {
         spinner.state.activePerson = { person: 'Bob' };
         spyOn(menu, 'toggleGroup').and.stub();
 
-        menu.showActivePerson(spinner, document);
-        const groupActivePerson = documentElements['.group-active-person'];
+        menu.showActivePerson(spinner, doc);
+        const groupActivePerson = doc.getElement('.group-active-person');
         expect(groupActivePerson.classList.list).not.toEqual(['hidden']);
         expect(menu.toggleGroup).toHaveBeenCalled();
     });
@@ -357,12 +305,12 @@ describe('menu', () => {
         const datum = { person: 'Bob', prize: 'prize', additional: '' };
         spyOn(menu, 'getPrizeString').and.returnValue('prize string');
 
-        menu.appendPrize(prizes, datum, document);
-        expect(documentElements['UNDEFINED-0'].classList.list).toEqual(['prize-row']);
-        expect(documentElements['UNDEFINED-1'].classList.list).toEqual(['name']);
-        expect(documentElements['UNDEFINED-1'].innerText).toEqual(datum.person);
-        expect(documentElements['UNDEFINED-2'].classList.list).toEqual(['prize-won']);
-        expect(documentElements['UNDEFINED-2'].innerText).toEqual('prize string');
+        menu.appendPrize(prizes, datum, doc);
+        expect(doc.getElement('UNDEFINED-0').classList.list).toEqual(['prize-row']);
+        expect(doc.getElement('UNDEFINED-1').classList.list).toEqual(['name']);
+        expect(doc.getElement('UNDEFINED-1').innerText).toEqual(datum.person);
+        expect(doc.getElement('UNDEFINED-2').classList.list).toEqual(['prize-won']);
+        expect(doc.getElement('UNDEFINED-2').innerText).toEqual('prize string');
     });
 
     it('expects "seePrizes" to loop through the group and append prizes', () => {
@@ -375,15 +323,15 @@ describe('menu', () => {
         spyOn(menu, 'appendPrize').and.stub();
         spyOn(menu, 'toggleGroup').and.stub();
 
-        menu.seePrizes(event, spinner, document);
-        const wrapper = documentElements['.prizes-wrapper'];
+        menu.seePrizes(event, spinner, doc);
+        const wrapper = doc.getElement('.prizes-wrapper');
         expect(wrapper.classList.list).not.toEqual(['hidden']);
         expect(menu.appendPrize.calls.count()).toEqual(2);
     });
 
     it('expects "closePrizes" to add hidden class to the wrapper', () => {
-        menu.closePrizes(document);
-        const wrapper = documentElements['.prizes-wrapper'];
+        menu.closePrizes(doc);
+        const wrapper = doc.getElement('.prizes-wrapper');
         expect(wrapper.classList.list).toEqual(['hidden']);
     });
 
@@ -393,8 +341,8 @@ describe('menu', () => {
         };
         const datum = { person: 'Bob', prize: null };
 
-        menu.appendIndividial(groupMenu, datum, document);
-        const node = documentElements['UNDEFINED-0'];
+        menu.appendIndividial(groupMenu, datum, doc);
+        const node = doc.getElement('UNDEFINED-0');
         expect(node.classList.list).toEqual(['individual']);
         expect(node.innerText).toEqual('Bob');
         expect(node.onclick).toEqual(jasmine.any(Function));
@@ -406,10 +354,27 @@ describe('menu', () => {
         };
         const datum = { person: 'Bob', prize: 'prize' };
 
-        menu.appendIndividial(groupMenu, datum, document);
-        const node = documentElements['UNDEFINED-0'];
+        menu.appendIndividial(groupMenu, datum, doc);
+        const node = doc.getElement('UNDEFINED-0');
         expect(node.classList.list).toEqual(['individual', 'won']);
         expect(node.innerText).toEqual('Bob');
         expect(node.onclick).not.toBeDefined();
     });
+
+    it('expects "appendMenuItem" to create a menu item node', () => {
+        const groupMenu = {
+            appendChild: () => {}
+        };
+        const classItem = 'class-item';
+        const text = 'text';
+        const fn = () => {};
+        
+        menu.appendMenuItem(groupMenu, classItem, text, fn, doc);
+        const element = doc.getElement('UNDEFINED-0');
+        expect(element.classList.list).toEqual([classItem]);
+        expect(element.innerText).toEqual(text);
+        expect(element.onclick).toEqual(jasmine.any(Function));
+    });
+
+
 });

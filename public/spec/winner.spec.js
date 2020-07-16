@@ -1,11 +1,12 @@
 
 const winner = require('../js/winner.js');
+const document = require('./helpers/document.helper.js');
 
 describe('winner', () => {
-    let mockSpinner, mockStorage, mockMenu, mockDocument;
+    let mockSpinner, mockStorage, mockMenu;
     let storageElements = {};
     let documentElements = {};
-    let spinner, storage, menu, document;
+    let spinner, storage, menu, doc;
 
     beforeEach(() => {
         documentElements = [];
@@ -28,33 +29,14 @@ describe('winner', () => {
             clearActivePerson: () => {}
         };
 
-        documentElements = {};
-        mockDocument = {
-            querySelector: (name) => {
-                documentElements[name] = {}
-                return {
-                    innerText: '~~~NONE~~~',
-                    classList: {
-                        add: (className) => {
-                            documentElements[name]['add'] = className;
-                        },
-                        remove: (className) => {
-                            documentElements[name]['remove'] = className;
-                        }
-                    },
-                    setAttribute: (key, values) => {
-                        documentElements[name][key] = values;
-                    }
-                }
-            }
-        };
-
         spinner = mockSpinner;
         storage = mockStorage;
         menu = mockMenu;
-        document = mockDocument;
 
-        winner.init(document);
+        document.init();
+        doc = document.mock;
+        
+        winner.init(doc);
     });
 
     it('expects winner to exist', () => {
@@ -70,17 +52,17 @@ describe('winner', () => {
     it('expects "init" to define queries', () => {
         expect(winner.queries).toBeDefined();
         expect(winner.queries.wrapper).toEqual(jasmine.any(Object));
-        expect(documentElements['.winner-wrapper']).toBeDefined();
+        expect(doc.getElement('.winner-wrapper')).toBeDefined();
         expect(winner.queries.card).toEqual(jasmine.any(Object));
-        expect(documentElements['.winner-card']).toBeDefined();
+        expect(doc.getElement('.winner-card')).toBeDefined();
         expect(winner.queries.prize).toEqual(jasmine.any(Object));
-        expect(documentElements['#prize']).toBeDefined();
+        expect(doc.getElement('#prize')).toBeDefined();
         expect(winner.queries.prizeAdditional).toEqual(jasmine.any(Object));
-        expect(documentElements['#prize-additional-information']).toBeDefined();
+        expect(doc.getElement('#prize-additional-information')).toBeDefined();
         expect(winner.queries.prizeAdditionalNeeded).toEqual(jasmine.any(Object));
-        expect(documentElements['.prize-additional-information']).toBeDefined();
+        expect(doc.getElement('.prize-additional-information')).toBeDefined();
         expect(winner.queries.who).toEqual(jasmine.any(Object));
-        expect(documentElements['#prize-who']).toBeDefined();
+        expect(doc.getElement('#prize-who')).toBeDefined();
     });
 
     it('expects "getActivePerson" to handle null', () => {
@@ -102,12 +84,14 @@ describe('winner', () => {
         const activePerson = null;
 
         winner.setText(data, activePerson);
+        const card = doc.getElement('.winner-card');
+        const additional = doc.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('You');
-        expect(documentElements['.winner-card']['style']).toEqual('background-color: color; color: fcolor;');
+        expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
 
         expect(winner.queries.prizeAdditional.innerText).toEqual('~~~NONE~~~');
-        expect(documentElements['.prize-additional-information']['remove']).not.toEqual('hidden');
+        expect(additional.classList.list.includes('hidden')).toEqual(false);
     });
 
     it('expects "setText" to update text and style with additional text and without active person', () => {
@@ -115,12 +99,14 @@ describe('winner', () => {
         const activePerson = null;
 
         winner.setText(data, activePerson);
+        const card = doc.getElement('.winner-card');
+        const additional = doc.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('You');
-        expect(documentElements['.winner-card']['style']).toEqual('background-color: color; color: fcolor;');
+        expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
 
         expect(winner.queries.prizeAdditional.innerText).toEqual('additional');
-        expect(documentElements['.prize-additional-information']['remove']).toEqual('hidden');
+        expect(additional.classList.list.includes('hidden')).toEqual(false);
     });
 
     it('expects "setText" to update text and style without additional text and with active person', () => {
@@ -128,12 +114,14 @@ describe('winner', () => {
         const activePerson = 'Bob';
 
         winner.setText(data, activePerson);
+        const card = doc.getElement('.winner-card');
+        const additional = doc.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('Bob');
-        expect(documentElements['.winner-card']['style']).toEqual('background-color: color; color: fcolor;');
+        expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
 
         expect(winner.queries.prizeAdditional.innerText).toEqual('~~~NONE~~~');
-        expect(documentElements['.prize-additional-information']['remove']).not.toEqual('hidden');
+        expect(additional.classList.list.includes('hidden')).toEqual(false);
     });
 
     it('expects "setText" to update text and style with additional text and with active person', () => {
@@ -141,12 +129,14 @@ describe('winner', () => {
         const activePerson = 'Bob';
 
         winner.setText(data, activePerson);
+        const card = doc.getElement('.winner-card');
+        const additional = doc.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('Bob');
-        expect(documentElements['.winner-card']['style']).toEqual('background-color: color; color: fcolor;');
+        expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
 
         expect(winner.queries.prizeAdditional.innerText).toEqual('additional');
-        expect(documentElements['.prize-additional-information']['remove']).toEqual('hidden');
+        expect(additional.classList.list.includes('hidden')).toEqual(false);
     });
 
     it('expects "handlePerson" to handle null for active person', () => {
@@ -182,8 +172,9 @@ describe('winner', () => {
         spyOn(winner, 'handlePerson').and.stub();
 
         winner.open(data, spinner);
+        const wrapper = doc.getElement('.winner-wrapper');
         expect(spinner.state.winnerOpen).toEqual(true);
-        expect(documentElements['.winner-wrapper']['remove']).toEqual('hidden');
+        expect(wrapper.classList.list.includes('hidden')).toEqual(false);
 
         expect(winner.setText).toHaveBeenCalled();
         expect(winner.handlePerson).toHaveBeenCalled();
@@ -193,8 +184,10 @@ describe('winner', () => {
         spinner.state.winnerOpen = true;
 
         winner.close(spinner);
+        const wrapper = doc.getElement('.winner-wrapper');
+        const additional = doc.getElement('.prize-additional-information');
         expect(spinner.state.winnerOpen).toEqual(false);
-        expect(documentElements['.winner-wrapper']['add']).toEqual('hidden');
-        expect(documentElements['.prize-additional-information']['add']).toEqual('hidden');
+        expect(wrapper.classList.list.includes('hidden')).toEqual(true);
+        expect(additional.classList.list.includes('hidden')).toEqual(true);
     });
 });

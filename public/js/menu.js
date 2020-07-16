@@ -37,6 +37,7 @@ menu.setSoundState = (spin = spinner, doc = document) => {
             break;
         }
     }
+    return sounds;
 };
 
 menu.clearActivePerson = (spin = spinner, doc = document) => {

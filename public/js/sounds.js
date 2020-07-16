@@ -18,7 +18,7 @@ sound.init = (spin = spinner, store = storage, doc = document) => {
     spin.state.activeSound = store.getActiveSound();
 
     const soundRadios = doc.querySelectorAll('input[type=radio][name="sound"]');
-    soundRadios.forEach(soundselected => soundselected.addEventListener('change', sound.changeHandler));
+    soundRadios.forEach(selected => selected.addEventListener('change', sound.changeHandler));
 };
 
 sound.changeHandler = (event, spin = spinner, store = storage) => {
