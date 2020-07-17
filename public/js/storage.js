@@ -36,7 +36,10 @@ storage.configureStorageDefaultData = () => {
 
 storage.init = () => {
     storage.configureStorageDefaultData();
+    storage.clearLoader();
+};
 
+storage.clearLoader = () => {
     setTimeout(() => {
         const loader = document.querySelector('.loader');
         loader.classList.add('fade-out');
