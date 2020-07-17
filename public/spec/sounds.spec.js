@@ -1,40 +1,26 @@
 
-const sound = require('../js/sounds.js');
-const document = require('./helpers/document.helper.js');
+const sound = require('../js/sounds');
+const doc = require('./helpers/document.helper');
+const win = require('./helpers/window.helper');
+const spin = require('./helpers/spinner.helper');
+const store = require('./helpers/storage.helper');
 
 describe('sound', () => {
-    let mockWindow, mockSpinner, mockStorage;
-    let spinner, storage;
+    let mockWindow;
+    let spinner, storage, document;
 
     beforeEach(() => {
-        mockWindow = {
-            Audio: function(url) {
-                this.url = url;
-            }
-        };
-        mockSpinner = {
-            state: {
-                activeSound: null
-            }
-        };
-        mockStorage = {
-            getActiveSound: () => {},
-            saveActiveSound: () => {}
-        };
+        win.init();
+        mockWindow = win.mock;
 
-        // mockDocument = {
-        //     querySelectorAll: () => {
-        //         return [{
-        //             addEventListener: mockEventListener
-        //         }]
-        //     }
-        // };
+        spin.init();
+        spinner = spin.mock;
 
-        spinner = mockSpinner;
-        storage = mockStorage;
+        store.init();
+        storage = store.mock;
 
-        document.init();
-        doc = document.mock;
+        doc.init();
+        document = doc.mock;
     });
 
     it('expects structure to exist', () => {
@@ -66,7 +52,7 @@ describe('sound', () => {
         spyOn(storage, 'getActiveSound').and.returnValue(active);
         doc.configurationFn = () => returnElements;
         
-        sound.init(spinner, storage, doc);
+        sound.init(spinner, storage, document);
 
         expect(spinner.state.activeSound).toEqual(active);
         expect(sound.defineSounds).toHaveBeenCalled();

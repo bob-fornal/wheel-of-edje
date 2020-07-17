@@ -1,51 +1,51 @@
 
-let document = {
+let doc = {
     elements: {
         created: 0,
         types: []
     }
 };
 
-document.init = () => {
-    document.elements = {
+doc.init = () => {
+    doc.elements = {
         created: 0,
         types: []
     };
 };
 
-document.mock = {
+doc.mock = {
     configurationFn: null,
     dataSounds: [],
 
     createElement: () => {
-        const creation = document.handleDocumentObjectCreation();
-        document.elements.types.push(creation);
-        document.elements[`UNDEFINED-${ document.elements.created }`] = creation;
-        document.elements.created++;
+        const creation = doc.handleDocumentObjectCreation();
+        doc.elements.types.push(creation);
+        doc.elements[`UNDEFINED-${ doc.elements.created }`] = creation;
+        doc.elements.created++;
         return creation;
     },
     querySelectorAll: (name) => {
-        if (document.mock.configurationFn !== null) {
-            const result = document.mock.configurationFn();
+        if (doc.mock.configurationFn !== null) {
+            const result = doc.mock.configurationFn();
             // process.stdout.write(name);
-            document.mock.configurationFn = null;
+            doc.mock.configurationFn = null;
             return result;
         }
         return [];
     },
     querySelector: (name) => {
-        document.elements[name] = document.handleDocumentObjectCreation();
-        if (document.mock.configurationFn !== null) {
-            document.mock.configurationFn(document.elements[name]);
-            document.mock.configurationFn = null;
+        doc.elements[name] = doc.handleDocumentObjectCreation();
+        if (doc.mock.configurationFn !== null) {
+            doc.mock.configurationFn(doc.elements[name]);
+            doc.mock.configurationFn = null;
         }
-        return document.elements[name];
+        return doc.elements[name];
     },
 
-    getElement: name => document.elements[name] || undefined
+    getElement: name => doc.elements[name] || undefined
 };   
 
-document.handleDocumentObjectCreation = () => {
+doc.handleDocumentObjectCreation = () => {
     let obj = {
         innerText: '~~~NONE~~~',
         classList: {
@@ -84,5 +84,5 @@ document.handleDocumentObjectCreation = () => {
 
 
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
-    module.exports = document;
+    module.exports = doc;
 }

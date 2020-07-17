@@ -1,42 +1,27 @@
 
-const winner = require('../js/winner.js');
-const document = require('./helpers/document.helper.js');
+const winner = require('../js/winner');
+const doc = require('./helpers/document.helper');
+const spin = require('./helpers/spinner.helper');
+const store = require('./helpers/storage.helper');
+const menuHelper = require('./helpers/menu.helper');
 
 describe('winner', () => {
-    let mockSpinner, mockStorage, mockMenu;
-    let storageElements = {};
-    let documentElements = {};
-    let spinner, storage, menu, doc;
+    let spinner, storage, menu, document;
 
     beforeEach(() => {
-        documentElements = [];
-        mockSpinner = {
-            state: {
-                winnerOpen: false,
-                activePerson: null
-            },
-            group: [{ person: 'Bob' }]
-        };
+        spin.init();
+        spinner = spin.mock;
 
-        storageElements = {};
-        mockStorage = {
-            saveGroup: (group) => {
-                storageElements.group = group;
-            }
-        };
+        store.init();
+        storage = store.mock;
 
-        mockMenu = {
-            clearActivePerson: () => {}
-        };
+        menuHelper.init();
+        menu = menuHelper.mock;
 
-        spinner = mockSpinner;
-        storage = mockStorage;
-        menu = mockMenu;
-
-        document.init();
-        doc = document.mock;
+        doc.init();
+        document = doc.mock;
         
-        winner.init(doc);
+        winner.init(document);
     });
 
     it('expects winner to exist', () => {
@@ -52,17 +37,17 @@ describe('winner', () => {
     it('expects "init" to define queries', () => {
         expect(winner.queries).toBeDefined();
         expect(winner.queries.wrapper).toEqual(jasmine.any(Object));
-        expect(doc.getElement('.winner-wrapper')).toBeDefined();
+        expect(document.getElement('.winner-wrapper')).toBeDefined();
         expect(winner.queries.card).toEqual(jasmine.any(Object));
-        expect(doc.getElement('.winner-card')).toBeDefined();
+        expect(document.getElement('.winner-card')).toBeDefined();
         expect(winner.queries.prize).toEqual(jasmine.any(Object));
-        expect(doc.getElement('#prize')).toBeDefined();
+        expect(document.getElement('#prize')).toBeDefined();
         expect(winner.queries.prizeAdditional).toEqual(jasmine.any(Object));
-        expect(doc.getElement('#prize-additional-information')).toBeDefined();
+        expect(document.getElement('#prize-additional-information')).toBeDefined();
         expect(winner.queries.prizeAdditionalNeeded).toEqual(jasmine.any(Object));
-        expect(doc.getElement('.prize-additional-information')).toBeDefined();
+        expect(document.getElement('.prize-additional-information')).toBeDefined();
         expect(winner.queries.who).toEqual(jasmine.any(Object));
-        expect(doc.getElement('#prize-who')).toBeDefined();
+        expect(document.getElement('#prize-who')).toBeDefined();
     });
 
     it('expects "getActivePerson" to handle null', () => {
@@ -84,8 +69,8 @@ describe('winner', () => {
         const activePerson = null;
 
         winner.setText(data, activePerson);
-        const card = doc.getElement('.winner-card');
-        const additional = doc.getElement('.prize-additional-information');
+        const card = document.getElement('.winner-card');
+        const additional = document.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('You');
         expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
@@ -99,8 +84,8 @@ describe('winner', () => {
         const activePerson = null;
 
         winner.setText(data, activePerson);
-        const card = doc.getElement('.winner-card');
-        const additional = doc.getElement('.prize-additional-information');
+        const card = document.getElement('.winner-card');
+        const additional = document.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('You');
         expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
@@ -114,8 +99,8 @@ describe('winner', () => {
         const activePerson = 'Bob';
 
         winner.setText(data, activePerson);
-        const card = doc.getElement('.winner-card');
-        const additional = doc.getElement('.prize-additional-information');
+        const card = document.getElement('.winner-card');
+        const additional = document.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('Bob');
         expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
@@ -129,8 +114,8 @@ describe('winner', () => {
         const activePerson = 'Bob';
 
         winner.setText(data, activePerson);
-        const card = doc.getElement('.winner-card');
-        const additional = doc.getElement('.prize-additional-information');
+        const card = document.getElement('.winner-card');
+        const additional = document.getElement('.prize-additional-information');
         expect(winner.queries.prize.innerText).toEqual(data.text);
         expect(winner.queries.who.innerText).toEqual('Bob');
         expect(card.attributes.style).toEqual('background-color: color; color: fcolor;');
@@ -172,7 +157,7 @@ describe('winner', () => {
         spyOn(winner, 'handlePerson').and.stub();
 
         winner.open(data, spinner);
-        const wrapper = doc.getElement('.winner-wrapper');
+        const wrapper = document.getElement('.winner-wrapper');
         expect(spinner.state.winnerOpen).toEqual(true);
         expect(wrapper.classList.list.includes('hidden')).toEqual(false);
 
@@ -184,8 +169,8 @@ describe('winner', () => {
         spinner.state.winnerOpen = true;
 
         winner.close(spinner);
-        const wrapper = doc.getElement('.winner-wrapper');
-        const additional = doc.getElement('.prize-additional-information');
+        const wrapper = document.getElement('.winner-wrapper');
+        const additional = document.getElement('.prize-additional-information');
         expect(spinner.state.winnerOpen).toEqual(false);
         expect(wrapper.classList.list.includes('hidden')).toEqual(true);
         expect(additional.classList.list.includes('hidden')).toEqual(true);
