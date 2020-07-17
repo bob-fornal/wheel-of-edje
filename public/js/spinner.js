@@ -46,6 +46,12 @@ spinner.configure = () => {
 	
 	ctx.canvas.width = narrower;
 	ctx.canvas.height = narrower;
+
+	const underbody = document.querySelector('.underbody');
+	const uctx = underbody.getContext('2d');
+
+	uctx.canvas.width = narrower;
+	uctx.canvas.height = narrower;
 	
 	const dongle = document.querySelector('.dongle');
 	const dctx = dongle.getContext('2d');
@@ -61,6 +67,7 @@ spinner.configure = () => {
 
 	if (adjustDirection === 'widthOffset') {
 		canvas.setAttribute('style', `left: ${direction.widthOffset}px;`);
+		underbody.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		dongle.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		overlaySelector.setAttribute('style', `left: ${direction.widthOffset}px;`);
 		
@@ -69,11 +76,12 @@ spinner.configure = () => {
 		eddie.classList.remove('hidden');
 	} else {
 		canvas.setAttribute('style', `top: ${direction.heightOffset}px;`);
+		underbody.setAttribute('style', `top: ${direction.heightOffset}px;`);
 		dongle.setAttribute('style', `top: ${direction.heightOffset}px;`);	
 		overlaySelector.setAttribute('style', `top: ${direction.heightOffset}px;`);	
 	}
 
-	return { canvas, ctx, dongle, dctx, overlaySelector, octx, narrower };
+	return { canvas, ctx, underbody, uctx, dongle, dctx, overlaySelector, octx, narrower };
 };
 
 spinner.settings = spinner.configure();
@@ -82,6 +90,7 @@ spinner.fixed = {
 	width: spinner.settings.narrower / 2,
 	height: spinner.settings.narrower / 2,
 	radius: spinner.settings.narrower / 20,
+	radiusAdjust: 20,
 
 	textMargin: spinner.settings.narrower / 20,
 	textOffset: Math.floor(spinner.settings.narrower * (3 / 100)),
@@ -159,7 +168,7 @@ spinner.show = (start, spin, display = true) => {
 			
 		spinner.settings.ctx.beginPath();
 		spinner.settings.ctx.moveTo(spinner.fixed.width, spinner.fixed.height);
-		spinner.settings.ctx.arc(spinner.fixed.width, spinner.fixed.height, spinner.fixed.height - 5, lastend, lastend + (spinner.fixed.twoPI * fraction), false);
+		spinner.settings.ctx.arc(spinner.fixed.width, spinner.fixed.height, spinner.fixed.height - spinner.fixed.radiusAdjust, lastend, lastend + (spinner.fixed.twoPI * fraction), false);
 
 		let templeft = lastend % spinner.fixed.rad360;
 		let tempright = (lastend + (spinner.fixed.twoPI * fraction)) % spinner.fixed.rad360;
@@ -199,6 +208,22 @@ spinner.show = (start, spin, display = true) => {
 	return start;
 };
 
+spinner.fillUnderbody = () => {
+	const height = spinner.settings.uctx.canvas.width;
+	const width = spinner.settings.uctx.canvas.height;
+
+	const h2 = height / 2;
+	const w2 = width / 2;
+
+    var radgrad = spinner.settings.uctx.createRadialGradient(w2, h2, 0, w2, w2, h2);
+    radgrad.addColorStop(0.00, 'rgba(50, 98, 4, 1.0)');
+    radgrad.addColorStop(0.85, 'rgba(109, 164, 56, 1.0)');
+    radgrad.addColorStop(1.00, 'rgba(109, 164, 56, 0.0)');
+  
+    spinner.settings.uctx.fillStyle = radgrad;
+    spinner.settings.uctx.fillRect(0, 0, height, width);
+};
+
 spinner.fillOverlay = () => {
 	const cx_center = spinner.settings.octx.canvas.width / 2;
 	const cy_center = spinner.settings.octx.canvas.height / 2;
@@ -232,6 +257,8 @@ spinner.getTotal = () => {
 };
 
 spinner.init = () => {
+	spinner.fillUnderbody();
+
 	spinner.pie = storage.getPie();
 	spinner.group = storage.getGroup();
 	spinner.pieTotal = spinner.getTotal();

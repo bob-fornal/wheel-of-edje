@@ -192,19 +192,22 @@ html, body {
     right: 1rem;
 }
 
-.spinner, .dongle, .overlay {
+.underbody, .spinner, .dongle, .overlay {
     position: fixed;
     top: 20px;
     left: 20px;
 }
-.spinner {
+.underbody {
     z-index: 10;
 }
-.dongle {
+.spinner {
     z-index: 20;
 }
-.overlay {
+.dongle {
     z-index: 30;
+}
+.overlay {
+    z-index: 40;
 }
 
 .left, .right {

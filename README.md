@@ -2,8 +2,15 @@
 
 ## Future Work
 
-1. Clean up each JavaScript file to have it's own container.
-2. Add Unit Tests.
+### Add Unit Tests
+
+All other JavaScript files have appropriate unit tests.
+
+1. edit-page.js
+2. menu.js
+3. overlay.js
+4. spinner.js
+5. storage.js
 
 ## Firebase
 
