@@ -329,7 +329,7 @@ describe('menu', () => {
         };
         const datum = { person: 'Bob', prize: null };
 
-        menu.appendIndividial(groupMenu, datum, document);
+        menu.appendIndividual(groupMenu, datum, document);
         const node = document.getElement('UNDEFINED-0');
         expect(node.classList.list).toEqual(['individual']);
         expect(node.innerText).toEqual('Bob');
@@ -342,7 +342,7 @@ describe('menu', () => {
         };
         const datum = { person: 'Bob', prize: 'prize' };
 
-        menu.appendIndividial(groupMenu, datum, document);
+        menu.appendIndividual(groupMenu, datum, document);
         const node = document.getElement('UNDEFINED-0');
         expect(node.classList.list).toEqual(['individual', 'won']);
         expect(node.innerText).toEqual('Bob');
@@ -364,5 +364,43 @@ describe('menu', () => {
         expect(element.onclick).toEqual(jasmine.any(Function));
     });
 
+    it('expects "displayGroupInMenu" to turn off the menu', () => {
+        spinner.group = [
+            { enabled: true },
+            { enabled: true },
+            { enabled: false }
+        ];
+        spinner.state.groupMenu = false;
+        spyOn(menu, 'appendMenuItem').and.stub();
+        spyOn(menu, 'appendIndividual').and.stub();
+
+        menu.displayGroupInMenu(spinner, document);
+        const wrapper = document.getElement('.group-menu-wrapper');
+        const groupMenu = document.getElement('.group-menu');
+        expect("innerHTML" in groupMenu).toEqual(false);
+        expect(menu.appendMenuItem).not.toHaveBeenCalledTimes(3);
+        expect(menu.appendIndividual).not.toHaveBeenCalledTimes(2);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(true);
+    });
+
+    it('expects "displayGroupInMenu" to turn on the menu', () => {
+        spinner.group = [
+            { enabled: true },
+            { enabled: true },
+            { enabled: false }
+        ];
+        spinner.state.groupMenu = true;
+        spyOn(menu, 'appendMenuItem').and.stub();
+        spyOn(menu, 'appendIndividual').and.stub();
+
+        menu.displayGroupInMenu(spinner, document);
+        const wrapper = document.getElement('.group-menu-wrapper');
+        const groupMenu = document.getElement('.group-menu');
+        expect("innerHTML" in groupMenu).toEqual(true);
+        expect(groupMenu.innerHTML).toEqual('');
+        expect(menu.appendMenuItem).toHaveBeenCalledTimes(3);
+        expect(menu.appendIndividual).toHaveBeenCalledTimes(2);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(true);
+    });
 
 });

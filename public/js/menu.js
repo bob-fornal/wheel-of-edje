@@ -132,7 +132,7 @@ menu.closePrizes = (doc = document) => {
     prizesWrapper.classList.add('hidden');
 };
 
-menu.appendIndividial = (groupMenu, datum, doc = document) => {
+menu.appendIndividual = (groupMenu, datum, doc = document) => {
     const divNode = doc.createElement('div');
     divNode.classList.add('individual');
     divNode.innerText = datum.person;
@@ -164,7 +164,7 @@ menu.displayGroupInMenu = (spin = spinner, doc = document) => {
 
         for (let i = 0, len = spin.group.length; i < len; i++) {
             if (spin.group[i].enabled === true) {
-                menu.appendIndividial(groupMenu, spin.group[i]);
+                menu.appendIndividual(groupMenu, spin.group[i]);
             }
         }
 

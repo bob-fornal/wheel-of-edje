@@ -18,9 +18,10 @@ doc.mock = {
     dataSounds: [],
 
     createElement: () => {
-        const creation = doc.handleDocumentObjectCreation();
+        const name = `UNDEFINED-${ doc.elements.created }`;
+        const creation = doc.handleDocumentObjectCreation(name);
         doc.elements.types.push(creation);
-        doc.elements[`UNDEFINED-${ doc.elements.created }`] = creation;
+        doc.elements[name] = creation;
         doc.elements.created++;
         return creation;
     },
@@ -34,7 +35,7 @@ doc.mock = {
         return [];
     },
     querySelector: (name) => {
-        doc.elements[name] = doc.handleDocumentObjectCreation();
+        doc.elements[name] = doc.handleDocumentObjectCreation(name);
         if (doc.mock.configurationFn !== null) {
             doc.mock.configurationFn(doc.elements[name]);
             doc.mock.configurationFn = null;
@@ -45,8 +46,9 @@ doc.mock = {
     getElement: name => doc.elements[name] || undefined
 };   
 
-doc.handleDocumentObjectCreation = () => {
+doc.handleDocumentObjectCreation = (name) => {
     let obj = {
+        name: name,
         innerText: '~~~NONE~~~',
         classList: {
             list: []
