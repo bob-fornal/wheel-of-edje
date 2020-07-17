@@ -1,5 +1,5 @@
 
-const editing = require('../js/edit');
+const editing = require('../public/js/edit');
 
 describe('editing', () => {
     it('structure exists', () => {

@@ -1,5 +1,5 @@
 
-const sound = require('../js/sounds');
+const sound = require('../public/js/sounds');
 const doc = require('./helpers/document.helper');
 const win = require('./helpers/window.helper');
 const spin = require('./helpers/spinner.helper');

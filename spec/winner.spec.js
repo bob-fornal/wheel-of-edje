@@ -1,5 +1,5 @@
 
-const winner = require('../js/winner');
+const winner = require('../public/js/winner');
 const doc = require('./helpers/document.helper');
 const spin = require('./helpers/spinner.helper');
 const store = require('./helpers/storage.helper');

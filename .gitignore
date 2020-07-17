@@ -1,3 +1,4 @@
 .DS_Store
 .firebase/
 firebase-debug.log
+public/node_modules

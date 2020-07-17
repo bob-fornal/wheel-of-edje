@@ -1,5 +1,5 @@
 
-const menu = require('../js/menu');
+const menu = require('../public/js/menu');
 const doc = require('./helpers/document.helper');
 const spin = require('./helpers/spinner.helper');
 const store = require('./helpers/storage.helper')
