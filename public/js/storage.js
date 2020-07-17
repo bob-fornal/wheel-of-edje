@@ -36,6 +36,15 @@ storage.configureStorageDefaultData = () => {
 
 storage.init = () => {
     storage.configureStorageDefaultData();
+
+    setTimeout(() => {
+        const loader = document.querySelector('.loader');
+        loader.classList.add('fade-out');
+        setTimeout(() => {
+            loader.classList.add('hidden');
+            loader.classList.remove('fade-out');
+        }, 1900);
+    }, 500);
 };
 
 storage.getPie = (key = 'pie-default') => {

@@ -19,7 +19,7 @@
     margin: 20px 20px 20px 0;
     display: inline-block;
     border: 2px solid black;
-    font-family: Calibri;
+    font-family: sans-serif;
     height: calc(100% - 40px);
     max-width: 1080px;
 }
@@ -237,8 +237,8 @@
     }
 
     .content .csv-input {
+        font-family: sans-serif;
         font-size: 14pt;
-        font-family: Calibri;
         margin-top: 1rem;
     }
     .content .csv-save-button {

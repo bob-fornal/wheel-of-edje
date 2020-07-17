@@ -93,7 +93,7 @@ spinner.fixed = {
 	radiusAdjust: 20,
 
 	textMargin: spinner.settings.narrower / 20,
-	textOffset: Math.floor(spinner.settings.narrower * (3 / 100)),
+	textOffset: Math.floor(spinner.settings.narrower * (2.8 / 100)),
 
 	PI: Math.PI,
 	twoPI: Math.PI * 2,
@@ -192,7 +192,7 @@ spinner.show = (start, spin, display = true) => {
 		var setY = spinner.fixed.height + Math.sin(endAngle) * radius;
 
 		spinner.settings.ctx.fillStyle = spinner.pie[i].fcolor;
-		spinner.settings.ctx.font = spinner.fixed.textOffset + 'px Calibri';
+		spinner.settings.ctx.font = spinner.fixed.textOffset + 'px sans-serif';
 
 		spinner.settings.ctx.save();
 		spinner.settings.ctx.translate(setX, setY);
