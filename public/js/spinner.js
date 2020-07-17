@@ -134,7 +134,7 @@ spinner.drawCenter = (start) => {
 	spinner.settings.dctx.fill();
 	spinner.settings.dctx.closePath();
 
-	spinner.drawDongle(start)
+	spinner.drawDongle(start);
 };
 
 spinner.drawDongle = (start) => {
@@ -324,7 +324,7 @@ spinner.startRandomSpin = () => {
 			next.start = current.start + current.calculatedTime;
 		}
 	}
-	const timeBase = times.reduce((sum, current) => sum + current.calculatedTime, 0);;
+	const timeBase = times.reduce((sum, current) => sum + current.calculatedTime, 0);
 	let totalTime = 3600 + timeBase;
 
 	const initialBackstepRandom = spinner.getRandomArbitrary(1, 10);

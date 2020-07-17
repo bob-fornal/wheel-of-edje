@@ -9,7 +9,7 @@ winner.init = (doc = document) => {
         prizeAdditional: doc.querySelector('#prize-additional-information'),
         prizeAdditionalNeeded: doc.querySelector('.prize-additional-information'),
         who: doc.querySelector('#prize-who')
-    }
+    };
 };
 
 winner.getActivePerson = (activePerson) => {

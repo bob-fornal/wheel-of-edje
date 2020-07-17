@@ -137,7 +137,7 @@ describe('winner', () => {
     });
 
     it('expects "handlePerson" to handle an active person', () => {
-        const data = { text: 'prize', additionalText: 'additional' }
+        const data = { text: 'prize', additionalText: 'additional' };
         spinner.state.activePerson = { prize: null, additional: null };
         spyOn(menu, 'clearActivePerson').and.stub();
         spyOn(storage, 'saveGroup').and.stub();

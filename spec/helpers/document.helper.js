@@ -77,7 +77,7 @@ doc.handleDocumentObjectCreation = () => {
             obj.classList.add(className);
         }
         return result;
-    }
+    };
 
     return obj;
 };

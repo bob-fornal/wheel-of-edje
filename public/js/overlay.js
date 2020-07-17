@@ -41,7 +41,7 @@ overlay.getPointXY = (angle, cx, cy, radius) => {
     var x = cx + radius * Math.cos(angle * spinner.fixed.PI / 180);
     var y = cy + radius * Math.sin(angle * spinner.fixed.PI / 180);
     return { x, y };
-}
+};
 
 overlay.drawLightGlare = ({
     ctx,

@@ -120,7 +120,7 @@ menu.seePrizes = (event, spin = spinner, doc = document) => {
     prizes.innerHTML = '';
     for (let i = 0, len = spin.group.length; i < len; i++) {
         if (spin.group[i].enabled === true) {
-            menu.appendPrize(prizes, spin.group[i], doc)
+            menu.appendPrize(prizes, spin.group[i], doc);
         }
     }
     menu.toggleGroup();
@@ -215,7 +215,7 @@ menu.handleGroupChange = (event = null) => {
             const divNode = document.createElement('div');
             divNode.classList.add('panel-active');
 
-            const inputNode = document.createElement('input')
+            const inputNode = document.createElement('input');
             inputNode.type = 'checkbox';
             inputNode.checked = spinner.group[i].enabled;
             inputNode.id = spinner.group[i].person;
@@ -256,9 +256,9 @@ menu.addListOfPanels = (node) => {
 
     for (let i = 0, len = spinner.pie.length; i < len; i++) {
         const divNode = document.createElement('div');
-        divNode.classList.add('panel-active')
+        divNode.classList.add('panel-active');
 
-        const inputNode = document.createElement('input')
+        const inputNode = document.createElement('input');
         inputNode.type = 'checkbox';
         inputNode.checked = spinner.pie[i].enabled;
         inputNode.id = spinner.pie[i].text;
