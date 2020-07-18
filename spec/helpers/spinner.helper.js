@@ -6,7 +6,7 @@ spin.init = () => {
         winnerOpen: false,
         activePerson: null
     };
-    spin.mock.group = [{ person: 'Bob' }];
+    spin.mock.group = [{ name: 'Bob' }];
 };
 
 spin.mock = {
@@ -15,7 +15,7 @@ spin.mock = {
         activePerson: null,
         activeSound: null
     },
-    group: [{ person: 'Bob' }]
+    group: [{ name: 'Bob' }]
 };
 
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {

@@ -39,6 +39,36 @@ storage.init = () => {
     storage.clearLoader();
 };
 
+storage.upgrades = {};
+
+storage.upgrades.check = (type, data) => {
+    switch(type) {
+        case 'group':
+            data = storage.upgrades.handlePersonToName(data);
+            break;
+    }
+
+    return data;
+};
+
+storage.upgrades.handlePersonToName = (data) => {
+    let upgradeOccurred = false;
+
+    data.forEach((individual => {
+        if ('person' in individual) {
+            upgradeOccurred = true;
+            individual.name = individual.person;
+            delete individual.person;
+        }
+    }));
+
+    if (upgradeOccurred === true) {
+        storage.saveGroup(data);
+    }
+
+    return data;
+};
+
 storage.clearLoader = () => {
     setTimeout(() => {
         const loader = document.querySelector('.loader');
@@ -65,10 +95,12 @@ storage.savePie = (data, key = 'pie-default') => {
 
 storage.getGroup = (key = 'group-default') => {
     const data = storage.store.getItem(key);
+    
     if (data === null) {
         return storage.saveGroup(storage.groupDefault, key);
     }
-    return JSON.parse(data);
+    
+    return storage.upgrades.check('group', JSON.parse(data));
 };
 
 storage.saveGroup = (data, key = 'group-default') => {

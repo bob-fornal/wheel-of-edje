@@ -22,11 +22,11 @@
         { "data": 10, "text": "Lunch on EDJE", "additionalText": "plus 1, to $50", "color": "#6da438", "fcolor": "#ffffff", "enabled": true }
     ],
     "group-default": [
-        { "person": "Bob", "enabled": true, "prize": null, "additional": null },
-        { "person": "Jason", "enabled": true, "prize": null, "additional": null },
-        { "person": "Erica", "enabled": true, "prize": null, "additional": null },
-        { "person": "Bill", "enabled": true, "prize": null, "additional": null },
-        { "person": "Dave", "enabled": true, "prize": null, "additional": null },
-        { "person": "Wendy", "enabled": true, "prize": null, "additional": null }
+        { "name": "Bob", "enabled": true, "prize": null, "additional": null },
+        { "name": "Jason", "enabled": true, "prize": null, "additional": null },
+        { "name": "Erica", "enabled": true, "prize": null, "additional": null },
+        { "name": "Bill", "enabled": true, "prize": null, "additional": null },
+        { "name": "Dave", "enabled": true, "prize": null, "additional": null },
+        { "name": "Wendy", "enabled": true, "prize": null, "additional": null }
     ]
 }

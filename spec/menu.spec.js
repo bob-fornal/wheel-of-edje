@@ -184,7 +184,7 @@ describe('menu', () => {
     });
 
     it('expects "showActivePerson" to add the name and toggle the person view', () => {
-        spinner.state.activePerson = { person: 'Bob' };
+        spinner.state.activePerson = { name: 'Bob' };
         spyOn(menu, 'toggleGroup').and.stub();
 
         menu.showActivePerson(spinner, document);
@@ -198,9 +198,9 @@ describe('menu', () => {
         const event = {};
         spinner.state.activePerson = null;
         spinner.group = [
-            { person: 'One' },
-            { person: 'Two' },
-            { person: 'Bob' }
+            { name: 'One' },
+            { name: 'Two' },
+            { name: 'Bob' }
         ];
         spyOn(menu, 'showActivePerson').and.stub();
 
@@ -290,13 +290,13 @@ describe('menu', () => {
         const prizes = {
             appendChild: () => {}
         };
-        const datum = { person: 'Bob', prize: 'prize', additional: '' };
+        const datum = { name: 'Bob', prize: 'prize', additional: '' };
         spyOn(menu, 'getPrizeString').and.returnValue('prize string');
 
         menu.appendPrize(prizes, datum, document);
         expect(document.getElement('UNDEFINED-0').classList.list).toEqual(['prize-row']);
         expect(document.getElement('UNDEFINED-1').classList.list).toEqual(['name']);
-        expect(document.getElement('UNDEFINED-1').innerText).toEqual(datum.person);
+        expect(document.getElement('UNDEFINED-1').innerText).toEqual(datum.name);
         expect(document.getElement('UNDEFINED-2').classList.list).toEqual(['prize-won']);
         expect(document.getElement('UNDEFINED-2').innerText).toEqual('prize string');
     });
@@ -327,7 +327,7 @@ describe('menu', () => {
         const groupMenu = {
             appendChild: () => {}
         };
-        const datum = { person: 'Bob', prize: null };
+        const datum = { name: 'Bob', prize: null };
 
         menu.appendIndividual(groupMenu, datum, document);
         const node = document.getElement('UNDEFINED-0');
@@ -340,7 +340,7 @@ describe('menu', () => {
         const groupMenu = {
             appendChild: () => {}
         };
-        const datum = { person: 'Bob', prize: 'prize' };
+        const datum = { name: 'Bob', prize: 'prize' };
 
         menu.appendIndividual(groupMenu, datum, document);
         const node = document.getElement('UNDEFINED-0');

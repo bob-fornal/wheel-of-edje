@@ -50,7 +50,7 @@ menu.clearActivePerson = (spin = spinner, doc = document) => {
 
 menu.showActivePerson = (spin = spinner, doc = document) => {
     const active = doc.querySelector('.group-active-person');
-    active.innerText = spin.state.activePerson.person;
+    active.innerText = spin.state.activePerson.name;
     active.classList.remove('hidden');
 
     menu.toggleGroup();
@@ -59,7 +59,7 @@ menu.showActivePerson = (spin = spinner, doc = document) => {
 menu.handleIndividualSelection = (name, event, spin = spinner) => {
     let individual = null;
     for (let i = 0, len = spin.group.length; i < len; i++) {
-        if (spin.group[i].person === name) {
+        if (spin.group[i].name === name) {
             individual = spin.group[i];
             break;
         }
@@ -102,7 +102,7 @@ menu.appendPrize = (prizes, datum, doc = document) => {
 
     const nameNode = doc.createElement('div');
     nameNode.classList.add('name');
-    nameNode.innerText = datum.person;
+    nameNode.innerText = datum.name;
 
     const prizeNode = doc.createElement('div');
     prizeNode.classList.add('prize-won');
@@ -135,10 +135,10 @@ menu.closePrizes = (doc = document) => {
 menu.appendIndividual = (groupMenu, datum, doc = document) => {
     const divNode = doc.createElement('div');
     divNode.classList.add('individual');
-    divNode.innerText = datum.person;
+    divNode.innerText = datum.name;
 
     if (datum.prize === null) {
-        divNode.onclick = menu.handleIndividualSelection.bind(this, datum.person);
+        divNode.onclick = menu.handleIndividualSelection.bind(this, datum.name);
     } else {
         divNode.classList.add('won');
     }
@@ -218,14 +218,14 @@ menu.handleGroupChange = (event = null) => {
             const inputNode = document.createElement('input');
             inputNode.type = 'checkbox';
             inputNode.checked = spinner.group[i].enabled;
-            inputNode.id = spinner.group[i].person;
+            inputNode.id = spinner.group[i].name;
             inputNode.name = 'groups';
             inputNode.value = i;
             inputNode.onchange = menu.handleGroupSelection;
     
             const labelNode = document.createElement('label');
             labelNode.setAttribute('for', 'groups'); 
-            labelNode.innerText = spinner.group[i].person;
+            labelNode.innerText = spinner.group[i].name;
     
             divNode.appendChild(inputNode);
             divNode.appendChild(labelNode);

@@ -38,8 +38,8 @@ edit.panelPattern = {
     enabled: { skip: true, text: 'Enabled', type: 'boolean', default: true }
 };
 edit.groupPattern = {
-    order: ['person'],
-    person: { skip: false, text: 'Name', type: 'string', default: '' },
+    order: ['name'],
+    name: { skip: false, text: 'Name', type: 'string', default: '' },
     prize: { skip: true, text: 'Prize', type: 'string', default: null },
     additional: { skip: true, text: 'Additional', type: 'string', default: null },
     enabled: { skip: true, text: 'Enabled', type: 'boolean', default: true }
@@ -568,8 +568,8 @@ edit.saveAllViaCSV = () => {
         let structure = {};
         for (const property in edit.pattern) {
             if (property !== 'order') {
-                if (property === 'person') {
-                    structure['person'] = adjustedValue;
+                if (property === 'name') {
+                    structure.name = adjustedValue;
                 } else {
                     structure[property] = edit.pattern[property].default;
                 }
@@ -592,7 +592,7 @@ edit.showCSV = () => {
         if (i !== 0) {
             value += ",\n";
         }
-        value += edit.data[i].person;
+        value += edit.data[i].name;
     }
 
     const inputDiv = document.createElement('div');

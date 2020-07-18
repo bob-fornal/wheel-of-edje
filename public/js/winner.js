@@ -41,13 +41,13 @@ winner.handlePerson = (data, spin = spinner, defMenu = menu, store = storage) =>
 };
 
 winner.open = (data, spin = spinner) => {
-    let person;
+    let name;
     if (!!spin.state.activePerson) {
-        person = spin.state.activePerson.person;
+        name = spin.state.activePerson.name;
     } else {
-        person = null;
+        name = null;
     }
-    winner.setText(data, person);
+    winner.setText(data, name);
 
     spin.state.winnerOpen = true;
     winner.queries.wrapper.classList.remove('hidden');
