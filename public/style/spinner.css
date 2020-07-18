@@ -23,6 +23,18 @@ html, body {
     z-index: 50000;
 }
 
+.title-left {
+    color: #6ca437;
+    position: fixed;
+    left: 90px;
+    top: 480px;
+    font-family: wheel-of-fortune;
+    font-size: 36pt;
+    transform: rotate(-90deg);
+    transform-origin: bottom left;
+}
+
+
 .background-image {
     background-image: url('../images/eddie.png');
     background-repeat: no-repeat;
