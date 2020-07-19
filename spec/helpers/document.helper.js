@@ -25,6 +25,22 @@ doc.mock = {
         doc.elements.created++;
         return creation;
     },
+    getElementById: (name) => {
+        const id = `id-${ name }`;
+        if (id in doc.elements) {
+            if (doc.mock.configurationFn !== null) {
+                doc.mock.configurationFn(doc.elements[id]);
+                doc.mock.configurationFn = null;
+            }
+            return doc.elements[id];
+        }
+        doc.elements[id] = doc.handleDocumentObjectCreation(id);
+        if (doc.mock.configurationFn !== null) {
+            doc.mock.configurationFn(doc.elements[id]);
+            doc.mock.configurationFn = null;
+        }
+        return doc.elements[id];
+    },
     querySelectorAll: (name) => {
         if (doc.mock.configurationFn !== null) {
             const result = doc.mock.configurationFn();
@@ -35,6 +51,13 @@ doc.mock = {
         return [];
     },
     querySelector: (name) => {
+        if (name in doc.elements) {
+            if (doc.mock.configurationFn !== null) {
+                doc.mock.configurationFn(doc.elements[name]);
+                doc.mock.configurationFn = null;
+            }
+            return doc.elements[name];
+        }
         doc.elements[name] = doc.handleDocumentObjectCreation(name);
         if (doc.mock.configurationFn !== null) {
             doc.mock.configurationFn(doc.elements[name]);
@@ -70,13 +93,12 @@ doc.handleDocumentObjectCreation = (name) => {
     };
     obj.classList.toggle = (className) => {
         let result = false;
-        let list = obj.classList.list;
-        if (list.includes(className) === true) {
+        if (obj.classList.list.includes(className)) {
             result = false;
-            obj.classList.remove(className);
+            obj.classList.list = obj.classList.list.filter(e => e !== className);
         } else {
             result = true;
-            obj.classList.add(className);
+            obj.classList.list.push(className);
         }
         return result;
     };

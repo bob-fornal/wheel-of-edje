@@ -37,6 +37,7 @@ storage.configureStorageDefaultData = () => {
 storage.init = () => {
     storage.configureStorageDefaultData();
     storage.clearLoader();
+    menu.init();
 };
 
 storage.upgrades = {};

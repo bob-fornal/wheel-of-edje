@@ -20,7 +20,13 @@ describe('menu', () => {
     });
 
     it('expects menu to exist', () => {
+        menu.init();
+
         expect(menu).toBeDefined();
+
+        expect(menu.state).toBeDefined();
+        expect(menu.state.initialRun).toEqual(true);
+
         expect(menu.targetContains).toEqual(jasmine.any(Function));
         expect(menu.toggle).toEqual(jasmine.any(Function));
         expect(menu.setSoundState).toEqual(jasmine.any(Function));
@@ -34,9 +40,12 @@ describe('menu', () => {
         expect(menu.displayGroupInMenu).toEqual(jasmine.any(Function));
         expect(menu.setGlobalGroupState).toEqual(jasmine.any(Function));
         expect(menu.handleGroupSelection).toEqual(jasmine.any(Function));
+        expect(menu.isGroupChecked).toEqual(jasmine.any(Function));
+        expect(menu.appendGroupIndividual).toEqual(jasmine.any(Function));
         expect(menu.handleGroupChange).toEqual(jasmine.any(Function));
         expect(menu.watchGroupSpin).toEqual(jasmine.any(Function));
         expect(menu.handlePanelSelection).toEqual(jasmine.any(Function));
+        expect(menu.appendPanel).toEqual(jasmine.any(Function));
         expect(menu.addListOfPanels).toEqual(jasmine.any(Function));
         expect(menu.toggleHelp).toEqual(jasmine.any(Function));
     });
@@ -114,7 +123,7 @@ describe('menu', () => {
         menu.toggle(event, spinner, document);
         const wrapper = document.getElement('.menu-wrapper');
         expect(spinner.state.menu).toEqual(false);
-        expect(wrapper.classList.list).toEqual(['hidden']);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(false);
         expect(menu.setSoundState).toHaveBeenCalled();
         expect(menu.addListOfPanels).toHaveBeenCalled();
         expect(menu.watchGroupSpin).toHaveBeenCalled();
@@ -132,7 +141,7 @@ describe('menu', () => {
         menu.toggle(event, spinner, document);
         const wrapper = document.getElement('.menu-wrapper');
         expect(spinner.state.menu).toEqual(true);
-        expect(wrapper.classList.list).toEqual(['hidden']);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(true);
         expect(menu.setSoundState).not.toHaveBeenCalled();
         expect(menu.addListOfPanels).not.toHaveBeenCalled();
         expect(menu.watchGroupSpin).not.toHaveBeenCalled();
@@ -179,7 +188,7 @@ describe('menu', () => {
         menu.clearActivePerson(spinner, document);
         const active = document.getElement('.group-active-person');
         expect(active.innerText).toEqual('');
-        expect(active.classList.list).toEqual(['hidden']);
+        expect(active.classList.list.includes('hidden')).toEqual(true);
         expect(spinner.state.activePerson).toBeNull();
     });
 
@@ -189,7 +198,7 @@ describe('menu', () => {
 
         menu.showActivePerson(spinner, document);
         const groupActivePerson = document.getElement('.group-active-person');
-        expect(groupActivePerson.classList.list).not.toEqual(['hidden']);
+        expect(groupActivePerson.classList.list.includes('hidden')).toEqual(false);
         expect(menu.toggleGroup).toHaveBeenCalled();
     });
 
@@ -313,14 +322,14 @@ describe('menu', () => {
 
         menu.seePrizes(event, spinner, document);
         const wrapper = document.getElement('.prizes-wrapper');
-        expect(wrapper.classList.list).not.toEqual(['hidden']);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(false);
         expect(menu.appendPrize.calls.count()).toEqual(2);
     });
 
     it('expects "closePrizes" to add hidden class to the wrapper', () => {
         menu.closePrizes(document);
         const wrapper = document.getElement('.prizes-wrapper');
-        expect(wrapper.classList.list).toEqual(['hidden']);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(true);
     });
 
     it('expects "appendIndividual" to create a person node with no prize', () => {
@@ -403,4 +412,216 @@ describe('menu', () => {
         expect(wrapper.classList.list.includes('hidden')).toEqual(true);
     });
 
+    it('expects "setGlobalGroupState" to initially use state to set appropriate icon visibility', () => {
+        const state = true;
+        menu.state.initialRun = true;
+
+        menu.setGlobalGroupState(state, spinner, document);
+        const offIcon = document.getElement('.group-icon.disabled');
+        const onIcon = document.getElement('.group-icon.enabled');
+        expect(offIcon.classList.list.includes('hidden')).toEqual(false);
+        expect(onIcon.classList.list.includes('hidden')).toEqual(false);
+        expect(menu.state.initialRun).toEqual(false);
+    });
+
+    it('expects "setGlobalGroupState" to use state to set appropriate icon visibility', () => {
+        let state = true;
+        menu.state.initialRun = true;
+        menu.setGlobalGroupState(state, spinner, document);
+        const offIcon = document.getElement('.group-icon.disabled');
+        const onIcon = document.getElement('.group-icon.enabled');
+
+        state = false;
+        menu.setGlobalGroupState(state, spinner, document);
+        expect(offIcon.classList.list.includes('hidden')).toEqual(true);
+        expect(onIcon.classList.list.includes('hidden')).toEqual(true);
+        expect(menu.state.initialRun).toEqual(false);
+        expect(spinner.state.groupMode).toEqual(false);
+
+        state = true;
+        menu.setGlobalGroupState(state, spinner, document);
+        expect(offIcon.classList.list.includes('hidden')).toEqual(false);
+        expect(onIcon.classList.list.includes('hidden')).toEqual(false);
+        expect(menu.state.initialRun).toEqual(false);
+        expect(spinner.state.groupMode).toEqual(true);
+    });
+
+    it('expects "handleGroupSelection" to change individual state and save group', () => {
+        const eventUnchecked = { target: { value: "1", checked: false } };
+        const eventChecked = { target: { value: "1", checked: true } };
+        spinner.group = [
+            { enabled: true },
+            { enabled: true },
+            { enabled: true }
+        ];
+        spyOn(storage, 'saveGroup').and.stub();
+
+        menu.handleGroupSelection(eventUnchecked, spinner, storage);
+        expect(spinner.group[1].enabled).toEqual(false);
+        expect(storage.saveGroup).toHaveBeenCalled();
+
+        menu.handleGroupSelection(eventChecked, spinner, storage);
+        expect(spinner.group[1].enabled).toEqual(true);
+        expect(storage.saveGroup).toHaveBeenCalled();
+    });
+
+    it('expects "isGroupChecked" to check spinner state when event is null', () => {
+        const event = null;
+
+        spinner.state.groupMode = false;
+        const result1 = menu.isGroupChecked(event, spinner);
+        expect(result1).toEqual(false);
+
+        spinner.state.groupMode = true;
+        const result2 = menu.isGroupChecked(event, spinner);
+        expect(result2).toEqual(true);
+    });
+
+    it('expects "isGroupChecked" to check event when it has content', () => {
+        let event = { target: { checked: false } };
+
+        const result1 = menu.isGroupChecked(event, spinner);
+        expect(result1).toEqual(false);
+
+        event.target.checked = true;
+        const result2 = menu.isGroupChecked(event, spinner);
+        expect(result2).toEqual(true);
+    });
+
+    it('expects "appendGroupIndividual" to add proper content to content', () => {
+        const content = { appendChild: () => {} };
+        const individual = { enabled: true, name: 'Bob' };
+        const index = 0;
+        spyOn(content, 'appendChild').and.stub();
+
+        menu.appendGroupIndividual(content, individual, index, document);
+        const div = document.getElement('UNDEFINED-0');
+        const input = document.getElement('UNDEFINED-1');
+        const label = document.getElement('UNDEFINED-2');
+        expect(div.classList.list.includes('panel-active'));
+        expect(input.type).toEqual('checkbox');
+        expect(input.checked).toEqual(individual.enabled);
+        expect(input.id).toEqual(individual.name);
+        expect(input.name).toEqual('groups');
+        expect(input.value).toEqual(index);
+        expect(input.onchange).toEqual(jasmine.any(Function));
+        expect(label.attributes.for).toEqual('groups');
+        expect(label.innerText).toEqual(individual.name);
+        expect(content.appendChild).toHaveBeenCalled();
+    });
+
+    it('expects "handleGroupChange" to set group mode true and add group', () => {
+        const event = {};
+        spinner.group = [1, 2, 3];
+        spyOn(menu, 'isGroupChecked').and.returnValue(true);
+        spyOn(menu, 'setGlobalGroupState').and.stub();
+        spyOn(menu, 'appendGroupIndividual').and.stub();
+
+        menu.handleGroupChange(event, spinner, document);
+        const content = document.getElement('.panel-group-content');
+        expect(spinner.state.groupMode).toEqual(true);
+        expect(content.innerHTML).toEqual('');
+        expect(menu.setGlobalGroupState).toHaveBeenCalled();
+        expect(menu.appendGroupIndividual).toHaveBeenCalledTimes(3);
+    });
+
+    it('expects "handleGroupChange" to set group mode false and not add group', () => {
+        const event = {};
+        spinner.group = [1, 2, 3];
+        spyOn(menu, 'isGroupChecked').and.returnValue(false);
+        spyOn(menu, 'setGlobalGroupState').and.stub();
+        spyOn(menu, 'appendGroupIndividual').and.stub();
+
+        menu.handleGroupChange(event, spinner, document);
+        const content = document.getElement('.panel-group-content');
+        expect(spinner.state.groupMode).toEqual(false);
+        expect(content.innerHTML).toEqual('');
+        expect(menu.setGlobalGroupState).toHaveBeenCalled();
+        expect(menu.appendGroupIndividual).not.toHaveBeenCalledTimes(3);
+    });
+
+    it('expect "watchGroupSpin" to connect the element and handleGRoupChange function', () => {
+        menu.watchGroupSpin(document);
+        const selector = document.getElementById('group');
+        expect(selector.onchange).toEqual(jasmine.any(Function));
+    });
+
+    it('expects "handlePanelSelection" to get and save panel state, then reinitialize the spinner', () => {
+        const index = 1;
+        const state = true;
+        const event = { target: { value: index, checked: state } };
+        spinner.pie = [
+            { enabled: false },
+            { enabled: false },
+            { enabled: false }
+        ];
+        spyOn(storage, 'savePie').and.stub();
+        spyOn(spinner, 'init').and.stub();
+
+        menu.handlePanelSelection(event, spinner, storage);
+        expect(spinner.pie[index].enabled).toEqual(state);
+        expect(storage.savePie).toHaveBeenCalled();
+        expect(spinner.init).toHaveBeenCalled();
+    });
+
+    it('expects "appendPanel" to add the correct dom elements', () => {
+        const content = { appendChild: () => {} };
+        const panel = { enabled: true, text: 'panel' };
+        const index = 1;
+        spyOn(content, 'appendChild').and.stub();
+
+        menu.appendPanel(content, panel, index, document);
+        const node = document.getElement('UNDEFINED-0');
+        const input = document.getElement('UNDEFINED-1');
+        const label = document.getElement('UNDEFINED-2');
+        expect(node.classList.list.includes('panel-active')).toEqual(true);
+        expect(input.type).toEqual('checkbox');
+        expect(input.checked).toEqual(panel.enabled);
+        expect(input.id).toEqual(panel.text);
+        expect(input.name).toEqual('panels');
+        expect(input.value).toEqual(index);
+        expect(input.onchange).toEqual(jasmine.any(Function));
+        expect(label.attributes.for).toEqual('panels');
+        expect(label.innerText).toEqual(panel.text);
+    });
+
+    it('expects "addListOfPanels" to do just that', () => {
+        spinner.pie = [1, 2, 3, 4, 5];
+        spyOn(menu, 'appendPanel').and.stub();
+
+        menu.addListOfPanels(spinner, document);
+        const content = document.getElement('.panel-content');
+        expect(content.innerHTML).toEqual('');
+        expect(menu.appendPanel).toHaveBeenCalledTimes(5);
+    });
+
+    it('expects "toggleHelp" to change help state and toggle help visible', () => {
+        const event = null;
+        spinner.state.spinning = false;
+
+        menu.toggleHelp(event, spinner, document);
+        const wrapper = document.getElement('.help-wrapper');
+        expect(spinner.state.help).toEqual(true);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(true);
+    });
+
+    it('expects "toggleHelp" to break out if spinning', () => {
+        const event = null;
+        spinner.state.spinning = true;
+
+        menu.toggleHelp(event, spinner, document);
+        const wrapper = document.getElement('.help-wrapper');
+        expect(spinner.state.help).toEqual(false);
+        expect(wrapper).toBeUndefined();
+    });
+
+    it('expects "toggleHelp" to break out if event target does not contains help-icon or -wrapper', () => {
+        const event = { target: { classList: { contains: () => false } } };
+        spinner.state.spinning = false;
+
+        menu.toggleHelp(event, spinner, document);
+        const wrapper = document.getElement('.help-wrapper');
+        expect(spinner.state.help).toEqual(false);
+        expect(wrapper).toBeUndefined();
+    });
 });

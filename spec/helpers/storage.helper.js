@@ -13,7 +13,9 @@ store.mock = {
 
     saveGroup: (group) => {
         store.data.group = group;
-    }
+    },
+
+    savePie: () => {}
 };
 
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {

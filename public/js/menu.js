@@ -1,5 +1,13 @@
 
-const menu = {};
+const menu = {
+    state: {
+        initialRun: true
+    }
+};
+
+menu.init = () => {
+    menu.state.initialRun = true;
+};
 
 menu.targetContains = (target, contains) => {
     let found = false;
@@ -175,118 +183,128 @@ menu.displayGroupInMenu = (spin = spinner, doc = document) => {
     groupMenuWrapper.classList.toggle('hidden');
 };
 
-menu.setGlobalGroupState = (state) => {
-    const groupOffIcon = document.querySelector('.group-icon.disabled');
-    const groupOnIcon = document.querySelector('.group-icon.enabled');
+menu.setGlobalGroupState = (state, spin = spinner, doc = document) => {
+    const groupOffIcon = doc.querySelector('.group-icon.disabled');
+    const groupOnIcon = doc.querySelector('.group-icon.enabled');
 
-    spinner.state.groupMode = state;
-    if (state === true) {
-        groupOffIcon.classList.add('hidden');
-        groupOnIcon.classList.remove('hidden');
+    spin.state.groupMode = state;
+    if (menu.state.initialRun === true) {
+        menu.state.initialRun = false;
     } else {
-        groupOffIcon.classList.remove('hidden');
-        groupOnIcon.classList.add('hidden');
+        groupOffIcon.classList.toggle('hidden');
+        groupOnIcon.classList.toggle('hidden');    
     }
 };
 
-menu.handleGroupSelection = (event) => {
+menu.handleGroupSelection = (event, spin = spinner, store = storage) => {
     const index = +event.target.value;
     const state = event.target.checked;
 
-    spinner.group[index].enabled = state;
-    storage.saveGroup(spinner.group);
+    spin.group[index].enabled = state;
+    store.saveGroup(spin.group);
 };
 
-menu.handleGroupChange = (event = null) => {
-    const groupChecked = (event === null) ? spinner.state.groupMode : event.target.checked;
-    spinner.state.groupMode = groupChecked;
+menu.isGroupChecked = (event = null, spin = spinner) => {
+    return (event === null) ? spin.state.groupMode : event.target.checked;
+};
+
+menu.appendGroupIndividual = (content, individual, index, doc = document) => {
+    const divNode = doc.createElement('div');
+    divNode.classList.add('panel-active');
+
+    const inputNode = doc.createElement('input');
+    inputNode.type = 'checkbox';
+    inputNode.checked = individual.enabled;
+    inputNode.id = individual.name;
+    inputNode.name = 'groups';
+    inputNode.value = index;
+    inputNode.onchange = menu.handleGroupSelection;
+
+    const labelNode = doc.createElement('label');
+    labelNode.setAttribute('for', 'groups'); 
+    labelNode.innerText = individual.name;
+
+    divNode.appendChild(inputNode);
+    divNode.appendChild(labelNode);
+
+    content.appendChild(divNode);
+};
+
+menu.handleGroupChange = (event = null, spin = spinner, doc = document) => {
+    const groupChecked = menu.isGroupChecked(event);
+    spin.state.groupMode = groupChecked;
 
     if (event === null) {
-        const groupSelector = document.getElementById('group');
+        const groupSelector = doc.getElementById('group');
         groupSelector.checked = groupChecked;    
     }
 
-    const content = document.querySelector('.panel-group-content');
+    const content = doc.querySelector('.panel-group-content');
     content.innerHTML = '';
 
     menu.setGlobalGroupState(groupChecked);
     if (groupChecked === true) {
-        for (let i = 0, len = spinner.group.length; i < len; i++) {
-            const divNode = document.createElement('div');
-            divNode.classList.add('panel-active');
-
-            const inputNode = document.createElement('input');
-            inputNode.type = 'checkbox';
-            inputNode.checked = spinner.group[i].enabled;
-            inputNode.id = spinner.group[i].name;
-            inputNode.name = 'groups';
-            inputNode.value = i;
-            inputNode.onchange = menu.handleGroupSelection;
-    
-            const labelNode = document.createElement('label');
-            labelNode.setAttribute('for', 'groups'); 
-            labelNode.innerText = spinner.group[i].name;
-    
-            divNode.appendChild(inputNode);
-            divNode.appendChild(labelNode);
-
-            content.appendChild(divNode);
+        for (let i = 0, len = spin.group.length; i < len; i++) {
+            menu.appendGroupIndividual(content, spin.group[i], i);
         }    
     }
 };
 
-menu.watchGroupSpin = () => {
-    const groupSelector = document.getElementById('group');
+menu.watchGroupSpin = (doc = document) => {
+    const groupSelector = doc.getElementById('group');
     groupSelector.onchange = menu.handleGroupChange;
 };
 
-menu.handlePanelSelection = (event) => {
+menu.handlePanelSelection = (event, spin = spinner, store = storage) => {
     const index = event.target.value;
     const state = event.target.checked;
 
-    spinner.pie[index].enabled = state;
-    storage.savePie(spinner.pie);
+    spin.pie[index].enabled = state;
+    store.savePie(spin.pie);
     
-    spinner.init();
+    spin.init();
 };
 
-menu.addListOfPanels = (node) => {
-    const content = document.getElementsByClassName('panel-content')[0];
+menu.appendPanel = (content, panel, index, doc = document) => {
+    const divNode = doc.createElement('div');
+    divNode.classList.add('panel-active');
+
+    const inputNode = doc.createElement('input');
+    inputNode.type = 'checkbox';
+    inputNode.checked = panel.enabled;
+    inputNode.id = panel.text;
+    inputNode.name = 'panels';
+    inputNode.value = index;
+    inputNode.onchange = menu.handlePanelSelection;
+
+    const labelNode = doc.createElement('label');
+    labelNode.setAttribute('for', 'panels'); 
+    labelNode.innerText = panel.text;
+
+    divNode.appendChild(inputNode);
+    divNode.appendChild(labelNode);
+
+    content.appendChild(divNode);
+};
+
+menu.addListOfPanels = (spin = spinner, doc = document) => {
+    const content = doc.querySelector('.panel-content');
     content.innerHTML = '';
 
-    for (let i = 0, len = spinner.pie.length; i < len; i++) {
-        const divNode = document.createElement('div');
-        divNode.classList.add('panel-active');
-
-        const inputNode = document.createElement('input');
-        inputNode.type = 'checkbox';
-        inputNode.checked = spinner.pie[i].enabled;
-        inputNode.id = spinner.pie[i].text;
-        inputNode.name = 'panels';
-        inputNode.value = i;
-        inputNode.onchange = menu.handlePanelSelection;
-
-        const labelNode = document.createElement('label');
-        labelNode.setAttribute('for', 'panels'); 
-        labelNode.innerText = spinner.pie[i].text;
-
-        divNode.appendChild(inputNode);
-        divNode.appendChild(labelNode);
-
-        // Need Weight (data), Color, and Foreground color (fcolor)
-        content.appendChild(divNode);
+    for (let i = 0, len = spin.pie.length; i < len; i++) {
+        menu.appendPanel(content, spin.pie[i], i);
     }
 };
 
-menu.toggleHelp = (event = null) => {
+menu.toggleHelp = (event = null, spin = spinner, doc = document) => {
     const allow = ['help-icon', 'help-wrapper'];
-    if (spinner.state.spinning === true) return;
+    if (spin.state.spinning === true) return;
     if (event !== null && !menu.targetContains(event.target, allow)) return;
     
-    spinner.state.help = !spinner.state.help;
+    spin.state.help = !spin.state.help;
 
-    const help = document.querySelector('.help-wrapper');
-    const helpState = help.classList.toggle('hidden');
+    const help = doc.querySelector('.help-wrapper');
+    help.classList.toggle('hidden');
 };
 
 
