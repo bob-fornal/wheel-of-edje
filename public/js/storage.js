@@ -1,6 +1,6 @@
 
 const storage = {
-    store: window.localStorage,
+    store: null,
 
     pieDefault: [],
     groupDefault: [],
@@ -34,7 +34,9 @@ storage.configureStorageDefaultData = () => {
         });
 };
 
-storage.init = () => {
+storage.init = (win = window) => {
+    storage.store = win.localStorage;
+
     storage.configureStorageDefaultData();
     storage.clearLoader();
     menu.init();

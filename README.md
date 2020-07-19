@@ -6,11 +6,10 @@
 
 All other JavaScript files have appropriate unit tests.
 
-1. edit-page.js
-2. menu.js
-3. overlay.js
-4. spinner.js
-5. storage.js
+1. TODO: spinner.js (due to complexity of canvas, will test minimally)
+2. TODO: storage.js (due to complexity of mocking, will test minimally)
+3. overlay.js (due to complexity of canvas, will not test)
+4. TODO: edit-page.js
 
 ## Firebase
 

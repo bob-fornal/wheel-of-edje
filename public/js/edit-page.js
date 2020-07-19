@@ -83,7 +83,7 @@ edit.configuration = () => {
     
             edit.title.innerText = 'Group Individuals';
             edit.add.innerText = 'INDIVIDUAL';
-            edit.del.innerText = 'GROUP'
+            edit.del.innerText = 'GROUP';
             break;
         case 'panels':
             edit.pattern = edit.panelPattern;
@@ -157,7 +157,7 @@ edit.handleRowSelection = (event) => {
     if (edit.skipHandleRowSelection === true) {
         edit.skipHandleRowSelection = false;
         return;
-    };
+    }
     if (event.target.nodeName !== 'DIV') return;
 
     if (edit.selected !== null) {
@@ -186,7 +186,7 @@ edit.handleRowSelection = (event) => {
                 target: edit.selected.target.querySelector('.panel-preview')
             });
         }
-    };
+    }
 
     const target = event.currentTarget;
     edit.handleSimpleSelection(target);
@@ -385,9 +385,9 @@ edit.handleStringKeyup = (event) => {
             target: document.querySelector(`${ selector } .panel-additional-text`)
         });
     }
-}
+};
 
-edit.handleAddition = (event) => {
+edit.handleAddition = () => {
     const addition = document.querySelector('.element-addition');
     addition.classList.remove('hidden');
 };
@@ -474,7 +474,7 @@ edit.addColorNode = (div, subdata, key) => {
     div.appendChild(divContent);
 
     const inputContent = document.createElement('input');
-    inputContent.type = 'color'
+    inputContent.type = 'color';
     inputContent.value = subdata;
     inputContent.setAttribute('datatype', 'color-edit');
     inputContent.onchange = edit.handleColorChange;
@@ -614,7 +614,7 @@ edit.showCSV = () => {
     content.appendChild(saveDiv);
 };
 
-edit.init = async () => {
+edit.init = async() => {
     edit.configuration();
 
     if (edit.editAsOption === true) {
