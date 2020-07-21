@@ -27,7 +27,7 @@ menu.deactivateMenuAndGroup = () => {
 
 menu.toggle = (event = null, spin = spinner, doc = document) => {
     const allow = ['menu-icon', 'menu-wrapper'];
-    if (spin.spinning === true || menu.state.externalControl === true) return;
+    if (spin.state.spinning === true || menu.state.externalControl === true) return;
     if (event !== null && !menu.targetContains(event.target, allow)) return;
     
     spin.state.menu = !spin.state.menu;
@@ -92,7 +92,7 @@ menu.handleIndividualSelection = (name, event, spin = spinner) => {
 
 menu.toggleGroup = (event = null, spin = spinner) => {
     const allow = ['group-icon', 'group-menu-wrapper', 'clear-prizes', 'cancel'];
-    if (menu.state.externalControl === true) return;
+    if (spin.state.spinning === true || menu.state.externalControl === true) return;
     if (event !== null) {
         event.stopPropagation();
         event.preventDefault();
