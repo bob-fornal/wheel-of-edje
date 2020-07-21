@@ -40,7 +40,7 @@ winner.handlePerson = (data, spin = spinner, defMenu = menu, store = storage) =>
     }
 };
 
-winner.open = (data, spin = spinner) => {
+winner.open = (data, spin = spinner, defMenu = menu, ctrl = control) => {
     let name, index;
     if (!!spin.state.activePerson) {
         index = spin.state.activePersonIndex;
@@ -51,8 +51,8 @@ winner.open = (data, spin = spinner) => {
     }
     winner.setText(data, name);
 
-    if (menu.state.externalControl) {
-        control.spinner.winnerDisplay(index);
+    if (defMenu.state.externalControl) {
+        ctrl.spinner.winnerDisplay(index);
     }
 
     spin.state.winnerOpen = true;

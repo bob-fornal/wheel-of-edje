@@ -21,10 +21,6 @@ menu.targetContains = (target, contains) => {
     return found;
 };
 
-menu.deactivateMenuAndGroup = () => {
-
-};
-
 menu.toggle = (event = null, spin = spinner, doc = document) => {
     const allow = ['menu-icon', 'menu-wrapper'];
     if (spin.state.spinning === true || menu.state.externalControl === true) return;
@@ -69,7 +65,7 @@ menu.displayActivePerson = (spin = spinner, doc = document) => {
     active.classList.remove('hidden');
 };
 
-menu.showActivePerson = (spin = spinner, doc = document) => {
+menu.showActivePerson = () => {
     menu.displayActivePerson();
     menu.toggleGroup();
 };

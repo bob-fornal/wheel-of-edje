@@ -4,9 +4,10 @@ const doc = require('./helpers/document.helper');
 const spin = require('./helpers/spinner.helper');
 const store = require('./helpers/storage.helper');
 const menuHelper = require('./helpers/menu.helper');
+const ctrl = require('./helpers/control.helper');
 
 describe('winner', () => {
-    let spinner, storage, menu, document;
+    let spinner, storage, menu, document, control;
 
     beforeEach(() => {
         spin.init();
@@ -20,6 +21,9 @@ describe('winner', () => {
 
         doc.init();
         document = doc.mock;
+
+        ctrl.init();
+        control = ctrl.mock;
         
         winner.init(document);
     });
@@ -153,16 +157,38 @@ describe('winner', () => {
         const data = { text: 'prize', additionalText: '', color: 'color', fcolor: 'fcolor' };
         spinner.state.activePerson = null;
         spinner.state.winnerOpen = false;
+        menu.state.externalControl = false;
         spyOn(winner, 'setText').and.stub();
         spyOn(winner, 'handlePerson').and.stub();
+        spyOn(control.spinner, 'winnerDisplay').and.stub();
 
-        winner.open(data, spinner);
+        winner.open(data, spinner, menu, control);
         const wrapper = document.getElement('.winner-wrapper');
         expect(spinner.state.winnerOpen).toEqual(true);
         expect(wrapper.classList.list.includes('hidden')).toEqual(false);
 
         expect(winner.setText).toHaveBeenCalled();
         expect(winner.handlePerson).toHaveBeenCalled();
+        expect(control.spinner.winnerDisplay).not.toHaveBeenCalled();
+    });
+
+    it('expects "open" to configure winner modal open, notify external control, and change state', () => {
+        const data = { text: 'prize', additionalText: '', color: 'color', fcolor: 'fcolor' };
+        spinner.state.activePerson = null;
+        spinner.state.winnerOpen = false;
+        menu.state.externalControl = true;
+        spyOn(winner, 'setText').and.stub();
+        spyOn(winner, 'handlePerson').and.stub();
+        spyOn(control.spinner, 'winnerDisplay').and.stub();
+
+        winner.open(data, spinner, menu, control);
+        const wrapper = document.getElement('.winner-wrapper');
+        expect(spinner.state.winnerOpen).toEqual(true);
+        expect(wrapper.classList.list.includes('hidden')).toEqual(false);
+
+        expect(winner.setText).toHaveBeenCalled();
+        expect(winner.handlePerson).toHaveBeenCalled();
+        expect(control.spinner.winnerDisplay).toHaveBeenCalled();
     });
 
     it('expects "close" to configure winner modal closed and change state', () => {

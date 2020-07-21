@@ -5,6 +5,7 @@ spin.init = () => {
     spin.mock.state = {
         winnerOpen: false,
         activePerson: null,
+        activePersonIndex: -1,
         activeSound: null,
         spinning: false,
         help: false
@@ -17,6 +18,7 @@ spin.mock = {
     state: {
         winnerOpen: false,
         activePerson: null,
+        activePersonIndex: -1,
         activeSound: null,
         spinning: false,
         help: false

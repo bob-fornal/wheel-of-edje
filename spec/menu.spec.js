@@ -26,17 +26,23 @@ describe('menu', () => {
 
         expect(menu.state).toBeDefined();
         expect(menu.state.initialRun).toEqual(true);
+        expect(menu.state.externalControl).toEqual(false);
 
         expect(menu.targetContains).toEqual(jasmine.any(Function));
         expect(menu.toggle).toEqual(jasmine.any(Function));
         expect(menu.setSoundState).toEqual(jasmine.any(Function));
         expect(menu.clearActivePerson).toEqual(jasmine.any(Function));
+        expect(menu.displayActivePerson).toEqual(jasmine.any(Function));
         expect(menu.showActivePerson).toEqual(jasmine.any(Function));
         expect(menu.handleIndividualSelection).toEqual(jasmine.any(Function));
         expect(menu.toggleGroup).toEqual(jasmine.any(Function));
         expect(menu.clearPrizes).toEqual(jasmine.any(Function));
+        expect(menu.getPrizeString).toEqual(jasmine.any(Function));
+        expect(menu.appendPrize).toEqual(jasmine.any(Function));
         expect(menu.seePrizes).toEqual(jasmine.any(Function));
         expect(menu.closePrizes).toEqual(jasmine.any(Function));
+        expect(menu.appendIndividual).toEqual(jasmine.any(Function));
+        expect(menu.appendMenuItem).toEqual(jasmine.any(Function));
         expect(menu.displayGroupInMenu).toEqual(jasmine.any(Function));
         expect(menu.setGlobalGroupState).toEqual(jasmine.any(Function));
         expect(menu.handleGroupSelection).toEqual(jasmine.any(Function));
@@ -77,7 +83,7 @@ describe('menu', () => {
     it('expects "toggle" to do nothing if spinning', () => {
         const event = { target: {} };
         spyOn(menu, 'targetContains').and.returnValue(true);
-        spinner.spinning = true;
+        spinner.state.spinning = true;
         spinner.state.menu = true;
         spyOn(menu, 'setSoundState').and.stub();
         spyOn(menu, 'addListOfPanels').and.stub();
@@ -192,13 +198,21 @@ describe('menu', () => {
         expect(spinner.state.activePerson).toBeNull();
     });
 
-    it('expects "showActivePerson" to add the name and toggle the person view', () => {
+    it('expects "displayActivePerson" to add the name', () => {
         spinner.state.activePerson = { name: 'Bob' };
-        spyOn(menu, 'toggleGroup').and.stub();
+        spinner.state.activePersonIndex = 0;
 
-        menu.showActivePerson(spinner, document);
+        menu.displayActivePerson(spinner, document);
         const groupActivePerson = document.getElement('.group-active-person');
         expect(groupActivePerson.classList.list.includes('hidden')).toEqual(false);
+    });
+
+    it('expects "showActivePerson" to add the name and toggle the person view', () => {
+        spyOn(menu, 'displayActivePerson').and.stub();
+        spyOn(menu, 'toggleGroup').and.stub();
+
+        menu.showActivePerson();
+        expect(menu.displayActivePerson).toHaveBeenCalled();
         expect(menu.toggleGroup).toHaveBeenCalled();
     });
 

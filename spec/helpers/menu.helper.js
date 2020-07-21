@@ -4,6 +4,9 @@ let menuHelper = {};
 menuHelper.init = () => {};
 
 menuHelper.mock = {
+    state: {
+        externalControl: false
+    },
     clearActivePerson: () => {}
 };
 
