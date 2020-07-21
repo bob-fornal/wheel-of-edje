@@ -106,6 +106,7 @@ menu.toggleGroup = (event = null, spin = spinner) => {
 menu.clearPrizes = (event = null, spin = spinner, store = storage) => {
     for (let i = 0, len = spin.group.length; i < len; i++) {
         spin.group[i].prize = null;
+        spin.group[i].additional = null;
     }
     store.saveGroup(spin.group);
     menu.displayGroupInMenu();

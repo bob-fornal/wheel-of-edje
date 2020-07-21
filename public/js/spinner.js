@@ -159,7 +159,7 @@ spinner.show = (start, spin, display = true) => {
 	let lastend = start;
 	spinner.settings.ctx.clearRect(0, 0, spinner.settings.canvas.width, spinner.settings.canvas.height);
 	
-  	for (let i = 0; i < spinner.pie.length; i++) {
+	for (let i = 0; i < spinner.pie.length; i++) {
 		if (spinner.pie[i].enabled === false) continue;
 		const fraction = spinner.pie[i].data / spinner.pieTotal;
 
@@ -210,6 +210,8 @@ spinner.show = (start, spin, display = true) => {
 };
 
 spinner.fillUnderbody = () => {
+	spinner.settings.uctx.clearRect(0, 0, spinner.settings.canvas.width, spinner.settings.canvas.height);
+
 	const height = spinner.settings.uctx.canvas.width;
 	const width = spinner.settings.uctx.canvas.height;
 

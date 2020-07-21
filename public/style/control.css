@@ -10,9 +10,24 @@ body {
   border-bottom: 1px solid silver;
 }
 
+.tooling {
+  margin-top: 1em;
+}
+
+.row:first-of-type {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+.row:last-of-type {
+  margin-bottom: 0;
+}
+.row:not(:first-of-type):not(:last-of-type) {
+  margin-bottom: 0.5em;
+}
+
 .button {
   box-sizing: border-box;
-  margin: 1em 0.5em 1em 0;
+  margin: 0 0.5em 0 0;
   border: 3px solid silver;
   border-radius: 9px;
   display: inline-block;
@@ -33,6 +48,8 @@ body {
   padding: 0.5rem 1rem;
   margin-bottom: 0;
   cursor: pointer;
+  font-size: 12pt;
+  font-weight: normal;
 }
 
 .button .left {
@@ -114,21 +131,66 @@ body {
 
 .individual {
   display: inline-block;
+  cursor: pointer;
 }
 .individual.selected {
   font-weight: bold;
 }
+.panel {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  width: 250px;
+  margin-right: 0.25em;
+}
+.panel-additional {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  width: 250px;
+}
 
-.button.enable:not(.hidden) {
+
+.group .button.enable:not(.hidden) {
   margin-right: calc(100px + 1em);
 }
 
 .no-buttons {
   color: transparent;
-  width: calc(200px + 0.5em);
+  width: calc(264px + 0.5em);
   padding: calc(0.5rem + 3px) 1rem;
   margin-bottom: 0;
   box-sizing: border-box;
-  margin: 1em 0.5em 0 0;
+  margin: 0 0.5em 0 0;
   display: inline-block;
+}
+
+.clear-left {
+  margin-left: calc(100px + 0.5em);
+}
+
+.spin {
+  display: inline-block;
+  height: 21px;
+  margin: 0;
+}
+
+.spin.clockwise {
+  padding: 0.5rem 0 0.5rem 0.5rem;
+}
+.spin.counter-clockwise {
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+}
+.spin img {
+  height: 14px;
+}
+.spin .img-enabled {
+  cursor: pointer;
+}
+
+.spin:not(.enabled) .img-enabled {
+  display: none;
+}
+.spin.enabled .img-disabled {
+  display: none;
 }

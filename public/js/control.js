@@ -59,9 +59,23 @@ control.trigger.setSound = (sound) => {
 };
 
 control.trigger.selectIndividual = (index) => {
-  console.log(index);
   control.postMessage({
     command: 'control.select-individual',
+    data: index
+  });
+};
+
+control.trigger.seePrizes = () => {
+  control.postMessage({ command: 'control.see-prizes' });
+};
+
+control.trigger.removeIndividual = () => {
+  control.postMessage({ command: 'control.remove-individual' });
+};
+
+control.trigger.panelRefresh = (index) => {
+  control.postMessage({
+    command: 'control.panel-refresh',
     data: index
   });
 };
@@ -70,7 +84,6 @@ control.getMessage.fromControl = (message) => {
   const option = message.data.command;
   const data = (typeof message.data.data !== undefined) ? message.data.data : {};
 
-  console.log({ option, data });
   switch(true) {
     case (option === 'control.init'):
       control.spinner.disableControl();
@@ -89,6 +102,15 @@ control.getMessage.fromControl = (message) => {
       break;
     case (option === 'control.select-individual'):
       control.spinner.selectIndividual(data);
+      break;
+    case (option === 'control.see-prizes'):
+      control.spinner.seePrizes();
+      break;
+    case (option === 'control.remove-individual'):
+      control.spinner.removeIndividual();
+      break;
+    case (option === 'control.panel-refresh'):
+      control.spinner.panelRefresh();
       break;
   }
 };
@@ -123,4 +145,21 @@ control.spinner.selectIndividual = (index, spin = spinner, mnu = menu) => {
   spin.state.activePerson = spin.group[index];
   spin.state.activePersonIndex = index;
   mnu.displayActivePerson();
+};
+
+control.spinner.seePrizes = (doc = document) => {
+  const prizesWrapper = doc.querySelector('.prizes-wrapper');
+  if (prizesWrapper.classList.contains('hidden')) {
+    menu.seePrizes();
+  } else {
+    menu.closePrizes();
+  }
+};
+
+control.spinner.removeIndividual = () => {
+  menu.clearActivePerson();
+};
+
+control.spinner.panelRefresh = (spin = spinner) => {
+  spin.init();
 };

@@ -1,7 +1,8 @@
 
 const external = {
   activeSound: 'SILENT',
-  group: null
+  group: null,
+  panels: null
 };
 
 external.init = (ctrl = control, store = storage) => {
@@ -15,9 +16,11 @@ external.init = (ctrl = control, store = storage) => {
 external.updateDisplay = () => {
   external.showActiveSound();
   external.showGroup();
+  external.showPanels();
 };
 
 external.triggerSpin = (direction = 'clockwise') => {
+  console.log(direction);
   if (direction === 'clockwise') {
     control.trigger.spinClockwise();
   } else {
@@ -48,6 +51,26 @@ external.showActiveSound = (doc = document) => {
   });
 };
 
+external.addSpinButtons = (index, type, doc = document) => {
+  const spinBtn = doc.createElement('div');
+  spinBtn.classList.add('spin', type);
+  spinBtn.setAttribute('index', index);
+
+  const imgDisabled = doc.createElement('img');
+  imgDisabled.classList.add('img-disabled');
+  imgDisabled.src = `images/${ type }-disabled.png`;
+
+  const imgEnabled = doc.createElement('img');
+  imgEnabled.classList.add('img-enabled');
+  imgEnabled.setAttribute('onClick', `external.triggerSpin('${ type }')`);
+  imgEnabled.src = `images/${ type }.png`;
+
+  spinBtn.appendChild(imgDisabled);
+  spinBtn.appendChild(imgEnabled);
+
+  return spinBtn;
+};
+
 external.addGroupButtons = (node, individual, index, doc = document) => {
   const enableBtn = doc.createElement('div');
   enableBtn.classList.add('button', 'single', 'white', 'enable', 'w100');
@@ -66,16 +89,21 @@ external.addGroupButtons = (node, individual, index, doc = document) => {
   selectorBtn.innerText = 'Select';
   selectorBtn.setAttribute('index', index);
   selectorBtn.onclick = external.handleSelection;
-  
-  if (individual.enabled === true) {
-    enableBtn.classList.add('hidden');
-  } else {
-    disableBtn.classList.add('hidden');
-  }
 
+  const cwBtn = external.addSpinButtons(index, 'clockwise');
+  const ccwBtn = external.addSpinButtons(index, 'counter-clockwise');
+  
   const noButtonsContainer = doc.createElement('div');
   noButtonsContainer.classList.add('no-buttons');
   noButtonsContainer.innerText = ".";
+
+  if (individual.enabled === true) {
+    enableBtn.classList.add('hidden');
+    selectorBtn.classList.remove('hidden');
+  } else {
+    disableBtn.classList.add('hidden');
+    selectorBtn.classList.add('hidden');
+  }
 
   if (individual.prize === null) {
     noButtonsContainer.classList.add('hidden');
@@ -83,12 +111,16 @@ external.addGroupButtons = (node, individual, index, doc = document) => {
     enableBtn.classList.add('hidden');
     disableBtn.classList.add('hidden');
     selectorBtn.classList.add('hidden');
+    cwBtn.classList.add('hidden');
+    ccwBtn.classList.add('hidden');
   }
 
   node.appendChild(noButtonsContainer);
   node.appendChild(enableBtn);
   node.appendChild(disableBtn);
   node.appendChild(selectorBtn);
+  node.appendChild(cwBtn);
+  node.appendChild(ccwBtn);
 };
 
 external.calculateDisplayName = (individual) => {
@@ -104,48 +136,74 @@ external.calculateDisplayName = (individual) => {
   return name;
 };
 
-external.addIndividual = (row, individual, index, doc = document) => {
+external.addIndividual = (node, individual, index, doc = document) => {
   const element = doc.createElement('div');
   element.classList.add('individual');
   element.innerText = external.calculateDisplayName(individual);
   element.setAttribute('index', index);
+  element.onclick = external.handleSelection;
   
-  row.appendChild(element);
+  node.appendChild(element);
 };
 
-external.handleEnableBtn = (event, doc = document) => {
-  const index = event.target.getAttribute('index');
-  const enableBtn = doc.querySelector(`.group [index="${ index }"] .button.enable`);
-  const disableBtn = doc.querySelector(`.group [index="${ index }"] .button.disable`);
-  const selectionBtn = doc.querySelector(`.group .[index="${ index }"] button.selector`);
-  enableBtn.classList.add('hidden');
-  disableBtn.classList.remove('hidden');
-  selectionBtn.classList.remove('hidden');
-};
-
-external.handleDisableBtn = (event, doc = document) => {
-  const index = event.target.getAttribute('index');
+external.handleEnableBtn = (event, doc = document, store = storage) => {
+  const index = +event.target.getAttribute('index');
   const enableBtn = doc.querySelector(`.group [index="${ index }"] .button.enable`);
   const disableBtn = doc.querySelector(`.group [index="${ index }"] .button.disable`);
   const selectionBtn = doc.querySelector(`.group [index="${ index }"] .button.selector`);
+
+  enableBtn.classList.add('hidden');
+  disableBtn.classList.remove('hidden');
+  selectionBtn.classList.remove('hidden');
+
+  const person = external.group[index];
+  person.enabled = true;
+  store.saveGroup(external.group);
+};
+
+external.handleDisableBtn = (event, doc = document, store = storage) => {
+  const index = +event.target.getAttribute('index');
+  const enableBtn = doc.querySelector(`.group [index="${ index }"] .button.enable`);
+  const disableBtn = doc.querySelector(`.group [index="${ index }"] .button.disable`);
+  const selectionBtn = doc.querySelector(`.group [index="${ index }"] .button.selector`);
+
   enableBtn.classList.remove('hidden');
   disableBtn.classList.add('hidden');
   selectionBtn.classList.add('hidden');
 
   external.handleDeselection(index);
+
+  const person = external.group[index];
+  person.enabled = false;
+  store.saveGroup(external.group);
+
 };
 
 external.handleDeselection = (index, doc = document) => {
   const selections = doc.querySelectorAll('.group .button.selector');
   const individuals = doc.querySelectorAll('.group .individual');
+  const spins = doc.querySelectorAll(`.group [index="${ index }"] .spin`);
+
   selections[index].classList.remove('selected');
   individuals[index].classList.remove('selected');
+  spins.forEach(spinBtn => {
+    spinBtn.classList.remove('enabled');
+  });
+
+  control.trigger.removeIndividual();
 };
 
 external.handleSelection = (event, doc = document) => {
   const index = +event.target.getAttribute('index');
+  const alreadySelected = event.target.classList.contains('selected');
+  if (alreadySelected) {
+    external.handleDeselection(index);
+    return;
+  }
   const selections = doc.querySelectorAll('.group .button.selector');
   const individuals = doc.querySelectorAll('.group .individual');
+  const spinBtn = doc.querySelectorAll('.group .spin');
+
   selections.forEach((select, i) => {
     if (i === index) {
       select.classList.add('selected');
@@ -160,12 +218,20 @@ external.handleSelection = (event, doc = document) => {
       person.classList.remove('selected');
     }
   });
-  console.log(index);
+  spinBtn.forEach(btn => {
+    const btnIndex = +btn.getAttribute('index');
+    if (btnIndex === index) {
+      btn.classList.add('enabled');
+    } else {
+      btn.classList.remove('enabled');
+    }
+  });
   control.trigger.selectIndividual(index);
 };
 
 external.showGroup = (store = storage, doc = document) => {
   const divNode = doc.querySelector('.group .content');
+  divNode.innerHTML = '';
   external.group = store.getGroup();
 
   external.group.forEach((individual, index) => {
@@ -182,8 +248,6 @@ external.showGroup = (store = storage, doc = document) => {
 external.showWinner = (index, doc = document, store = storage) => {
   external.group = store.getGroup();
   const person = external.group[index];
-  console.log(external.group);
-  console.log(person);
 
   const spinning = doc.querySelector('.modal-wrapper .modal-spinning');
   const winner = doc.querySelector('.modal-wrapper .modal-winner');
@@ -206,11 +270,16 @@ external.showWinner = (index, doc = document, store = storage) => {
 
   const individualSelected = doc.querySelector(`.group [index="${ index }"] .individual`);
   const buttons = doc.querySelectorAll(`.group [index="${ index }"] .button`);
+  const spinBtns = doc.querySelectorAll(`.group [index="${ index }"] .spin`);
   const noButtons = doc.querySelector(`.group [index="${ index }"] .no-buttons`);
   individualSelected.classList.remove('selected');
+  individualSelected.innerText = external.calculateDisplayName(person);
   buttons.forEach(btn => {
     btn.classList.add('hidden');
     btn.classList.remove('selected');
+  });
+  spinBtns.forEach(btn => {
+    btn.classList.add('hidden');
   });
   noButtons.classList.remove('hidden');
 };
@@ -238,4 +307,110 @@ external.setSound = (sound, store = storage) => {
   store.saveActiveSound(sound);
 
   control.trigger.setSound(sound);
+};
+
+external.triggerSeePrizes = () => {
+  control.trigger.seePrizes();
+};
+
+external.triggerClearPrizes = (store = storage) => {
+  external.group.forEach(individual => {
+    individual.prize = null;
+    individual.additional = null;
+  });
+
+  store.saveGroup(external.group);
+  external.showGroup();
+};
+
+external.addPanelButtons = (node, panel, index, doc = document) => {
+  const enableBtn = doc.createElement('div');
+  enableBtn.classList.add('button', 'single', 'white', 'enable', 'w100');
+  enableBtn.innerText = 'Enable';
+  enableBtn.setAttribute('index', index);
+  enableBtn.onclick = external.handlePanelEnable;
+
+  const disableBtn = doc.createElement('div');
+  disableBtn.classList.add('button', 'single', 'green', 'disable', 'w100');
+  disableBtn.innerText = 'Disable';
+  disableBtn.setAttribute('index', index);
+  disableBtn.onclick = external.handlePanelDisable;
+
+  if (panel.enabled === true) {
+    enableBtn.classList.add('hidden');
+  } else {
+    disableBtn.classList.add('hidden');
+  }
+
+  node.appendChild(enableBtn);
+  node.appendChild(disableBtn);
+};
+
+external.addPanel = (node, panel, index, doc = document) => {
+  const style = `color: ${ panel.fcolor }; background-color: ${ panel.color }`;
+  const content = doc.createElement('div');
+  content.classList.add('panel');
+  content.innerText = panel.text;
+  content.setAttribute('index', index);
+  content.setAttribute('style', style);
+  // content.onclick = external.handleSelection;
+
+  let additional = panel.additionalText;
+  if (additional.length === 0) {
+    additional = "NONE";
+  }
+  const contentAdditional = doc.createElement('div');
+  contentAdditional.classList.add('panel-additional');
+  contentAdditional.innerText = additional;
+  contentAdditional.setAttribute('index', index);
+  if (additional !== 'NONE') {
+    contentAdditional.setAttribute('style', style);
+  }
+
+  node.appendChild(content);
+  node.appendChild(contentAdditional);
+};
+
+external.showPanels = (doc = document, store = storage) => {
+  const content = doc.querySelector('.rewards .content');
+  content.innerHTML = '';
+
+  external.panels = store.getPie();
+  external.panels.forEach((panel, index) => {
+    const row = doc.createElement('div');
+    row.classList.add('row');
+    row.setAttribute('index', index);
+
+    external.addPanelButtons(row, panel, index);
+    external.addPanel(row, panel, index);
+    content.appendChild(row);
+  });
+};
+
+external.handlePanelEnable = (event, doc = document, store = storage) => {
+  const index = +event.target.getAttribute('index');
+  const disableBtn = doc.querySelector(`.rewards [index="${ index}"] .disable`);
+  const enableBtn = doc.querySelector(`.rewards [index="${ index}"] .enable`);
+
+  disableBtn.classList.remove('hidden');
+  enableBtn.classList.add('hidden');
+
+  external.panels[index].enabled = true;
+  store.savePie(external.panels);
+
+  control.trigger.panelRefresh();
+};
+
+external.handlePanelDisable = (event, doc = document, store = storage) => {
+  const index = +event.target.getAttribute('index');
+  const disableBtn = doc.querySelector(`.rewards [index="${ index}"] .disable`);
+  const enableBtn = doc.querySelector(`.rewards [index="${ index}"] .enable`);
+
+  disableBtn.classList.add('hidden');
+  enableBtn.classList.remove('hidden');
+
+  external.panels[index].enabled = false;
+  store.savePie(external.panels);
+
+  control.trigger.panelRefresh();
 };
