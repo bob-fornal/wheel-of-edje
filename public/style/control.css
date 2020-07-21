@@ -1,0 +1,134 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 2em;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: bold;
+  border-bottom: 1px solid silver;
+}
+
+.button {
+  box-sizing: border-box;
+  margin: 1em 0.5em 1em 0;
+  border: 3px solid silver;
+  border-radius: 9px;
+  display: inline-block;
+}
+.button.white {
+  background-color: white;
+}
+.button.green {
+  background-color: #bee767;
+}
+.button.orange {
+  background-color: #ffa500;
+}
+.button.selected {
+  background-color: #bee767;
+}
+.button.single {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.button .left {
+  padding: 0.5rem 1rem;
+  border-right: 1px solid silver;
+  margin: 0;
+  font-weight: bold;
+}
+.button .left.feature {
+  background-color: silver;
+}
+.button .left,
+.button .middle,
+.button .right {
+  box-sizing: border-box;
+  display: inline-block;
+}
+.button .middle {
+  height: 34px;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  border-right: 1px solid silver;
+  cursor: pointer;
+  margin: 0;
+}
+.button .middle.selected,
+.button .right.selected {
+    font-weight: bold;
+}
+.button .right {
+  height: 34px;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  cursor: pointer;
+  margin: 0;
+}
+.button .middle img,
+.button .right img {
+  height: 14px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.modal-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-spinning,
+.modal-winner {
+  position: relative;
+  margin: 2em;
+  padding: 2em;
+  background-color: #ffffff;
+  border: 3px solid black;
+  border-radius: 20px;
+  display: inline-block;
+  text-align: center;
+  font-size: 14pt;
+}
+
+.section {
+  border-top: 1px solid silver;
+  margin: 1rem 0;
+  padding: 1rem 0;
+}
+.section .subtitle {
+  font-size: 14pt;
+  font-weight: bold;
+}
+
+.button.w100 {
+  width: 100px;
+  text-align: center;
+}
+
+.individual {
+  display: inline-block;
+}
+.individual.selected {
+  font-weight: bold;
+}
+
+.button.enable:not(.hidden) {
+  margin-right: calc(100px + 1em);
+}
+
+.no-buttons {
+  color: transparent;
+  width: calc(200px + 0.5em);
+  padding: calc(0.5rem + 3px) 1rem;
+  margin-bottom: 0;
+  box-sizing: border-box;
+  margin: 1em 0.5em 0 0;
+  display: inline-block;
+}

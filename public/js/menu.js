@@ -1,7 +1,8 @@
 
 const menu = {
     state: {
-        initialRun: true
+        initialRun: true,
+        externalControl: false
     }
 };
 
@@ -20,9 +21,13 @@ menu.targetContains = (target, contains) => {
     return found;
 };
 
+menu.deactivateMenuAndGroup = () => {
+
+};
+
 menu.toggle = (event = null, spin = spinner, doc = document) => {
     const allow = ['menu-icon', 'menu-wrapper'];
-    if (spin.spinning === true) return;
+    if (spin.spinning === true || menu.state.externalControl === true) return;
     if (event !== null && !menu.targetContains(event.target, allow)) return;
     
     spin.state.menu = !spin.state.menu;
@@ -54,31 +59,40 @@ menu.clearActivePerson = (spin = spinner, doc = document) => {
     active.classList.add('hidden');
 
     spin.state.activePerson = null;
+    spin.state.activePersonIndex = -1;
+};
+
+menu.displayActivePerson = (spin = spinner, doc = document) => {
+    const active = doc.querySelector('.group-active-person');
+    active.innerText = spin.state.activePerson.name;
+    active.setAttribute('index', spin.state.activePersonIndex);
+    active.classList.remove('hidden');
 };
 
 menu.showActivePerson = (spin = spinner, doc = document) => {
-    const active = doc.querySelector('.group-active-person');
-    active.innerText = spin.state.activePerson.name;
-    active.classList.remove('hidden');
-
+    menu.displayActivePerson();
     menu.toggleGroup();
 };
 
 menu.handleIndividualSelection = (name, event, spin = spinner) => {
     let individual = null;
+    let index = -1;
     for (let i = 0, len = spin.group.length; i < len; i++) {
         if (spin.group[i].name === name) {
             individual = spin.group[i];
+            index = i;
             break;
         }
     }
 
     spin.state.activePerson = individual;
+    spin.state.activePersonIndex = index;
     menu.showActivePerson();
 };
 
 menu.toggleGroup = (event = null, spin = spinner) => {
     const allow = ['group-icon', 'group-menu-wrapper', 'clear-prizes', 'cancel'];
+    if (menu.state.externalControl === true) return;
     if (event !== null) {
         event.stopPropagation();
         event.preventDefault();
@@ -306,7 +320,6 @@ menu.toggleHelp = (event = null, spin = spinner, doc = document) => {
     const help = doc.querySelector('.help-wrapper');
     help.classList.toggle('hidden');
 };
-
 
 // For Unit Testing
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {

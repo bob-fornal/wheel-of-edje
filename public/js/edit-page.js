@@ -5,15 +5,6 @@ const edit = {
         fcolor: '#ffffff'
     },
 
-    title: document.querySelector('.title .specific'),
-    add: document.querySelector('.tooling .addition-button .add-type'),
-    del: document.querySelector('.tooling .delete-all-button .delete-type'),
-    previewState: document.querySelector('.tooling .preview-available .right'),
-    enterToSaveState: document.querySelector('.tooling .enter-to-save .right'),
-    editAsState: document.querySelector('.tooling .edit-as-type'),
-    editAsLIST: document.querySelector('.tooling .edit-as-type .left'),
-    editAsCSV: document.querySelector('.tooling .edit-as-type .right'),
-
     data: null,
     pattern: null,
     selected: null,
@@ -24,8 +15,43 @@ const edit = {
     editAsOption: false,
     editAsType: 'LIST',
 
-    generateAdditionalValueString: (value) => (value === '') ? '' : `(${ value })`,
     skipHandleRowSelection: false
+};
+
+edit.init = async() => {
+    edit.params = new URLSearchParams(location.search);
+    edit.type = edit.params.get('type');
+
+    storage.editInit();
+
+    edit.generateQueries();
+    edit.configuration();
+
+    if (edit.editAsOption === true) {
+        edit.editAsType = await storage.getEditAsType();
+        edit.selectEditAsType(edit.editAsType);
+    }
+
+    if (edit.editAsType === 'LIST') {
+        edit.showList();
+    } else {
+        edit.showCSV();
+    }
+};
+
+edit.generateQueries = (doc = document) => {
+    edit.title = document.querySelector('.title .specific');
+    edit.add = document.querySelector('.tooling .addition-button .add-type');
+    edit.del = document.querySelector('.tooling .delete-all-button .delete-type');
+    edit.previewState = document.querySelector('.tooling .preview-available .right');
+    edit.enterToSaveState = document.querySelector('.tooling .enter-to-save .right');
+    edit.editAsState = document.querySelector('.tooling .edit-as-type');
+    edit.editAsLIST = document.querySelector('.tooling .edit-as-type .left');
+    edit.editAsCSV = document.querySelector('.tooling .edit-as-type .right');
+};
+
+edit.generateAdditionalValueString = (value) => {
+    return (value === '') ? '' : `(${ value })`;
 };
 
 edit.panelPattern = {
@@ -44,9 +70,6 @@ edit.groupPattern = {
     additional: { skip: true, text: 'Additional', type: 'string', default: null },
     enabled: { skip: true, text: 'Enabled', type: 'boolean', default: true }
 };
-
-edit.params = new URLSearchParams(location.search);
-edit.type = edit.params.get('type');
 
     edit.previewPanel = (dataPoint) => {
         const completeMarker = document.createElement('div');
@@ -614,18 +637,7 @@ edit.showCSV = () => {
     content.appendChild(saveDiv);
 };
 
-edit.init = async() => {
-    edit.configuration();
-
-    if (edit.editAsOption === true) {
-        edit.editAsType = await storage.getEditAsType();
-        edit.selectEditAsType(edit.editAsType);
-    }
-
-    if (edit.editAsType === 'LIST') {
-        edit.showList();
-    } else {
-        edit.showCSV();
-    }
-};
-
+// For Unit Testing
+if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
+    module.exports = edit;
+}

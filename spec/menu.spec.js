@@ -6,7 +6,7 @@ const store = require('./helpers/storage.helper');
 
 describe('menu', () => {
     let dataSounds;
-    let spinner, storage, documentument;
+    let spinner, storage, document;
 
     beforeEach(() => {
         store.init();

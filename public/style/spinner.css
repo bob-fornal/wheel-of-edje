@@ -220,6 +220,13 @@ html, body {
     font-size: 18pt;
     border-bottom: 1px solid silver;
     margin-bottom: 10px;
+    position: relative;
+}
+.menu > .title .controller {
+    position: absolute;
+    right: 0;
+    font-weight: bold;
+    font-size: 12pt;
 }
 .section .title {
     font-weight: bold;

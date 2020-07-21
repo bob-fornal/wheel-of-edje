@@ -23,7 +23,8 @@ const spinner = {
 	
 		groupMode: true,
 		groupMenu: false,
-		activePerson: null
+		activePerson: null,
+		activePersonIndex: -1
 	},
 
 	settings: {},

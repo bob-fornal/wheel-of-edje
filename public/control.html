@@ -1,0 +1,60 @@
+<html>
+  <head>
+		<link rel="stylesheet" href="style/control.css" .>
+  </head>
+  <body>
+
+    <div class="title">Wheel Of EDJE: External Control</div>
+
+    <div class="tooling">
+      <div class="button white">
+        <div class="left feature">SPIN</div>
+        <div class="middle" onClick="external.triggerSpin('clockwise')">
+          <img src="images/clockwise.png" title="Spin Clockwise" />
+        </div>
+        <div class="right" onClick="external.triggerSpin('counter-clockwise')">
+          <img src="images/counter-clockwise.png" title="Spin Counter-Clockwise" />
+        </div>
+      </div>
+
+      <div class="button white">
+        <div class="left feature">SOUND</div>
+        <div class="middle" id="metronome" onClick="external.setSound('metronome')">Metronome</div>
+        <div class="middle" id="zippo" onClick="external.setSound('zippo')">Zippo</div>
+        <div class="right" id="SILENT" onClick="external.setSound('SILENT')">SILENT</div>
+      </div>
+    </div>
+
+    <div class="section group">
+      <div class="subtitle">Group Spin</div>
+      <div class="content"></div>
+    </div>
+
+    <div class="section rewards">
+      <div class="subtitle">Rewards Panel</div>
+      <div class="content"></div>
+    </div>
+
+    <div class="modal-wrapper hidden">
+      <div class="modal-spinning">
+          Spinning
+      </div>
+      <div class="modal-winner hidden">
+        <div class="winner"><span class="individual-winner">...</span> won ...</div>
+        <div class="prize"></div>
+        <div class="prize-additional hidden"></div>
+        <div class="button green single" onClick="external.closeWinner()">
+          Clear Prize Display
+        </div>  
+      </div>
+    </div>
+    
+		<script src="js/storage.js"></script>
+    <script src="js/control.js"></script>
+		<script src="js/external.js"></script>
+    <script>
+      external.init();
+    </script>
+
+  </body>
+</html>

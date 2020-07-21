@@ -41,13 +41,19 @@ winner.handlePerson = (data, spin = spinner, defMenu = menu, store = storage) =>
 };
 
 winner.open = (data, spin = spinner) => {
-    let name;
+    let name, index;
     if (!!spin.state.activePerson) {
+        index = spin.state.activePersonIndex;
         name = spin.state.activePerson.name;
     } else {
         name = null;
+        index = -1;
     }
     winner.setText(data, name);
+
+    if (menu.state.externalControl) {
+        control.spinner.winnerDisplay(index);
+    }
 
     spin.state.winnerOpen = true;
     winner.queries.wrapper.classList.remove('hidden');

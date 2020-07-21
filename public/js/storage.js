@@ -42,6 +42,10 @@ storage.init = (win = window) => {
     menu.init();
 };
 
+storage.editInit = (win = window) => {
+    storage.store = win.localStorage;
+};
+
 storage.upgrades = {};
 
 storage.upgrades.check = (type, data) => {

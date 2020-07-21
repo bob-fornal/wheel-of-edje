@@ -41,7 +41,10 @@
 		<img class="menu-icon" onClick="menu.toggle()" src="images/settings.png" />
 		<div class="menu-wrapper hidden" onClick="menu.toggle(event)">
 			<div class="menu">
-				<div class="title">MENU</div>
+				<div class="title">
+					<span class="header">MENU</span>
+					<a class="controller" href="control.html" target="_blank">External Control</a>
+				</div>
 
 				<div class="section sound">
 					<div class="title">Sounds</div>
@@ -185,8 +188,10 @@
 		<script src="js/winner.js"></script>
 		<script src="js/overlay.js"></script>
 		<script src="js/spinner.js"></script>
+		<script src="js/control.js"></script>
 		<script>
 			storage.init();
+			control.init('spinner');
 		</script>
 	</body>
 </html>
