@@ -355,17 +355,17 @@ external.addPanel = (node, panel, index, doc = document) => {
   content.setAttribute('style', style);
   // content.onclick = external.handleSelection;
 
+  const contentAdditional = doc.createElement('div');
+  contentAdditional.classList.add('panel-additional');
+  contentAdditional.setAttribute('index', index);
   let additional = panel.additionalText;
   if (additional.length === 0) {
     additional = "NONE";
-  }
-  const contentAdditional = doc.createElement('div');
-  contentAdditional.classList.add('panel-additional');
-  contentAdditional.innerText = additional;
-  contentAdditional.setAttribute('index', index);
-  if (additional !== 'NONE') {
+    contentAdditional.classList.add('hide-borders');
+  } else {
     contentAdditional.setAttribute('style', style);
   }
+  contentAdditional.innerText = additional;
 
   node.appendChild(content);
   node.appendChild(contentAdditional);

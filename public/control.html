@@ -27,6 +27,7 @@
 
     <div class="section group">
       <div class="subtitle">
+        <div class="edit group-mode" onClick="editing.editGroupMode()"><img src="images/edit.png" /></div>
         <span class="w100">Group Spin</span>
         <div class="button single green clear-left" onClick="external.triggerSeePrizes()" title="Toggle Prize List On/Off">
           See Prizes
@@ -38,7 +39,10 @@
     </div>
 
     <div class="section rewards">
-      <div class="subtitle">Rewards Panel</div>
+      <div class="subtitle">
+        <div class="edit panels" onClick="editing.editPanels()"><img src="images/edit.png" /></div>
+        <span class="w100">Rewards Panel</span>
+      </div>
       <div class="content"></div>
     </div>
 
@@ -56,6 +60,7 @@
       </div>
     </div>
     
+    <script src="js/edit.js"></script>
 		<script src="js/storage.js"></script>
     <script src="js/control.js"></script>
 		<script src="js/external.js"></script>

@@ -34,12 +34,12 @@ storage.configureStorageDefaultData = () => {
         });
 };
 
-storage.init = (win = window) => {
+storage.init = (win = window, defMenu = menu) => {
     storage.store = win.localStorage;
 
     storage.configureStorageDefaultData();
     storage.clearLoader();
-    menu.init();
+    defMenu.init();
 };
 
 storage.editInit = (win = window) => {

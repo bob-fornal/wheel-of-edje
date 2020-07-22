@@ -146,8 +146,10 @@ body {
 .panel-additional {
   display: inline-block;
   padding: 0.5em 1em;
-  border: 1px solid black;
   width: 250px;
+}
+.panel-additional:not(.hide-borders) {
+  border: 1px solid black;
 }
 
 
@@ -193,4 +195,12 @@ body {
 }
 .spin.enabled .img-disabled {
   display: none;
+}
+
+.edit {
+  display: inline-block;
+  cursor: pointer;
+}
+.edit img {
+  height: 1em;
 }

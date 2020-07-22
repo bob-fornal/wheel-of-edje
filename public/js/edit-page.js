@@ -18,17 +18,21 @@ const edit = {
     skipHandleRowSelection: false
 };
 
-edit.init = async() => {
-    edit.params = new URLSearchParams(location.search);
+edit.determineType = (win = window) => {
+    edit.params = new win.URLSearchParams(win.location.search);
     edit.type = edit.params.get('type');
+};
 
-    storage.editInit();
+edit.init = async(store = storage) => {
+    edit.determineType();
+
+    store.editInit();
 
     edit.generateQueries();
     edit.configuration();
 
     if (edit.editAsOption === true) {
-        edit.editAsType = await storage.getEditAsType();
+        edit.editAsType = await store.getEditAsType();
         edit.selectEditAsType(edit.editAsType);
     }
 
@@ -40,14 +44,14 @@ edit.init = async() => {
 };
 
 edit.generateQueries = (doc = document) => {
-    edit.title = document.querySelector('.title .specific');
-    edit.add = document.querySelector('.tooling .addition-button .add-type');
-    edit.del = document.querySelector('.tooling .delete-all-button .delete-type');
-    edit.previewState = document.querySelector('.tooling .preview-available .right');
-    edit.enterToSaveState = document.querySelector('.tooling .enter-to-save .right');
-    edit.editAsState = document.querySelector('.tooling .edit-as-type');
-    edit.editAsLIST = document.querySelector('.tooling .edit-as-type .left');
-    edit.editAsCSV = document.querySelector('.tooling .edit-as-type .right');
+    edit.title = doc.querySelector('.title .specific');
+    edit.add = doc.querySelector('.tooling .addition-button .add-type');
+    edit.del = doc.querySelector('.tooling .delete-all-button .delete-type');
+    edit.previewState = doc.querySelector('.tooling .preview-available .right');
+    edit.enterToSaveState = doc.querySelector('.tooling .enter-to-save .right');
+    edit.editAsState = doc.querySelector('.tooling .edit-as-type');
+    edit.editAsLIST = doc.querySelector('.tooling .edit-as-type .left');
+    edit.editAsCSV = doc.querySelector('.tooling .edit-as-type .right');
 };
 
 edit.generateAdditionalValueString = (value) => {
@@ -71,27 +75,27 @@ edit.groupPattern = {
     enabled: { skip: true, text: 'Enabled', type: 'boolean', default: true }
 };
 
-    edit.previewPanel = (dataPoint) => {
-        const completeMarker = document.createElement('div');
-        completeMarker.classList.add('panel-text');
-        const marker = document.createElement('div');
-        marker.classList.add('panel-main-text');
-        marker.innerText = dataPoint.text;
-        completeMarker.appendChild(marker);
+edit.previewPanel = (dataPoint) => {
+    const completeMarker = document.createElement('div');
+    completeMarker.classList.add('panel-text');
+    const marker = document.createElement('div');
+    marker.classList.add('panel-main-text');
+    marker.innerText = dataPoint.text;
+    completeMarker.appendChild(marker);
 
-        additionalMarker = document.createElement('div');
-        additionalMarker.classList.add('panel-additional-text');
-        additionalMarker.innerText = edit.generateAdditionalValueString(dataPoint.additionalText);
-        completeMarker.appendChild(additionalMarker);
+    additionalMarker = document.createElement('div');
+    additionalMarker.classList.add('panel-additional-text');
+    additionalMarker.innerText = edit.generateAdditionalValueString(dataPoint.additionalText);
+    completeMarker.appendChild(additionalMarker);
 
-        const panel = document.createElement('div');
-        panel.classList.add('panel-preview');
-        panel.style.backgroundColor = dataPoint.color;
-        panel.style.color = dataPoint.fcolor;
-        panel.appendChild(completeMarker);
+    const panel = document.createElement('div');
+    panel.classList.add('panel-preview');
+    panel.style.backgroundColor = dataPoint.color;
+    panel.style.color = dataPoint.fcolor;
+    panel.appendChild(completeMarker);
 
-        return panel;
-    };
+    return panel;
+};
 
 edit.configuration = () => {
     switch (edit.type) {
@@ -134,8 +138,8 @@ edit.configuration = () => {
     }    
 };
 
-edit.back = () => {
-    window.location.href = 'index.html';
+edit.back = (win = window) => {
+    window.history.back();
 };
 
 edit.selectEditAsType = (type = 'LIST') => {
@@ -339,22 +343,22 @@ edit.handleNextSelection = (currentIndex) => {
     }, 20);
 };
 
-    edit.changePreviewPanelColor = ({ value, target }) => {
-        if (edit.preview === true) {
-            target.setAttribute('style', `background-color: ${ value.color }; color: ${ value.fcolor }`);
-        }
-    };
+edit.changePreviewPanelColor = ({ value, target }) => {
+    if (edit.preview === true) {
+        target.setAttribute('style', `background-color: ${ value.color }; color: ${ value.fcolor }`);
+    }
+};
 
-    edit.getSelector = (event) => {
-        let selector = '';
-        const additionNode = document.querySelector('.element-addition');
-        if (additionNode.contains(event.target)) {
-            selector = '.element-addition';
-        } else {
-            selector = '.element.selected';
-        }
-        return selector;
-    };
+edit.getSelector = (event) => {
+    let selector = '';
+    const additionNode = document.querySelector('.element-addition');
+    if (additionNode.contains(event.target)) {
+        selector = '.element-addition';
+    } else {
+        selector = '.element.selected';
+    }
+    return selector;
+};
 
 edit.handleColorChange = (event) => {
     event.stopPropagation();
@@ -380,11 +384,11 @@ edit.handleColorChange = (event) => {
     edit.changePreviewPanelColor({ value: style, target: document.querySelector(`${ selector } .panel-preview`) });
 };
 
-    edit.changePreviewPanelText = ({ value, target }) => {
-        if (edit.preview === true) {
-            target.innerText = value;
-        }
-    };
+edit.changePreviewPanelText = ({ value, target }) => {
+    if (edit.preview === true) {
+        target.innerText = value;
+    }
+};
 
 edit.handleStringKeyup = (event) => {
     let selector = edit.getSelector(event);
@@ -559,15 +563,15 @@ edit.addDivNode = ({ element, content, i }) => {
     content.appendChild(divNode);
 };
 
-    edit.generateAdditionData = () => {
-        let result = {};
-        for (const key in edit.pattern) {
-            if (key !== 'order') {
-                result[key] = edit.pattern[key].default;
-            }
+edit.generateAdditionData = () => {
+    let result = {};
+    for (const key in edit.pattern) {
+        if (key !== 'order') {
+            result[key] = edit.pattern[key].default;
         }
-        return result;
-    };
+    }
+    return result;
+};
 
 edit.showList = () => {
     const content = document.querySelector('.content');

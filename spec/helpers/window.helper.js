@@ -4,8 +4,21 @@ let win = {};
 win.init = () => {};
 
 win.mock = {
+    returnFn: null,
+
+    location: {
+        search: '~~~NONE~~~'
+    },
     Audio: function(url) {
         this.url = url;
+    },
+    URLSearchParams: function(search) {
+        this.search = search;
+        return {
+            get: () => {
+                return win.mock.returnFn();
+            }
+        };
     }
 };
 
