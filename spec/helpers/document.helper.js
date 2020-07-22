@@ -83,6 +83,9 @@ doc.handleDocumentObjectCreation = (name) => {
         }
     };
     
+    obj.getAttribute = (key) => {
+        return obj.attributes[key] || null;
+    };
     obj.setAttribute = (key, values) => {
         obj.attributes[key] = values;
     };

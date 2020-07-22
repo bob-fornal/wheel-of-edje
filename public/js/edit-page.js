@@ -200,7 +200,30 @@ edit.handleSimpleSelection = (target) => {
     };    
 };
 
-edit.handleRowSelection = (event) => {
+edit.handleEditPreview = () => {
+    const value = edit.selected.data.text;
+    const additionalValue = edit.selected.data.additionalText;
+
+    edit.changePreviewPanelText({
+        value, target: edit.selected.target.querySelector('.panel-main-text')
+    });
+    edit.changePreviewPanelText({
+        value: edit.generateAdditionalValueString(additionalValue),
+        target: edit.selected.target.querySelector('.panel-additional-text')
+    });
+
+    let style = {
+        color: edit.selected.data.color,
+        fcolor: edit.selected.data.fcolor
+    };
+
+    edit.changePreviewPanelColor({
+        value: style,
+        target: edit.selected.target.querySelector('.panel-preview')
+    });
+};
+
+edit.handleRowSelection = (event, doc = document) => {
     if (edit.skipHandleRowSelection === true) {
         edit.skipHandleRowSelection = false;
         return;
@@ -208,30 +231,13 @@ edit.handleRowSelection = (event) => {
     if (event.target.nodeName !== 'DIV') return;
 
     if (edit.selected !== null) {
-        const editorNode = document.querySelector('.element.selected .editor-node');
+        const editorNode = doc.querySelector('.element.selected .editor-node');
         editorNode.classList.add('hidden');
 
         edit.selected.target.classList.remove('selected');
         
         if (edit.preview === true) {
-            const value = edit.selected.data.text;
-            const additionalValue = edit.selected.data.additionalText;
-            edit.changePreviewPanelText({
-                value, target: edit.selected.target.querySelector('.panel-main-text')
-            });
-            edit.changePreviewPanelText({
-                value: edit.generateAdditionalValueString(additionalValue),
-                target: edit.selected.target.querySelector('.panel-additional-text')
-            });
-
-            let style = {
-                color: edit.selected.data.color,
-                fcolor: edit.selected.data.fcolor
-            };
-            edit.changePreviewPanelColor({
-                value: style,
-                target: edit.selected.target.querySelector('.panel-preview')
-            });
+            edit.handleEditPreview();
         }
     }
 

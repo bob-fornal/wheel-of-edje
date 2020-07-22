@@ -53,6 +53,7 @@ describe('editing page', () => {
     expect(edit.back).toEqual(jasmine.any(Function));
     expect(edit.selectEditAsType).toEqual(jasmine.any(Function));
     expect(edit.handleSimpleSelection).toEqual(jasmine.any(Function));
+    expect(edit.handleEditPreview).toEqual(jasmine.any(Function));
     expect(edit.handleRowSelection).toEqual(jasmine.any(Function));
     expect(edit.handleDeleteAll).toEqual(jasmine.any(Function));
     expect(edit.handleMoveUp).toEqual(jasmine.any(Function));
@@ -277,4 +278,108 @@ describe('editing page', () => {
     expect(delTooling.classList.list.includes('hidden')).toEqual(true);
     expect(edit.showCSV).toHaveBeenCalled();
     expect(storage.saveEditAsType).toHaveBeenCalled();
-  });});
+  });
+
+  it('expects "handleSimpleSelection" to open editor target and store selected information', () => {
+    const target = document.querySelector('target');
+    target.setAttribute('data-index', '1');
+    target.querySelector = document.querySelector;
+    edit.data = ['a', 'b', 'c', 'd'];
+
+    edit.handleSimpleSelection(target);
+    const editor = document.getElement('.editor-node');
+    expect(target.classList.list.includes('selected'));
+    expect(editor.classList.list.includes('hidden')).toEqual(false);
+    expect(edit.selected.index).toEqual(1);
+    expect(edit.selected.data).toEqual('b');
+  });
+
+  it('expects "handleEditPreview" to updated text and colors', () => {
+    const target = document.querySelector('target');
+    target.querySelector = document.querySelector;
+    edit.selected = {};
+    edit.selected.target = target;
+    edit.selected.data = {
+      text: 'text', additionalText: 'additional',
+      color: 'color', fcolor: 'fcolor'
+    };
+    spyOn(edit, 'changePreviewPanelText').and.stub();
+    spyOn(edit, 'changePreviewPanelColor').and.stub();
+
+    edit.handleEditPreview();
+    expect(edit.changePreviewPanelText).toHaveBeenCalledTimes(2);
+    expect(edit.changePreviewPanelColor).toHaveBeenCalledTimes(1);
+  });
+
+  it('expects "handleRowSelection" to skip row selection if set', () => {
+    const event = { target: { nodeName: 'DIV' }, currentTarget: 'target' };
+    const target = document.querySelector('target');
+    target.querySelector = document.querySelector;
+    target.classList.add('selected');
+    edit.skipHandleRowSelection = true;
+    edit.preview = false;
+    edit.selected = {};
+    edit.selected.target = target;
+    spyOn(edit, 'handleEditPreview').and.stub();
+    spyOn(edit, 'handleSimpleSelection').and.stub();
+
+    edit.handleRowSelection(event, document);
+    expect(edit.handleEditPreview).not.toHaveBeenCalled();
+    expect(edit.handleSimpleSelection).not.toHaveBeenCalled();
+  });
+
+  it('expects "handleRowSelection" to skip row selection if target is not DIV', () => {
+    const event = { target: { nodeName: 'SPAN' }, currentTarget: 'target' };
+    const target = document.querySelector('target');
+    target.querySelector = document.querySelector;
+    target.classList.add('selected');
+    edit.skipHandleRowSelection = false;
+    edit.preview = false;
+    edit.selected = {};
+    edit.selected.target = target;
+    spyOn(edit, 'handleEditPreview').and.stub();
+    spyOn(edit, 'handleSimpleSelection').and.stub();
+
+    edit.handleRowSelection(event, document);
+    expect(edit.handleEditPreview).not.toHaveBeenCalled();
+    expect(edit.handleSimpleSelection).not.toHaveBeenCalled();
+  });
+
+  it('expects "handleRowSelection" to show editor and deselect target', () => {
+    const event = { target: { nodeName: 'DIV' }, currentTarget: 'target' };
+    const target = document.querySelector('target');
+    target.querySelector = document.querySelector;
+    target.classList.add('selected');
+    edit.skipHandleRowSelection = false;
+    edit.preview = false;
+    edit.selected = {};
+    edit.selected.target = target;
+    spyOn(edit, 'handleEditPreview').and.stub();
+    spyOn(edit, 'handleSimpleSelection').and.stub();
+
+    edit.handleRowSelection(event, document);
+    const editor = document.getElement('.element.selected .editor-node');
+    expect(editor.classList.list.includes('hidden')).toEqual(true);
+    expect(edit.handleEditPreview).not.toHaveBeenCalled();
+    expect(edit.handleSimpleSelection).toHaveBeenCalled();
+  });
+
+  it('expects "handleRowSelection" to show editor, deselect target, and preview', () => {
+    const event = { target: { nodeName: 'DIV' }, currentTarget: 'target' };
+    const target = document.querySelector('target');
+    target.querySelector = document.querySelector;
+    target.classList.add('selected');
+    edit.skipHandleRowSelection = false;
+    edit.preview = true;
+    edit.selected = {};
+    edit.selected.target = target;
+    spyOn(edit, 'handleEditPreview').and.stub();
+    spyOn(edit, 'handleSimpleSelection').and.stub();
+
+    edit.handleRowSelection(event, document);
+    const editor = document.getElement('.element.selected .editor-node');
+    expect(editor.classList.list.includes('hidden')).toEqual(true);
+    expect(edit.handleEditPreview).toHaveBeenCalled();
+    expect(edit.handleSimpleSelection).toHaveBeenCalled();
+  });
+});
