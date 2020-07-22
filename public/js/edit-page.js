@@ -253,12 +253,12 @@ edit.handleDeleteAll = () => {
     edit.saveFn(edit.data);
 };
 
-edit.handleMoveUp = (event) => {
+edit.handleMoveUp = (event, win = window) => {
     event.stopPropagation();
     if (edit.selected.index === 0) return;
 
-    const hold1 = Object.assign({}, edit.selected.data);
-    const hold2 = Object.assign({}, edit.data[edit.selected.index - 1]);
+    const hold1 = win.Object.assign({}, edit.selected.data);
+    const hold2 = win.Object.assign({}, edit.data[edit.selected.index - 1]);
 
     edit.data[edit.selected.index] = hold2;
     edit.data[edit.selected.index - 1] = hold1;
@@ -293,10 +293,10 @@ edit.handleDeleteSelection = (event) => {
     edit.saveFn(edit.data);
 };
 
-edit.handleSaveNew = (event) => {
+edit.handleSaveNew = (event, doc = document) => {
     event.stopPropagation();
 
-    const target = document.querySelector('.element-addition');
+    const target = doc.querySelector('.element-addition');
     let result = {};
 
     const strings = target.querySelectorAll('[datatype=string-edit]');

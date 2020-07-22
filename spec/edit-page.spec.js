@@ -382,4 +382,208 @@ describe('editing page', () => {
     expect(edit.handleEditPreview).toHaveBeenCalled();
     expect(edit.handleSimpleSelection).toHaveBeenCalled();
   });
+
+  it('expects "handleDeleteAll" to clear data, selected, show list, and save', () => {
+    edit.data = ['1', '2', '3'];
+    edit.selected = 'selected';
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleDeleteAll();
+    expect(edit.data).toEqual([]);
+    expect(edit.selected).toBeNull();
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleMoveUp" to not move when index = 0', () => {
+    const event = { stopPropagation: () => {} };
+    edit.data =[
+      { item: '1' },
+      { item: '2' },
+      { item: '3' },
+      { item: '4' },
+      { item: '5' }
+    ];
+    edit.selected = {};
+    edit.selected.index = 0;
+    edit.selected.data = edit.data[edit.selected.index];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleMoveUp(event, window);
+    expect(edit.data[1]).not.toEqual({ item: '3' });
+    expect(edit.data[2]).not.toEqual({ item: '2' });
+    expect(edit.selected).not.toBeNull();
+    expect(edit.showList).not.toHaveBeenCalled();
+    expect(edit.saveFn).not.toHaveBeenCalled();
+  });
+
+  it('expects "handleMoveUp" to move selected by index, show list, and save', () => {
+    const event = { stopPropagation: () => {} };
+    edit.data =[
+      { item: '1' },
+      { item: '2' },
+      { item: '3' },
+      { item: '4' },
+      { item: '5' }
+    ];
+    edit.selected = {};
+    edit.selected.index = 2;
+    edit.selected.data = edit.data[edit.selected.index];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleMoveUp(event, window);
+    expect(edit.data[1]).toEqual({ item: '3' });
+    expect(edit.data[2]).toEqual({ item: '2' });
+    expect(edit.selected).toBeNull();
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleMoveDown" to not move when index = EOL', () => {
+    const event = { stopPropagation: () => {} };
+    edit.data =[
+      { item: '1' },
+      { item: '2' },
+      { item: '3' },
+      { item: '4' },
+      { item: '5' }
+    ];
+    edit.selected = {};
+    edit.selected.index = 4;
+    edit.selected.data = edit.data[edit.selected.index];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleMoveDown(event, window);
+    expect(edit.data[2]).not.toEqual({ item: '4' });
+    expect(edit.data[3]).not.toEqual({ item: '3' });
+    expect(edit.selected).not.toBeNull();
+    expect(edit.showList).not.toHaveBeenCalled();
+    expect(edit.saveFn).not.toHaveBeenCalled();
+  });
+  
+  it('expects "handleMoveDown" to move selected by index, show list, and save', () => {
+    const event = { stopPropagation: () => {} };
+    edit.data =[
+      { item: '1' },
+      { item: '2' },
+      { item: '3' },
+      { item: '4' },
+      { item: '5' }
+    ];
+    edit.selected = {};
+    edit.selected.index = 2;
+    edit.selected.data = edit.data[edit.selected.index];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleMoveDown(event, window);
+    expect(edit.data[2]).toEqual({ item: '4' });
+    expect(edit.data[3]).toEqual({ item: '3' });
+    expect(edit.selected).toBeNull();
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleDeleteSelection" to remove , show list, and save', () => {
+    const event = { stopPropagation: () => {} };
+    edit.data =[
+      { item: '1' },
+      { item: '2' },
+      { item: '3' },
+      { item: '4' },
+      { item: '5' }
+    ];
+    edit.selected = {};
+    edit.selected.index = 2;
+    edit.selected.data = edit.data[edit.selected.index];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleDeleteSelection(event);
+    expect(edit.data.includes({ item: '3' })).toEqual(false);
+    expect(edit.selected).toBeNull();
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleSaveNew" to build a proper group object', () => {
+    const event = { stopPropagation: () => {} };
+    document.configurationFn = (element) => {
+      element.querySelectorAll = (attr) => {
+        let result = [];
+        switch (true) {
+          case (attr === '[datatype=string-edit]'):
+            result = [
+              { getAttribute: () => 'name', value: 'Bob' }
+            ];
+            break;
+          case (attr === '[datatype=color-edit]'):
+            result = [];
+            break;
+        }
+        return result;
+      };
+    };
+    edit.pattern = edit.groupPattern;
+    edit.data = [];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+    const result = {
+      name: 'Bob',
+      prize: null,
+      additional: null,
+      enabled: true
+    };
+
+    edit.handleSaveNew(event, document);
+    expect(edit.data).toEqual([result]);
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleSaveNew" to build a proper panel object', () => {
+    const event = { stopPropagation: () => {} };
+    document.configurationFn = (element) => {
+      element.querySelectorAll = (attr) => {
+        let result = [];
+        switch (true) {
+          case (attr === '[datatype=string-edit]'):
+            result = [
+              { getAttribute: () => 'data', value: 10 },
+              { getAttribute: () => 'text', value: 'Prize' },
+              { getAttribute: () => 'additionalText', value: 'Additional' }
+            ];
+            break;
+          case (attr === '[datatype=color-edit]'):
+            result = [
+              { getAttribute: () => 'color', value: 'black' },
+              { getAttribute: () => 'fcolor', value: 'white' }
+            ];
+            break;
+        }
+        return result;
+      };
+    };
+    edit.pattern = edit.panelPattern;
+    edit.data = [];
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+    const result = {
+      data: 10,
+      text: 'Prize',
+      additionalText: 'Additional',
+      color: 'black',
+      fcolor: 'white',
+      enabled: true
+    };
+
+    edit.handleSaveNew(event, document);
+    expect(edit.data).toEqual([result]);
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
 });

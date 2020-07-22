@@ -12,6 +12,12 @@ win.mock = {
     history: {
         back: () => {}
     },
+    Object: {
+        assign: (a, b) => {
+            a = b;
+            return a;
+        }
+    },
     Audio: function(url) {
         this.url = url;
     },
