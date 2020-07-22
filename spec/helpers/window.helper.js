@@ -9,6 +9,9 @@ win.mock = {
     location: {
         search: '~~~NONE~~~'
     },
+    history: {
+        back: () => {}
+    },
     Audio: function(url) {
         this.url = url;
     },

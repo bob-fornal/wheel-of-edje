@@ -18,6 +18,25 @@ const edit = {
     skipHandleRowSelection: false
 };
 
+edit.reset = () => {
+    edit.defaultColorPattern = {
+        color: '#bee767',
+        fcolor: '#ffffff'
+    };
+    
+    edit.data = null;
+    edit.pattern = null;
+    edit.selected = null;
+    edit.preview = false;
+    edit.previewFn = null;
+    edit.enterToSave = false;
+    edit.saveFn = null;
+    edit.editAsOption = false;
+    edit.editAsType = 'LIST';
+    
+    edit.skipHandleRowSelection = false;
+};
+
 edit.determineType = (win = window) => {
     edit.params = new win.URLSearchParams(win.location.search);
     edit.type = edit.params.get('type');
@@ -75,20 +94,21 @@ edit.groupPattern = {
     enabled: { skip: true, text: 'Enabled', type: 'boolean', default: true }
 };
 
-edit.previewPanel = (dataPoint) => {
-    const completeMarker = document.createElement('div');
+edit.previewPanel = (dataPoint, doc = document) => {
+    const completeMarker = doc.createElement('div');
     completeMarker.classList.add('panel-text');
-    const marker = document.createElement('div');
+    
+    const marker = doc.createElement('div');
     marker.classList.add('panel-main-text');
     marker.innerText = dataPoint.text;
     completeMarker.appendChild(marker);
 
-    additionalMarker = document.createElement('div');
+    const additionalMarker = doc.createElement('div');
     additionalMarker.classList.add('panel-additional-text');
     additionalMarker.innerText = edit.generateAdditionalValueString(dataPoint.additionalText);
     completeMarker.appendChild(additionalMarker);
 
-    const panel = document.createElement('div');
+    const panel = doc.createElement('div');
     panel.classList.add('panel-preview');
     panel.style.backgroundColor = dataPoint.color;
     panel.style.color = dataPoint.fcolor;
@@ -97,28 +117,28 @@ edit.previewPanel = (dataPoint) => {
     return panel;
 };
 
-edit.configuration = () => {
-    switch (edit.type) {
-        case 'group':
+edit.configuration = (store = storage) => {
+    switch (true) {
+        case (edit.type ==='group'):
             edit.pattern = edit.groupPattern;
-            edit.data = storage.getGroup();
+            edit.data = store.getGroup();
             edit.preview = false;
             edit.previewFn = null;
             edit.enterToSave = true;
-            edit.saveFn = storage.saveGroup;
+            edit.saveFn = store.saveGroup;
             edit.editAsOption = true;
     
             edit.title.innerText = 'Group Individuals';
             edit.add.innerText = 'INDIVIDUAL';
             edit.del.innerText = 'GROUP';
             break;
-        case 'panels':
+        case (edit.type === 'panels'):
             edit.pattern = edit.panelPattern;
-            edit.data = storage.getPie();
+            edit.data = store.getPie();
             edit.preview = true;
             edit.previewFn = edit.previewPanel;
             edit.enterToSave = false;
-            edit.saveFn = storage.savePie;
+            edit.saveFn = store.savePie;
             edit.editAsOption = false;
     
             edit.title.innerText = 'Panels';
@@ -139,14 +159,14 @@ edit.configuration = () => {
 };
 
 edit.back = (win = window) => {
-    window.history.back();
+    win.history.back();
 };
 
-edit.selectEditAsType = (type = 'LIST') => {
+edit.selectEditAsType = (type = 'LIST', doc = document, store = storage) => {
     edit.editAsType = type;
 
-    const addTooling = document.querySelector('.tooling .addition-button');
-    const delTooling = document.querySelector('.tooling .delete-all-button');        
+    const addTooling = doc.querySelector('.tooling .addition-button');
+    const delTooling = doc.querySelector('.tooling .delete-all-button');        
 
     if (type === 'LIST') {
         edit.editAsLIST.classList.add('selected');
@@ -162,7 +182,7 @@ edit.selectEditAsType = (type = 'LIST') => {
         edit.showCSV(); 
     }
 
-    storage.saveEditAsType(type);
+    store.saveEditAsType(type);
 };
 
 edit.handleSimpleSelection = (target) => {

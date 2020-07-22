@@ -76,7 +76,11 @@ doc.handleDocumentObjectCreation = (name) => {
         classList: {
             list: []
         },
-        attributes: {}
+        attributes: {},
+        style: {
+            backgroundColor: '~~NONE~~',
+            color: `~~NONE~~`
+        }
     };
     
     obj.setAttribute = (key, values) => {

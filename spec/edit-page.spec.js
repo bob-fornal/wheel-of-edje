@@ -16,6 +16,8 @@ describe('editing page', () => {
 
     win.init();
     window = win.mock;
+
+    edit.reset();
   });
 
   it('expects edit to exist', () => {
@@ -103,4 +105,176 @@ describe('editing page', () => {
     const result = edit.generateAdditionalValueString(value);
     expect(result).toEqual('(VALUE)');
   });
-});
+
+  it('expects "panelPattern" to contain array order that exist as keys', () => {
+    const panel = edit.panelPattern;
+    const order = panel.order;
+    const keys = Object.keys(panel);
+
+    let match = true;
+    order.forEach(innerKey => {
+      if (!keys.includes(innerKey)) {
+        match = false;
+      }
+    });
+    expect(match).toEqual(true);
+  });
+
+  it('expects "groupPattern" to contain array order that exist as keys', () => {
+    const group = edit.groupPattern;
+    const order = group.order;
+    const keys = Object.keys(group);
+
+    let match = true;
+    order.forEach(innerKey => {
+      if (!keys.includes(innerKey)) {
+        match = false;
+      }
+    });
+    expect(match).toEqual(true);
+  });
+
+  it('expects "panelPattern" items to contain certain elements', () => {
+    const panel = edit.panelPattern;
+    const order = panel.order;
+    const contain = ['skip', 'text', 'type', 'default'];
+
+    let match = true;
+    order.forEach(key => {
+      const item = panel[key];
+      const itemKeys = Object.keys(item);
+      contain.forEach(innerKey => {
+        if (!itemKeys.includes(innerKey)) {
+          match = false;
+        }
+      });
+    });
+  });
+
+  it('expects "groupPattern" items to contain certain elements', () => {
+    const group = edit.groupPattern;
+    const order = group.order;
+    const contain = ['skip', 'text', 'type', 'default'];
+
+    let match = true;
+    order.forEach(key => {
+      const item = group[key];
+      const itemKeys = Object.keys(item);
+      contain.forEach(innerKey => {
+        if (!itemKeys.includes(innerKey)) {
+          match = false;
+        }
+      });
+    });
+  });
+
+  it('expects "previewPanel" to take a data point and generate the preview', () => {
+    const data = { text: 'text', additionalText: 'additional', color: 'color', fcolor: 'fcolor' };
+    spyOn(edit, 'generateAdditionalValueString').and.returnValue('(additional)');
+
+    edit.previewPanel(data, document);
+    const completeMarker = document.getElement('UNDEFINED-0');
+    const marker = document.getElement('UNDEFINED-1');
+    const additionalMarker = document.getElement('UNDEFINED-2');
+    const panel = document.getElement('UNDEFINED-3');
+    expect(completeMarker.classList.list.includes('panel-text')).toEqual(true);
+    expect(marker.classList.list.includes('panel-main-text')).toEqual(true);
+    expect(marker.innerText).toEqual(data.text);
+    expect(additionalMarker.classList.list.includes('panel-additional-text')).toEqual(true);
+    expect(additionalMarker.innerText).toEqual('(additional)');
+    expect(panel.classList.list.includes('panel-preview')).toEqual(true);
+    expect(panel.style.backgroundColor).toEqual('color');
+    expect(panel.style.color).toEqual('fcolor');
+  });
+
+  it('expects "configuration" to configure for group properly', () => {
+    edit.type = 'group';
+    edit.generateQueries(document);
+    spyOn(storage, 'getGroup').and.returnValue('group data');
+    spyOn(storage, 'getPie').and.returnValue('pie data');
+
+    edit.configuration(storage);
+    expect(edit.pattern).toEqual(jasmine.any(Object));
+    expect(edit.data).toEqual('group data');
+    expect(edit.preview).toEqual(false);
+    expect(edit.previewFn).toBeNull();
+    expect(edit.enterToSave).toEqual(true);
+    expect(edit.saveFn).toEqual(jasmine.any(Function));
+    expect(edit.editAsOption).toEqual(true);
+    expect(edit.title.innerText).toEqual('Group Individuals');
+    expect(edit.add.innerText).toEqual('INDIVIDUAL');
+    expect(edit.del.innerText).toEqual('GROUP');
+    
+    expect(edit.previewState.innerText).toEqual('FALSE');
+    expect(edit.enterToSaveState.innerText).toEqual('TRUE');
+    expect(edit.editAsType).toEqual('LIST');
+  });
+
+  it('expects "configuration" to configure for panels properly', () => {
+    edit.type = 'panels';
+    edit.editAsType = 'PANELS';
+    edit.generateQueries(document);
+    spyOn(storage, 'getGroup').and.returnValue('group data');
+    spyOn(storage, 'getPie').and.returnValue('pie data');
+
+    edit.configuration(storage);
+    expect(edit.pattern).toEqual(jasmine.any(Object));
+    expect(edit.data).toEqual('pie data');
+    expect(edit.preview).toEqual(true);
+    expect(edit.previewFn).toEqual(jasmine.any(Function));
+    expect(edit.enterToSave).toEqual(false);
+    expect(edit.saveFn).toEqual(jasmine.any(Function));
+    expect(edit.editAsOption).toEqual(false);
+    expect(edit.title.innerText).toEqual('Panels');
+    expect(edit.add.innerText).toEqual('PANEL');
+    expect(edit.del.innerText).toEqual('PANELS');
+    
+    expect(edit.previewState.innerText).toEqual('TRUE');
+    expect(edit.enterToSaveState.innerText).toEqual('FALSE');
+    expect(edit.editAsType).toEqual('PANELS');
+  });
+
+  it('expects "back" to use history.back', () => {
+    spyOn(window.history, 'back').and.stub();
+
+    edit.back(window);
+    expect(window.history.back).toHaveBeenCalled();
+  });
+
+  it('expects "selectEditAsType" to configure for LIST type', () => {
+    const type = 'LIST';
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'showCSV').and.stub();
+    spyOn(storage, 'saveEditAsType').and.stub();
+    edit.generateQueries(document);
+
+    edit.selectEditAsType(type, document, storage);
+    const addTooling = document.getElement('.tooling .addition-button');
+    const delTooling = document.getElement('.tooling .delete-all-button');        
+    expect(edit.editAsType).toEqual(type);
+    expect(edit.editAsLIST.classList.list.includes('selected')).toEqual(true);
+    expect(edit.editAsCSV.classList.list.includes('selected')).toEqual(false);
+    expect(addTooling.classList.list.includes('hidden')).toEqual(false);
+    expect(delTooling.classList.list.includes('hidden')).toEqual(false);
+    expect(edit.showList).toHaveBeenCalled();
+    expect(storage.saveEditAsType).toHaveBeenCalled();
+  });
+
+  it('expects "selectEditAsType" to configure for CSV type', () => {
+    const type = 'CSV';
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'showCSV').and.stub();
+    spyOn(storage, 'saveEditAsType').and.stub();
+    edit.generateQueries(document);
+
+    edit.selectEditAsType(type, document, storage);
+    const addTooling = document.getElement('.tooling .addition-button');
+    const delTooling = document.getElement('.tooling .delete-all-button');        
+    expect(edit.editAsType).toEqual(type);
+    expect(edit.editAsLIST.classList.list.includes('selected')).toEqual(false);
+    expect(edit.editAsCSV.classList.list.includes('selected')).toEqual(true);
+    expect(addTooling.classList.list.includes('hidden')).toEqual(true);
+    expect(delTooling.classList.list.includes('hidden')).toEqual(true);
+    expect(edit.showCSV).toHaveBeenCalled();
+    expect(storage.saveEditAsType).toHaveBeenCalled();
+  });});

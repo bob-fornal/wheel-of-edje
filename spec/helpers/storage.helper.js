@@ -11,11 +11,15 @@ store.mock = {
     getActiveSound: () => {},
     saveActiveSound: () => {},
 
+    getGroup: () => {},
     saveGroup: (group) => {
         store.data.group = group;
     },
 
-    savePie: () => {}
+    getPie: () => {},
+    savePie: () => {},
+
+    saveEditAsType: () => {}
 };
 
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
