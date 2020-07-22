@@ -151,6 +151,9 @@ body {
 .panel-additional:not(.hide-borders) {
   border: 1px solid black;
 }
+.panel-additional.hide-borders {
+  color: silver;
+}
 
 
 .group .button.enable:not(.hidden) {
