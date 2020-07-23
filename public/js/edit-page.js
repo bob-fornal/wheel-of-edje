@@ -293,28 +293,34 @@ edit.handleDeleteSelection = (event) => {
     edit.saveFn(edit.data);
 };
 
-edit.handleSaveNew = (event, doc = document) => {
+edit.coreSaveType = (result, target, pattern, matchValue) => {
+    const data = target.querySelectorAll(pattern);
+    data.forEach(datum => {
+        const key = datum.getAttribute('data-key');
+        const type = edit.pattern[key].type;
+        const value = matchValue(datum, type);
+
+        result[key] = value;
+    });
+};
+
+edit.coreSave = (event, target, result) => {
     event.stopPropagation();
 
+    let pattern = '[datatype=string-edit]';
+    let matchValue = (datum, type = '') => (type === 'string') ? datum.value : Number(datum.value);
+    edit.coreSaveType(result, target, pattern, matchValue);
+
+    pattern = '[datatype=color-edit]';
+    matchValue = (datum) => datum.value;
+    edit.coreSaveType(result, target, pattern, matchValue);
+
+    return result;
+};
+
+edit.handleSaveNew = (event, doc = document) => {
     const target = doc.querySelector('.element-addition');
-    let result = {};
-
-    const strings = target.querySelectorAll('[datatype=string-edit]');
-    strings.forEach(string => {
-        const key = string.getAttribute('data-key');
-        const type = edit.pattern[key].type;
-        const value = (type === 'string') ? string.value : Number(string.value);
-
-        result[key] = value;
-    });
-
-    const colors = target.querySelectorAll('[datatype=color-edit]');
-    colors.forEach(color => {
-        const key = color.getAttribute('data-key');
-        const value = color.value;
-
-        result[key] = value;
-    });
+    let result = edit.coreSave(event, target, {});
 
     for (let key in edit.pattern) {
         if (key !== 'order' && edit.pattern[key].skip === true) {
@@ -329,29 +335,13 @@ edit.handleSaveNew = (event, doc = document) => {
 };
 
 edit.handleSaveSelection = (event) => {
-    event.stopPropagation();
-
-    const editorNode = edit.selected.target.querySelector('.editor-node');
+    const target = edit.selected.target;
+    const editorNode = target.querySelector('.editor-node');
     editorNode.classList.add('hidden');
 
-    const strings = edit.selected.target.querySelectorAll('[datatype=string-edit]');
-    strings.forEach(string => {
-        const key = string.getAttribute('data-key');
-        const type = edit.pattern[key].type;
-        const value = (type === 'string') ? string.value : Number(string.value);
+    edit.coreSave(event, target, edit.selected.data);
 
-        edit.selected.data[key] = value;
-    });
-
-    const colors = edit.selected.target.querySelectorAll('[datatype=color-edit]');
-    colors.forEach(color => {
-        const key = color.getAttribute('data-key');
-        const value = color.value;
-
-        edit.selected.data[key] = value;
-    });
-
-    edit.selected.target.classList.remove('selected');
+    target.classList.remove('selected');
     edit.selected = null;
 
     edit.showList();

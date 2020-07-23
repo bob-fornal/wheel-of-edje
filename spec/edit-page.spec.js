@@ -586,4 +586,56 @@ describe('editing page', () => {
     expect(edit.showList).toHaveBeenCalled();
     expect(edit.saveFn).toHaveBeenCalled();
   });
+
+  it('expects "coreSaveType" to get elements and process complex values', () => {
+    const matchValue = (datum, type = '') => (type === 'string') ? datum.value : Number(datum.value);
+    edit.pattern = {
+      'key1': { type: 'string' },
+      'key2': { type: 'string' },
+      'key3': { type: 'string' },
+      'key4': { type: 'number' }
+    };
+    document.configurationFn = () => [
+      { getAttribute: () => 'key1', value: 'value1' },
+      { getAttribute: () => 'key2', value: 'value2' },
+      { getAttribute: () => 'key3', value: 'value3' },
+      { getAttribute: () => 'key4', value: '7' }
+    ];
+    const expectedResult = {
+      'key1': 'value1',
+      'key2': 'value2',
+      'key3': 'value3',
+      'key4': 7,
+    };
+
+    let result = {};
+    edit.coreSaveType(result, document, 'pattern', matchValue);
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('expects "coreSaveType" to get elements and process simple values', () => {
+    const matchValue = (datum) => datum.value;
+    edit.pattern = {
+      'key1': { type: 'string' },
+      'key2': { type: 'string' },
+      'key3': { type: 'string' },
+      'key4': { type: 'string' }
+    };
+    document.configurationFn = () => [
+      { getAttribute: () => 'key1', value: 'value1' },
+      { getAttribute: () => 'key2', value: 'value2' },
+      { getAttribute: () => 'key3', value: 'value3' },
+      { getAttribute: () => 'key4', value: '7' }
+    ];
+    const expectedResult = {
+      'key1': 'value1',
+      'key2': 'value2',
+      'key3': 'value3',
+      'key4': '7',
+    };
+
+    let result = {};
+    edit.coreSaveType(result, document, 'pattern', matchValue);
+    expect(result).toEqual(expectedResult);
+  });
 });
