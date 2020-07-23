@@ -68,6 +68,11 @@ describe('editing page', () => {
     expect(edit.changePreviewPanelText).toEqual(jasmine.any(Function));
     expect(edit.handleStringKeyup).toEqual(jasmine.any(Function));
     expect(edit.handleAddition).toEqual(jasmine.any(Function));
+    expect(edit.createEditorNode).toEqual(jasmine.any(Function));
+    expect(edit.createUpNode).toEqual(jasmine.any(Function));
+    expect(edit.createDownNode).toEqual(jasmine.any(Function));
+    expect(edit.createSaveNode).toEqual(jasmine.any(Function));
+    expect(edit.createDeleteNode).toEqual(jasmine.any(Function));
     expect(edit.addEditorNode).toEqual(jasmine.any(Function));
     expect(edit.addStringNode).toEqual(jasmine.any(Function));
     expect(edit.addColorNode).toEqual(jasmine.any(Function));
@@ -637,5 +642,487 @@ describe('editing page', () => {
     let result = {};
     edit.coreSaveType(result, document, 'pattern', matchValue);
     expect(result).toEqual(expectedResult);
+  });
+
+  it('expects "coreSave" to handle data construction for saves', () => {
+    const event = { stopPropagation: () => {} };
+    spyOn(edit, 'coreSaveType').and.stub();
+
+    const result = edit.coreSave(event, '', {});
+    expect(result).toEqual({});
+    expect(edit.coreSaveType).toHaveBeenCalledTimes(2);
+  });
+
+  it('expects "handleSaveNew" to build a result adding defaults for skipped pattern values', () => {
+    const event = {};
+    edit.pattern = edit.groupPattern;
+    edit.data = [];
+    spyOn(edit, 'coreSave').and.returnValue({ name: 'Bob' });
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+    const expectedResult = [{
+      name: 'Bob',
+      prize: null,
+      additional: null,
+      enabled: true
+    }];
+
+    edit.handleSaveNew(event, document);
+    expect(edit.data).toEqual(expectedResult);
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleSaveSelection" to update selected data', () => {
+    const event = {};
+    edit.selected = {};
+    edit.selected.target = document.querySelector('1');
+    edit.selected.target.classList.add('selected');
+    edit.selected.target.querySelector = () => {
+      return document.querySelector('2');
+    };
+    spyOn(edit, 'coreSave').and.stub();
+    spyOn(edit, 'showList').and.stub();
+    spyOn(edit, 'saveFn').and.stub();
+
+    edit.handleSaveSelection(event);
+    const target = document.getElement('1');
+    const editor = document.getElement('2');
+    expect(editor.classList.list.includes('hidden')).toEqual(true);
+    expect(edit.coreSave).toHaveBeenCalled();
+    expect(edit.selected).toBeNull();
+    expect(edit.showList).toHaveBeenCalled();
+    expect(edit.saveFn).toHaveBeenCalled();
+  });
+
+  it('expects "handleNextSelection" to get target and set focus', () => {
+    jasmine.clock().install();
+
+    let focusFired = false;
+    const handleFocus = () => {
+      focusFired = true;
+    };
+    document.configurationFn = (element) => {
+      element.querySelector = () => {
+        return { focus: handleFocus };
+      };
+    };
+    edit.data = [1, 2, 3, 4, 5];
+    spyOn(edit, 'handleSimpleSelection').and.stub();
+
+    edit.handleNextSelection(0, document);
+    jasmine.clock().tick(20);
+    expect(edit.handleSimpleSelection).toHaveBeenCalled();
+    expect(focusFired).toEqual(true);
+
+    jasmine.clock().uninstall();
+  });
+
+  it('expects "changePreviewPanelColor" to set target attributes', () => {
+    const value = { color: 'background', fcolor: 'foreground' };
+    let result;
+    const target = {
+      setAttribute: (type, data) => {
+        result = { type, data };
+      }
+    };
+    edit.preview = true;
+
+    edit.changePreviewPanelColor({ value, target });
+    expect(result).toEqual({
+      "type": "style",
+      "data": "background-color: background; color: foreground;"
+    });
+  });
+
+  it('expects "getSelector" to determine addition node was selected', () => {
+    const event = { target: '' };
+    document.configurationFn = (element) => {
+      element.contains = () => true;
+    };
+
+    const result = edit.getSelector(event, document);
+    expect(result).toEqual('.element-addition');
+  });
+
+  it('expects "getSelector" to determine selected node was selected', () => {
+    const event = { target: '' };
+    document.configurationFn = (element) => {
+      element.contains = () => false;
+    };
+
+    const result = edit.getSelector(event, document);
+    expect(result).toEqual('.element.selected');
+  });
+
+  it('expects "handleColorChange" to skip selection, determine colors and change', () => {
+    const event = {
+      stopPropagation: () => {},
+      target: { getAttribute: () => 'color', value: 'color-background' }
+    };
+    edit.skipHandleRowSelection = false;
+    edit.selected = { data: { color: 'background', fcolor: 'foreground' } };
+    spyOn(edit, 'getSelector').and.returnValue('.element.selected');
+    spyOn(edit, 'changePreviewPanelColor').and.stub();
+
+    edit.handleColorChange(event, document);
+    expect(edit.skipHandleRowSelection).toEqual(true);
+    expect(edit.changePreviewPanelColor).toHaveBeenCalledWith({
+      value: { color: 'color-background', fcolor: 'foreground' },
+      target: jasmine.any(Object)
+    });
+  });
+
+  it('expects "handleColorChange" to skip selection, determine colors and change', () => {
+    const event = {
+      stopPropagation: () => {},
+      target: { getAttribute: () => 'fcolor', value: 'color-foreground' }
+    };
+    edit.skipHandleRowSelection = false;
+    edit.selected = { data: { color: 'background', fcolor: 'foreground' } };
+    spyOn(edit, 'getSelector').and.returnValue('.element.selected');
+    spyOn(edit, 'changePreviewPanelColor').and.stub();
+
+    edit.handleColorChange(event, document);
+    expect(edit.skipHandleRowSelection).toEqual(true);
+    expect(edit.changePreviewPanelColor).toHaveBeenCalledWith({
+      value: { color: 'background', fcolor: 'color-foreground' },
+      target: jasmine.any(Object)
+    });
+  });
+
+  it('expects "handleColorChange" to skip selection, determine colors and change', () => {
+    const event = {
+      stopPropagation: () => {},
+      target: { getAttribute: () => 'color', value: 'color-background' }
+    };
+    edit.skipHandleRowSelection = false;
+    edit.selected = { data: { color: 'background', fcolor: 'foreground' } };
+    spyOn(edit, 'getSelector').and.returnValue('.element-addition');
+    spyOn(edit, 'changePreviewPanelColor').and.stub();
+
+    edit.handleColorChange(event, document);
+    expect(edit.skipHandleRowSelection).toEqual(true);
+    expect(edit.changePreviewPanelColor).toHaveBeenCalledWith({
+      value: { color: 'color-background', fcolor: '#ffffff' },
+      target: jasmine.any(Object)
+    });
+  });
+
+  it('expects "handleColorChange" to skip selection, determine colors and change', () => {
+    const event = {
+      stopPropagation: () => {},
+      target: { getAttribute: () => 'fcolor', value: 'color-foreground' }
+    };
+    edit.skipHandleRowSelection = false;
+    edit.selected = { data: { color: 'background', fcolor: 'foreground' } };
+    spyOn(edit, 'getSelector').and.returnValue('.element-addition');
+    spyOn(edit, 'changePreviewPanelColor').and.stub();
+
+    edit.handleColorChange(event, document);
+    expect(edit.skipHandleRowSelection).toEqual(true);
+    expect(edit.changePreviewPanelColor).toHaveBeenCalledWith({
+      value: { color: '#bee767', fcolor: 'color-foreground' },
+      target: jasmine.any(Object)
+    });
+  });
+
+  it('expects "changePreviewPanelText" to set target inner text', () => {
+    const value = 'value';
+    const target = { innerText: '~~~NONE~~~' };
+    edit.preview = true;
+
+    edit.changePreviewPanelText({ value, target });
+    expect(target.innerText).toEqual(value);
+  });
+
+  it('expects "changePreviewPanelText" to not set target inner text', () => {
+    const value = 'value';
+    const target = { innerText: '~~~NONE~~~' };
+    edit.preview = false;
+
+    edit.changePreviewPanelText({ value, target });
+    expect(target.innerText).not.toEqual(value);
+  });
+
+  it('expects "handleStringKeyup" to save and move to next selection on ENTER', () => {
+    const event = { key: 'Enter', target: { value: 'value', getAttribute: () => 'text' } };
+    edit.selected = {index: 2 };
+    edit.enterToSave = true;
+    spyOn(edit, 'getSelector').and.returnValue('NONE');
+    spyOn(edit, 'handleSaveSelection').and.stub();
+    spyOn(edit, 'handleNextSelection').and.stub();
+    spyOn(edit, 'changePreviewPanelText').and.stub();
+
+    edit.handleStringKeyup(event, document);
+    expect(edit.handleSaveSelection).toHaveBeenCalled();
+    expect(edit.handleNextSelection).toHaveBeenCalled();
+    expect(edit.changePreviewPanelText).not.toHaveBeenCalled();
+  });
+
+  it('expects "handleStringKeyup" to change preview panel text', () => {
+    const event = { key: 'Enter', target: { value: 'value', getAttribute: () => 'text' } };
+    edit.selected = {index: 2 };
+    edit.enterToSave = false;
+    spyOn(edit, 'getSelector').and.returnValue('NONE');
+    spyOn(edit, 'handleSaveSelection').and.stub();
+    spyOn(edit, 'handleNextSelection').and.stub();
+    spyOn(edit, 'changePreviewPanelText').and.stub();
+
+    edit.handleStringKeyup(event, document);
+    expect(edit.handleSaveSelection).not.toHaveBeenCalled();
+    expect(edit.handleNextSelection).not.toHaveBeenCalled();
+    expect(edit.changePreviewPanelText).toHaveBeenCalled();
+  });
+
+  it('expects "handleStringKeyup" to change preview panel additional text', () => {
+    const event = { key: 'Enter', target: { value: 'value', getAttribute: () => 'additionalText' } };
+    edit.selected = {index: 2 };
+    edit.enterToSave = false;
+    spyOn(edit, 'getSelector').and.returnValue('NONE');
+    spyOn(edit, 'handleSaveSelection').and.stub();
+    spyOn(edit, 'handleNextSelection').and.stub();
+    spyOn(edit, 'changePreviewPanelText').and.stub();
+
+    edit.handleStringKeyup(event, document);
+    expect(edit.handleSaveSelection).not.toHaveBeenCalled();
+    expect(edit.handleNextSelection).not.toHaveBeenCalled();
+    expect(edit.changePreviewPanelText).toHaveBeenCalled();
+  });
+
+  it('expects "handleAddition" to remote hidden class from addition element', () => {
+    document.configurationFn = (element) => {
+      element.classList.add('hidden');
+    };
+
+    edit.handleAddition(document);
+    const addition = document.getElement('.element-addition');
+    expect(addition.classList.list.includes('hidden')).toEqual(false);
+  });
+
+  it('expects "createEditorNode" to return non-hidden element', () => {
+    const add =  true;
+
+    const element = edit.createEditorNode(add, document);
+    expect(element.classList.list.includes('editor-node')).toEqual(true);
+    expect(element.classList.list.includes('hidden')).toEqual(false);
+  });
+
+  it('expects "createEditorNode" to return hidden element', () => {
+    const add =  false;
+
+    const element = edit.createEditorNode(add, document);
+    expect(element.classList.list.includes('editor-node')).toEqual(true);
+    expect(element.classList.list.includes('hidden')).toEqual(true);
+  });
+
+  it('expects "createUpNode" to return enabled element', () => {
+    const first = false;
+
+    const element = edit.createUpNode(first, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('up')).toEqual(true);
+    expect(element.src).toEqual('images/up.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Move Up');
+  });
+
+  it('expects "createUpNode" to return disabled element', () => {
+    const first = true;
+
+    const element = edit.createUpNode(first, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('up')).toEqual(true);
+    expect(element.classList.list.includes('disabled')).toEqual(true);
+    expect(element.src).toEqual('images/up-disabled.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Move Up');
+  });
+
+  it('expects "createDownNode" to return enabled element', () => {
+    const last = false;
+
+    const element = edit.createDownNode(last, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('down')).toEqual(true);
+    expect(element.src).toEqual('images/down.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Move Down');
+  });
+
+  it('expects "createDownNode" to return disabled element', () => {
+    const last = true;
+
+    const element = edit.createDownNode(last, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('down')).toEqual(true);
+    expect(element.classList.list.includes('disabled')).toEqual(true);
+    expect(element.src).toEqual('images/down-disabled.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Move Down');
+  });
+
+  it('expects "createSaveNode" to return save new element', () => {
+    const add = true;
+
+    const element = edit.createSaveNode(add, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('save')).toEqual(true);
+    expect(element.src).toEqual('images/save.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Save New Row');
+  });
+
+  it('expects "createSaveNode" to return save row changes element', () => {
+    const add = false;
+
+    const element = edit.createSaveNode(add, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('save')).toEqual(true);
+    expect(element.src).toEqual('images/save.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Save Row Changes');
+  });
+
+  it('expects "createDeleteNode" to return disabled element', () => {
+    const add = true;
+
+    const element = edit.createDeleteNode(add, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('delete')).toEqual(true);
+    expect(element.src).toEqual('images/trash-disabled.png');
+    expect(element.onclick).not.toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Delete Row');
+  });
+
+  it('expects "createDeleteNode" to return enabled element', () => {
+    const add = false;
+
+    const element = edit.createDeleteNode(add, document);
+    expect(element.classList.list.includes('editor-icon')).toEqual(true);
+    expect(element.classList.list.includes('delete')).toEqual(true);
+    expect(element.src).toEqual('images/trash.png');
+    expect(element.onclick).toEqual(jasmine.any(Function));
+    expect(element.title).toEqual('Delete Row');
+  });
+
+  it('expects "addEditorNode" to build the proper structure', () => {
+    const node = {
+      appendChild: () => {}
+    };
+    const editorNode = {
+      appendChild: () => {}
+    };
+    spyOn(edit, 'createEditorNode').and.returnValue(editorNode);
+    spyOn(edit, 'createUpNode').and.stub();
+    spyOn(edit, 'createDownNode').and.stub();
+    spyOn(edit, 'createSaveNode').and.stub();
+    spyOn(edit, 'createDeleteNode').and.stub();
+
+    edit.addEditorNode(node);
+    expect(edit.createEditorNode).toHaveBeenCalled();
+    expect(edit.createUpNode).toHaveBeenCalled();
+    expect(edit.createDownNode).toHaveBeenCalled();
+    expect(edit.createSaveNode).toHaveBeenCalled();
+    expect(edit.createDeleteNode).toHaveBeenCalled();
+  });
+
+  it('expects "addStringNode" to add view and edit forms', () => {
+    const div = {
+      nodes: []
+    };
+    div.appendChild = (element) => {
+      div.nodes.push(element);
+    };
+    const subdata = 'the text';
+    const key = 'key';
+
+    edit.addStringNode(div,subdata, key, document);
+    const content = div.nodes[0];
+    const input = div.nodes[1];
+    expect(content.classList.list.includes('element-content')).toEqual(true);
+    expect(content.attributes.datatype).toEqual('string-view');
+    expect(content.innerText).toEqual(subdata);
+    expect(input.type).toEqual('text');
+    expect(input.value).toEqual(subdata);
+    expect(input.attributes.datatype).toEqual('string-edit');
+    expect(input.attributes['data-key']).toEqual(key);
+    expect(input.onkeyup).toEqual(jasmine.any(Function));
+  });
+
+  it('expects "addColorNode" to add view and edit forms', () => {
+    const div = {
+      nodes: []
+    };
+    div.appendChild = (element) => {
+      div.nodes.push(element);
+    };
+    const subdata = 'the text';
+    const key = 'key';
+
+    edit.addColorNode(div,subdata, key, document);
+    const content = div.nodes[0];
+    const input = div.nodes[1];
+    expect(content.classList.list.includes('element-content')).toEqual(true);
+    expect(content.attributes.datatype).toEqual('color-view');
+    expect(content.attributes.style).toEqual('background-color: the text;');
+    expect(input.type).toEqual('color');
+    expect(input.value).toEqual(subdata);
+    expect(input.attributes.datatype).toEqual('color-edit');
+    expect(input.onchange).toEqual(jasmine.any(Function));
+    expect(input.attributes['data-key']).toEqual(key);
+  });
+
+  it('expects "addElement" to generate a data row', () => {
+    const element = {
+      data1: { text: 'data1-text', type: 'string' },
+      data2: { text: 'data2-text', type: 'string' }
+    };
+    const div = {
+      nodes: []
+    };
+    div.appendChild = (element) => {
+      div.nodes.push(element);
+    };
+    edit.pattern = {
+      order: ['data1', 'data2'],
+      data1: { skip: false },
+      data2: { skip: true }
+    };
+    spyOn(edit, 'addStringNode').and.stub();
+    spyOn(edit, 'addColorNode').and.stub();
+
+    edit.addElement({ element, j: 0, divNode: div }, document);
+    const row = div.nodes[0];
+    const label = document.getElement('UNDEFINED-1');
+    expect(label).toBeDefined();
+    expect(row.classList.list.includes('row')).toEqual(true);
+    expect(label.classList.list.includes('label')).toEqual(true);
+  });
+
+  it('expects "addElement" to skip a data row', () => {
+    const element = {
+      data1: { text: 'data1-text', type: 'string' },
+      data2: { text: 'data2-text', type: 'string' }
+    };
+    const div = {
+      nodes: []
+    };
+    div.appendChild = (element) => {
+      div.nodes.push(element);
+    };
+    edit.pattern = {
+      order: ['data1', 'data2'],
+      data1: { skip: false },
+      data2: { skip: true }
+    };
+    spyOn(edit, 'addStringNode').and.stub();
+    spyOn(edit, 'addColorNode').and.stub();
+
+    edit.addElement({ element, j: 1, divNode: div }, document);
+    const row = div.nodes[0];
+    const label = document.getElement('UNDEFINED-1');
+    expect(label).not.toBeDefined();
+    expect(row).not.toBeDefined();
   });
 });

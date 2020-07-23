@@ -91,12 +91,14 @@ doc.handleDocumentObjectCreation = (name) => {
     };
     obj.appendChild = () => {};
 
-    obj.classList.add = (className) => {
-        obj.classList.list.push(className);
+    obj.classList.add = (...args) => {
+        args.forEach(argument => {
+            obj.classList.list.push(argument);
+        });
     };
     obj.classList.remove = (className) => {
         let list = obj.classList.list;
-        list = list.filter(e => e !== className);
+        obj.classList.list = list.filter(e => e !== className);
     };
     obj.classList.toggle = (className) => {
         let result = false;

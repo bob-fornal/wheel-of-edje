@@ -348,9 +348,9 @@ edit.handleSaveSelection = (event) => {
     edit.saveFn(edit.data);
 };
 
-edit.handleNextSelection = (currentIndex) => {
+edit.handleNextSelection = (currentIndex, doc = document) => {
     const nextIndex = ((currentIndex + 1) > (edit.data.length - 1)) ? 0 : currentIndex + 1;
-    const target = document.querySelector(`[data-index="${ nextIndex }"]`);
+    const target = doc.querySelector(`[data-index="${ nextIndex }"]`);
 
     edit.handleSimpleSelection(target);
     setTimeout(() => {
@@ -361,13 +361,13 @@ edit.handleNextSelection = (currentIndex) => {
 
 edit.changePreviewPanelColor = ({ value, target }) => {
     if (edit.preview === true) {
-        target.setAttribute('style', `background-color: ${ value.color }; color: ${ value.fcolor }`);
+        target.setAttribute('style', `background-color: ${ value.color }; color: ${ value.fcolor };`);
     }
 };
 
-edit.getSelector = (event) => {
+edit.getSelector = (event, doc = document) => {
     let selector = '';
-    const additionNode = document.querySelector('.element-addition');
+    const additionNode = doc.querySelector('.element-addition');
     if (additionNode.contains(event.target)) {
         selector = '.element-addition';
     } else {
@@ -376,7 +376,7 @@ edit.getSelector = (event) => {
     return selector;
 };
 
-edit.handleColorChange = (event) => {
+edit.handleColorChange = (event, doc = document) => {
     event.stopPropagation();
     edit.skipHandleRowSelection = true;
 
@@ -392,12 +392,14 @@ edit.handleColorChange = (event) => {
         color: edit.defaultColorPattern.color,
         fcolor: edit.defaultColorPattern.fcolor
     };
+
     if (key === 'color') {
         style.color = value;
     } else if (key === 'fcolor') {
         style.fcolor = value;
     }
-    edit.changePreviewPanelColor({ value: style, target: document.querySelector(`${ selector } .panel-preview`) });
+
+    edit.changePreviewPanelColor({ value: style, target: doc.querySelector(`${ selector } .panel-preview`) });
 };
 
 edit.changePreviewPanelText = ({ value, target }) => {
@@ -406,7 +408,7 @@ edit.changePreviewPanelText = ({ value, target }) => {
     }
 };
 
-edit.handleStringKeyup = (event) => {
+edit.handleStringKeyup = (event, doc = document) => {
     let selector = edit.getSelector(event);
 
     if (edit.enterToSave === true && event.key === 'Enter') {
@@ -420,87 +422,112 @@ edit.handleStringKeyup = (event) => {
     const key = event.target.getAttribute('data-key');
     if (key === 'text') {
         edit.changePreviewPanelText({
-            value, target: document.querySelector(`${ selector } .panel-main-text`)
+            value, target: doc.querySelector(`${ selector } .panel-main-text`)
         });
     } else if (key === 'additionalText') {
         edit.changePreviewPanelText({
             value: edit.generateAdditionalValueString(value),
-            target: document.querySelector(`${ selector } .panel-additional-text`)
+            target: doc.querySelector(`${ selector } .panel-additional-text`)
         });
     }
 };
 
-edit.handleAddition = () => {
-    const addition = document.querySelector('.element-addition');
+edit.handleAddition = (doc = document) => {
+    const addition = doc.querySelector('.element-addition');
     addition.classList.remove('hidden');
 };
 
-edit.addEditorNode = (div, first = false, last = false, add = false) => {
-    const editorNode = document.createElement('div');
+edit.createEditorNode = (add, doc = document) => {
+    const node = doc.createElement('div');
     if (add === true) {
-        editorNode.classList.add('editor-node');
+        node.classList.add('editor-node');
     } else {
-        editorNode.classList.add('editor-node', 'hidden');
+        node.classList.add('editor-node', 'hidden');
     }
-
-    const upNode = document.createElement('img');
-    upNode.classList.add('editor-icon', 'up');
-    if (first === true) {
-        upNode.classList.add('disabled');
-        upNode.src = 'images/up-disabled.png';
-    } else {
-        upNode.src = 'images/up.png';
-    }
-    upNode.onclick = edit.handleMoveUp;
-    upNode.title = 'Move Up';
-    editorNode.appendChild(upNode);
-
-    const downNode = document.createElement('img');
-    downNode.classList.add('editor-icon', 'down');
-    if (last === true) {
-        downNode.classList.add('disabled');
-        downNode.src = 'images/down-disabled.png';
-    } else {
-        downNode.src = 'images/down.png';
-    }
-    downNode.onclick = edit.handleMoveDown;
-    downNode.title = 'Move Down';
-    editorNode.appendChild(downNode);
-
-    const saveNode = document.createElement('img');
-    saveNode.classList.add('editor-icon', 'save');
-    saveNode.src = 'images/save.png';
-    if (add === true) {
-        saveNode.onclick = edit.handleSaveNew;
-        saveNode.title = 'Save New Row';
-    } else {
-        saveNode.onclick = edit.handleSaveSelection;
-        saveNode.title = 'Save Row Changes';
-    }
-    editorNode.appendChild(saveNode);
-
-    const deleteNode = document.createElement('img');
-    deleteNode.classList.add('editor-icon', 'delete');
-    if (add === true) {
-        deleteNode.src = 'images/trash-disabled.png';
-    } else {
-        deleteNode.src = 'images/trash.png';
-        deleteNode.onclick = edit.handleDeleteSelection;
-    }
-    deleteNode.title = 'Delete Row';
-    editorNode.appendChild(deleteNode);
-
-    div.appendChild(editorNode);    
+    return node;
 };
 
-edit.addStringNode = (div, subdata, key) => {
-    const divContent = document.createElement('div');
+edit.createUpNode = (first, doc = document) => {
+    const node = doc.createElement('img');
+    node.classList.add('editor-icon', 'up');
+    if (first === true) {
+        node.classList.add('disabled');
+        node.src = 'images/up-disabled.png';
+    } else {
+        node.src = 'images/up.png';
+    }
+    node.onclick = edit.handleMoveUp;
+    node.title = 'Move Up';
+    return node;
+};
+
+edit.createDownNode = (last, doc = document) => {
+    const node = doc.createElement('img');
+    node.classList.add('editor-icon', 'down');
+    if (last === true) {
+        node.classList.add('disabled');
+        node.src = 'images/down-disabled.png';
+    } else {
+        node.src = 'images/down.png';
+    }
+    node.onclick = edit.handleMoveDown;
+    node.title = 'Move Down';
+    return node;
+};
+
+edit.createSaveNode = (add, doc = document) => {
+    const node = doc.createElement('img');
+    node.classList.add('editor-icon', 'save');
+    node.src = 'images/save.png';
+    if (add === true) {
+        node.onclick = edit.handleSaveNew;
+        node.title = 'Save New Row';
+    } else {
+        node.onclick = edit.handleSaveSelection;
+        node.title = 'Save Row Changes';
+    }
+    return node;
+};
+
+edit.createDeleteNode = (add, doc = document) => {
+    const node = doc.createElement('img');
+    node.classList.add('editor-icon', 'delete');
+    if (add === true) {
+        node.src = 'images/trash-disabled.png';
+    } else {
+        node.src = 'images/trash.png';
+        node.onclick = edit.handleDeleteSelection;
+    }
+    node.title = 'Delete Row';
+    return node;
+};
+
+edit.addEditorNode = (node, first = false, last = false, add = false) => {
+    const editorNode = edit.createEditorNode(add);
+
+    const upNode = edit.createUpNode(first);
+    editorNode.appendChild(upNode);
+
+    const downNode = edit.createDownNode(last);
+    editorNode.appendChild(downNode);
+
+    const saveNode = edit.createSaveNode(add);
+    editorNode.appendChild(saveNode);
+
+    const deleteNode = edit.createDeleteNode(add);
+    editorNode.appendChild(deleteNode);
+
+    node.appendChild(editorNode);    
+};
+
+edit.addStringNode = (div, subdata, key, doc = document) => {
+    const divContent = doc.createElement('div');
     divContent.classList.add('element-content');
     divContent.setAttribute('datatype', 'string-view');
     divContent.innerText = subdata;
     div.appendChild(divContent);
     
-    const inputContent = document.createElement('input');
+    const inputContent = doc.createElement('input');
     inputContent.type = 'text';
     inputContent.value = subdata;
     inputContent.setAttribute('datatype', 'string-edit');
@@ -509,14 +536,14 @@ edit.addStringNode = (div, subdata, key) => {
     div.appendChild(inputContent);
 };
 
-edit.addColorNode = (div, subdata, key) => {
-    const divContent = document.createElement('div');
+edit.addColorNode = (div, subdata, key, doc = document) => {
+    const divContent = doc.createElement('div');
     divContent.classList.add('element-content');
     divContent.setAttribute('datatype', 'color-view');
     divContent.setAttribute('style', `background-color: ${ subdata };`);
     div.appendChild(divContent);
 
-    const inputContent = document.createElement('input');
+    const inputContent = doc.createElement('input');
     inputContent.type = 'color';
     inputContent.value = subdata;
     inputContent.setAttribute('datatype', 'color-edit');
@@ -525,8 +552,8 @@ edit.addColorNode = (div, subdata, key) => {
     div.appendChild(inputContent);
 };
 
-edit.addElement = ({ element, j, divNode  }) => {
-    const rowNode = document.createElement('div');
+edit.addElement = ({ element, j, divNode  }, doc = document) => {
+    const rowNode = doc.createElement('div');
     rowNode.classList.add('row');
 
     const key = edit.pattern.order[j];
@@ -534,7 +561,7 @@ edit.addElement = ({ element, j, divNode  }) => {
     const subdata = element[key];
 
     if (subpattern.skip === false) {
-        const divLabel = document.createElement('div');
+        const divLabel = doc.createElement('div');
         divLabel.classList.add('label');
         divLabel.innerText = subpattern.text;
         rowNode.appendChild(divLabel);
