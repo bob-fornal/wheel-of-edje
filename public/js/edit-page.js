@@ -579,30 +579,38 @@ edit.addElement = ({ element, j, divNode  }, doc = document) => {
     }            
 };
 
+edit.addDivNodeEditor = (i, divNode) => {
+    if (i === -1) {
+        divNode.classList.add('element-addition', 'hidden');
+        edit.addEditorNode(divNode, true, true, true);
+    } else {
+        const first = (i === 0);
+        const last = (i === (edit.data.length - 1));
+
+        divNode.classList.add('element');
+        edit.addEditorNode(divNode, first, last);    
+    }
+};
+
+edit.addDivNodeElements = (element, divNode) => {
+    for (let j = 0, j_len = edit.pattern.order.length; j < j_len; j++) {
+        edit.addElement({ element, j, divNode });
+    }
+};
+
 edit.addDivNode = ({ element, content, i }) => {
     const divNode = document.createElement('div');
     divNode.setAttribute('data-index', i);
     divNode.onclick = edit.handleRowSelection;
 
-    if (i === -1) {
-        divNode.classList.add('element-addition', 'hidden');
-        edit.addEditorNode(divNode, true, true, true);
-    } else {
-        divNode.classList.add('element');
-
-        const first = (i === 0);
-        const last = (i === (edit.data.length - 1));
-        edit.addEditorNode(divNode, first, last);    
-    }
+    edit.addDivNodeEditor(i, divNode);
 
     if (edit.previewFn !== null) {
         const previewHTML = edit.previewFn(element);
         divNode.appendChild(previewHTML);
     }
 
-    for (let j = 0, j_len = edit.pattern.order.length; j < j_len; j++) {
-        edit.addElement({ element, j, divNode });
-    }
+    edit.addDivNodeElements(element, divNode);
     content.appendChild(divNode);
 };
 

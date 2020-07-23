@@ -77,6 +77,8 @@ describe('editing page', () => {
     expect(edit.addStringNode).toEqual(jasmine.any(Function));
     expect(edit.addColorNode).toEqual(jasmine.any(Function));
     expect(edit.addElement).toEqual(jasmine.any(Function));
+    expect(edit.addDivNodeEditor).toEqual(jasmine.any(Function));
+    expect(edit.addDivNodeElements).toEqual(jasmine.any(Function));
     expect(edit.addDivNode).toEqual(jasmine.any(Function));
     expect(edit.generateAdditionData).toEqual(jasmine.any(Function));
     expect(edit.showList).toEqual(jasmine.any(Function));
@@ -1124,5 +1126,39 @@ describe('editing page', () => {
     const label = document.getElement('UNDEFINED-1');
     expect(label).not.toBeDefined();
     expect(row).not.toBeDefined();
+  });
+
+  it('expects "addDivNodeEditor" to add hidden editor for new element', () => {
+    const i = -1;
+    const node = document.querySelector('node');
+    edit.data = [1, 2, 3];
+    spyOn(edit, 'addEditorNode').and.stub();
+
+    edit.addDivNodeEditor(i, node);
+    expect(node.classList.list.includes('element-addition'));
+    expect(node.classList.list.includes('hidden'));
+    expect(edit.addEditorNode).toHaveBeenCalledWith(jasmine.any(Object), true, true, true);
+  });
+
+  it('expects "addDivNodeEditor" to add element', () => {
+    const i = 0;
+    const node = document.querySelector('node');
+    edit.data = [1, 2, 3];
+    spyOn(edit, 'addEditorNode').and.stub();
+
+    edit.addDivNodeEditor(i, node);
+    expect(node.classList.list.includes('element'));
+    expect(edit.addEditorNode).toHaveBeenCalledWith(jasmine.any(Object), true, false);
+  });
+
+  it('expects "addDivNodeElements" to add elements based on pattern order', () => {
+    const element = 'element';
+    const divNode = 'node';
+    edit.pattern = { order: [1, 2, 3, 4, 5]};
+    spyOn(edit, 'addElement').and.stub();
+
+    edit.addDivNodeElements(element, divNode);
+    expect(edit.addElement).toHaveBeenCalledWith(jasmine.objectContaining({ element, divNode }));
+    expect(edit.addElement).toHaveBeenCalledTimes(5);
   });
 });
