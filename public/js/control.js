@@ -1,7 +1,10 @@
 
 const control = {
-  bc: null, // broadcast channel
-  getMessage: {}
+  bc: null // broadcast channel
+};
+
+control.reset = () => {
+  control.bc = null;
 };
 
 control.init = (type = 'control', win = window) => {
@@ -21,6 +24,8 @@ control.init = (type = 'control', win = window) => {
 control.postMessage = (message) => {
   control.bc.postMessage(message);
 };
+
+control.getMessage = {};
 
 control.getMessage.fromSpinner = (message) => {
   const option = message.data.command;
@@ -163,3 +168,8 @@ control.spinner.removeIndividual = () => {
 control.spinner.panelRefresh = (spin = spinner) => {
   spin.init();
 };
+
+// For Unit Testing
+if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
+  module.exports = control;
+}

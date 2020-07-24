@@ -21,6 +21,11 @@ win.mock = {
     Audio: function(url) {
         this.url = url;
     },
+    BroadcastChannel: function(name) {
+        return {
+            postMessage: () => {}
+        };
+    },
     URLSearchParams: function(search) {
         this.search = search;
         return {
