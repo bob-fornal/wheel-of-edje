@@ -598,8 +598,8 @@ edit.addDivNodeElements = (element, divNode) => {
     }
 };
 
-edit.addDivNode = ({ element, content, i }) => {
-    const divNode = document.createElement('div');
+edit.addDivNode = ({ element, content, i }, doc = document) => {
+    const divNode = doc.createElement('div');
     divNode.setAttribute('data-index', i);
     divNode.onclick = edit.handleRowSelection;
 
@@ -624,8 +624,8 @@ edit.generateAdditionData = () => {
     return result;
 };
 
-edit.showList = () => {
-    const content = document.querySelector('.content');
+edit.showList = (doc = document) => {
+    const content = doc.querySelector('.content');
     content.innerHTML = '';
 
     const addData = edit.generateAdditionData();
@@ -636,8 +636,8 @@ edit.showList = () => {
     }
 };
 
-edit.saveAllViaCSV = () => {
-    const textarea = document.querySelector('.csv-input');
+edit.saveAllViaCSV = (doc = document) => {
+    const textarea = doc.querySelector('.csv-input');
     const inputData = textarea.value.replace(/\n/g, '').split(',');
     
     const newStructure = [];
@@ -661,10 +661,7 @@ edit.saveAllViaCSV = () => {
     edit.showCSV();
 };
 
-edit.showCSV = () => {
-    const content = document.querySelector('.content');
-    content.innerHTML = '';
-
+edit.assembleCSV = () => {
     let value = '';
     for (let i = 0, i_len = edit.data.length; i < i_len; i++) {
         if (i !== 0) {
@@ -672,9 +669,17 @@ edit.showCSV = () => {
         }
         value += edit.data[i].name;
     }
+    return value;
+};
 
-    const inputDiv = document.createElement('div');
-    const inputField = document.createElement('textarea');
+edit.showCSV = (doc = document) => {
+    const content = doc.querySelector('.content');
+    content.innerHTML = '';
+
+    const value = edit.assembleCSV();
+
+    const inputDiv = doc.createElement('div');
+    const inputField = doc.createElement('textarea');
     inputField.classList.add('csv-input');
     inputField.setAttribute('rows', edit.data.length + 2);
     inputField.setAttribute('cols', '40');
@@ -682,11 +687,11 @@ edit.showCSV = () => {
     inputDiv.appendChild(inputField);
     content.appendChild(inputDiv);
 
-    const saveDiv = document.createElement('div');
-    const saveButton = document.createElement('img');
+    const saveDiv = doc.createElement('div');
+    const saveButton = doc.createElement('img');
     saveButton.classList.add('csv-save-button');
     saveButton.src = 'images/save.png';
-    saveButton.title = "Save All Changes";
+    saveButton.title = 'Save All Changes';
     saveButton.onclick = edit.saveAllViaCSV;
     saveDiv.appendChild(saveButton);
     content.appendChild(saveDiv);

@@ -83,6 +83,7 @@ describe('editing page', () => {
     expect(edit.generateAdditionData).toEqual(jasmine.any(Function));
     expect(edit.showList).toEqual(jasmine.any(Function));
     expect(edit.saveAllViaCSV).toEqual(jasmine.any(Function));
+    expect(edit.assembleCSV).toEqual(jasmine.any(Function));
     expect(edit.showCSV).toEqual(jasmine.any(Function));
   });
 
@@ -1160,5 +1161,118 @@ describe('editing page', () => {
     edit.addDivNodeElements(element, divNode);
     expect(edit.addElement).toHaveBeenCalledWith(jasmine.objectContaining({ element, divNode }));
     expect(edit.addElement).toHaveBeenCalledTimes(5);
+  });
+
+  it('expects "addDivNode" to add an element and preview', () => {
+    const element = 'element';
+    const content = { appendChild: () => {} };
+    const i = 0;
+    edit.previewFn = () => {};
+    spyOn(edit, 'addDivNodeEditor').and.stub();
+    spyOn(edit, 'previewFn').and.callThrough();
+    spyOn(edit, 'addDivNodeElements').and.stub();
+
+    edit.addDivNode({ element, content, i }, document);
+    const node = document.getElement('UNDEFINED-0');
+    expect(node.attributes['data-index']).toEqual(i);
+    expect(node.onclick).toEqual(jasmine.any(Function));
+    expect(edit.addDivNodeEditor).toHaveBeenCalled();
+    expect(edit.previewFn).toHaveBeenCalled();
+    expect(edit.addDivNodeElements).toHaveBeenCalled();
+  });
+
+  it('expects "addDivNode" to add an element without preview', () => {
+    const element = 'element';
+    const content = { appendChild: () => {} };
+    const i = 0;
+    edit.previewFn = null;
+    spyOn(edit, 'addDivNodeEditor').and.stub();
+    spyOn(edit, 'addDivNodeElements').and.stub();
+
+    edit.addDivNode({ element, content, i }, document);
+    const node = document.getElement('UNDEFINED-0');
+    expect(node.attributes['data-index']).toEqual(i);
+    expect(node.onclick).toEqual(jasmine.any(Function));
+    expect(edit.addDivNodeEditor).toHaveBeenCalled();
+    expect(edit.addDivNodeElements).toHaveBeenCalled();
+  });
+
+  it('expects "generateAdditionData" to create and abjeect with defaults', () => {
+    edit.pattern = {
+      order: [1, 2, 3],
+      key1: { default: 'string' },
+      key2: { default: 'number' },
+      key3: { default: 'boolean' }
+    };
+
+    const result = edit.generateAdditionData();
+    expect(result).toEqual({ key1: 'string', key2: 'number', key3: 'boolean' });
+  });
+
+  it('expects "showList" to generate a list', () => {
+    edit.data = [1, 2, 3];
+    spyOn(edit, 'generateAdditionData').and.returnValue('additional');
+    spyOn(edit, 'addDivNode').and.stub();
+
+    edit.showList(document);
+    const content = document.getElement('.content');
+    expect(content.innerHTML).toEqual('');
+    expect(edit.generateAdditionData).toHaveBeenCalled();
+    expect(edit.addDivNode).toHaveBeenCalledTimes(4);
+  });
+
+  it('expects "saveAllViaCSV" to capture, clean, and store data', () => {
+    document.configurationFn = (element) => {
+      element.value = 'Bob\n,Jen,\nPatrick';
+    };
+    edit.pattern = {
+      order: ['name', 'enabled'],
+      name: { },
+      enabled: { default: 'default' }
+    };
+    edit.data = [];
+    spyOn(edit, 'saveFn').and.stub();
+    spyOn(edit, 'showCSV').and.stub();
+
+    edit.saveAllViaCSV(document);
+    expect(edit.data).toEqual([
+      { name: 'Bob', enabled: 'default' },
+      { name: 'Jen', enabled: 'default' },
+      { name: 'Patrick', enabled: 'default' }
+    ]);
+  });
+
+  it('expects "assembleCSV" to return a proper string', () => {
+    edit.data = [
+      { name: 'Bob' },
+      { name: 'Jen' },
+      { name: 'Patrick' }
+    ];
+    const expectedResult = "Bob,\nJen,\nPatrick";
+
+    const result = edit.assembleCSV();
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('expects "showCSV" to add text area and save button', () => {
+    edit.data = [1, 2, 3];
+    spyOn(edit, 'assembleCSV').and.returnValue('data');
+    document.configurationFn = (element) => {
+      element.appendChild = () => {};
+    };
+
+    edit.showCSV(document);
+    const content = document.getElement('.content');
+    const inputField = document.getElement('UNDEFINED-1');
+    const saveButton = document.getElement('UNDEFINED-3');
+    expect(content.innerHTML).toEqual('');
+    expect(inputField.classList.list.includes('csv-input')).toEqual(true);
+    expect(inputField.attributes.rows).toEqual(5);
+    expect(inputField.attributes.cols).toEqual('40');
+    expect(inputField.value).toEqual('data');
+    expect(saveButton.classList.list.includes('csv-save-button')).toEqual(true);
+    expect(saveButton.src).toEqual('images/save.png');
+    expect(saveButton.title).toEqual('Save All Changes');
+    expect(saveButton.onclick).toEqual(jasmine.any(Function));
   });
 });
