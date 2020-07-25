@@ -48,8 +48,8 @@ control.trigger.spinCounterClockwise = () => {
   control.postMessage({ command: 'control.spin-counter-clockwise' });
 };
 
-control.trigger.handleWinner = (index) => {
-  external.showWinner(index);
+control.trigger.handleWinner = (index, ext = external) => {
+  ext.showWinner(index);
 };
 
 control.trigger.closeWinner = () => {
@@ -93,11 +93,11 @@ control.getMessage.fromControl = (message) => {
     case (option === 'control.init'):
       control.spinner.disableControl();
       break;
-    case (option === 'control.spin-counter-clockwise'):
-      control.spinner.spin('counter-clockwise');
-      break;
     case (option === 'control.spin-clockwise'):
       control.spinner.spin('clockwise');
+      break;
+    case (option === 'control.spin-counter-clockwise'):
+      control.spinner.spin('counter-clockwise');
       break;
     case (option === 'control.close-winner'):
       control.spinner.closeWinner();
@@ -138,8 +138,8 @@ control.spinner.winnerDisplay = (index) => {
   });
 };
 
-control.spinner.closeWinner = (win = winner) => {
-  win.close();
+control.spinner.closeWinner = (wnr = winner) => {
+  wnr.close();
 };
 
 control.spinner.setSound = (sound, spin = spinner) => {
@@ -152,17 +152,17 @@ control.spinner.selectIndividual = (index, spin = spinner, mnu = menu) => {
   mnu.displayActivePerson();
 };
 
-control.spinner.seePrizes = (doc = document) => {
+control.spinner.seePrizes = (mnu = menu, doc = document) => {
   const prizesWrapper = doc.querySelector('.prizes-wrapper');
   if (prizesWrapper.classList.contains('hidden')) {
-    menu.seePrizes();
+    mnu.seePrizes();
   } else {
-    menu.closePrizes();
+    mnu.closePrizes();
   }
 };
 
-control.spinner.removeIndividual = () => {
-  menu.clearActivePerson();
+control.spinner.removeIndividual = (mnu = menu) => {
+  mnu.clearActivePerson();
 };
 
 control.spinner.panelRefresh = (spin = spinner) => {

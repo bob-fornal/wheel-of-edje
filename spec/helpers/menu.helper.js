@@ -1,15 +1,23 @@
 
-let menuHelper = {};
+let mnu = {};
 
-menuHelper.init = () => {};
+mnu.init = () => {};
 
-menuHelper.mock = {
+mnu.mock = {
     state: {
         externalControl: false
     },
-    clearActivePerson: () => {}
+    
+    clearActivePerson: () => {},
+    closePrizes: () => {},
+    
+    displayActivePerson: () => {},
+    
+    seePrizes: () => {},
+    
+    toggle: () => {}
 };
 
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
-    module.exports = menuHelper;
+    module.exports = mnu;
 }

@@ -23,7 +23,9 @@ spin.mock = {
         spinning: false,
         help: false
     },
-    group: [{ name: 'Bob' }]
+    group: [{ name: 'Bob' }],
+
+    toggleSpin: () => {}
 };
 
 if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
