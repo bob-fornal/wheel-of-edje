@@ -11,6 +11,8 @@ external.init = (ctrl = control, store = storage) => {
 
   external.activeSound = storage.getActiveSound();
   external.updateDisplay();
+
+  peer.init();
 };
 
 external.updateDisplay = () => {
