@@ -5,6 +5,8 @@ const peer = {
 };
 
 peer.init = () => {
+  peer.checkHost();
+
   const url = `wss://connect.websocket.in/v3/${ peer.channel }?apiKey=${ peer.key }`;
   peer.socket = new WebSocket(url);
 
@@ -16,9 +18,19 @@ peer.init = () => {
   peer.getGroupFromExternal();
 };
 
+peer.checkHost = () => {
+  if (window.location.hostname === 'localhost') {
+    console.log('localhost');
+    peer.channel = 2;
+  }
+};
+
 peer.getGroupFromExternal = () => {
   let activeGroup = external.group.filter((item) => item.enabled);
-  peer.group = activeGroup.map(item => ({ name: item.name, selected: false }));
+  peer.group = activeGroup.map(item => {
+    const selected = (item.prize !== null);
+    return { name: item.name, selected: selected };
+  });
 };
 
 peer.onopen = (event) => {
@@ -30,10 +42,8 @@ peer.onopen = (event) => {
 };
 
 peer.onmessage = (event) => {
-  console.log(event);
   const data = JSON.parse(event.data);
   const command = data.from + '.' + data.command;
-  console.log('[message] Data received:', data);
 
   switch (true) {
     case (command === 'peer.init'):
@@ -42,6 +52,16 @@ peer.onmessage = (event) => {
         group: peer.group
       });
       peer.socket.send(message);
+      break;
+    case (command === 'peer.group'):
+      const selected = data.group;
+      peer.processGroupSelection(selected);
+      break;
+    case (command === 'peer.spin'):
+      const direction = data.direction;
+      const index = data.index;
+      external.handleSelection(index);
+      external.triggerSpin(direction);
       break;
   }
 };
@@ -56,4 +76,24 @@ peer.onclose = (event) => {
 
 peer.onerror = function(error) {
   console.log(`[error] ${error.message}`);
+};
+
+peer.processGroupSelection = (group, doc = document) => {
+  peer.group = group;
+  
+  group.forEach((individual, index) => {
+    const element = doc.querySelector(`.individual[index="${ index }"]`);
+    if (individual.selected === true && external.group[index].prize === null) {
+      element.classList.add('remote-selection');
+    } else {
+      element.classList.remove('remote-selection');
+    }
+  });
+};
+
+peer.closeWinner = () => {
+  console.log("Sending external.close-winner");
+
+  const message = JSON.stringify({ from: 'external', command: 'close-winner' });
+  peer.socket.send(message);
 };

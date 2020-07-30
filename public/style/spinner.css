@@ -335,3 +335,27 @@ html, body {
     overflow-y: auto;
     height: calc(100% - 3rem);
 }
+
+.peer-wrapper {
+    z-index: 20000;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #bee747;
+    margin: 2em;
+    padding: 4em;
+    border-radius: 1em;
+    border: 3px solid black;
+    text-align: center;
+    font-family: sans-serif;
+}
+.peer-wrapper .url {
+    font-size: 20pt;
+    margin-bottom: 1em;
+}
+.peer-wrapper img {
+    height: 90%;
+}
+

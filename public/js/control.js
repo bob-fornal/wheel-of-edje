@@ -74,6 +74,10 @@ control.trigger.seePrizes = () => {
   control.postMessage({ command: 'control.see-prizes' });
 };
 
+control.trigger.seePeerLink = () => {
+  control.postMessage({ command: 'control.see-peer-link' });
+};
+
 control.trigger.removeIndividual = () => {
   control.postMessage({ command: 'control.remove-individual' });
 };
@@ -110,6 +114,9 @@ control.getMessage.fromControl = (message) => {
       break;
     case (option === 'control.see-prizes'):
       control.spinner.seePrizes();
+      break;
+    case (option === 'control.see-peer-link'):
+      control.spinner.seePeerLink();
       break;
     case (option === 'control.remove-individual'):
       control.spinner.removeIndividual();
@@ -159,6 +166,11 @@ control.spinner.seePrizes = (mnu = menu, doc = document) => {
   } else {
     mnu.closePrizes();
   }
+};
+
+control.spinner.seePeerLink = (doc = document) => {
+  const peerWrapper = doc.querySelector('.peer-wrapper');
+  peerWrapper.classList.toggle('hidden');
 };
 
 control.spinner.removeIndividual = (mnu = menu) => {

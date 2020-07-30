@@ -1,0 +1,63 @@
+body {
+  padding: 2em;
+}
+
+.wrapper {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.header {
+  color: #6ca437;
+  font-family: wheel-of-fortune;
+  font-size: 24pt;
+  text-align: center;
+  text-shadow: #000000 -1px -1px 0;
+}
+
+.subheader {
+  border-bottom: 1px solid black;
+  font-size: 14pt;
+  font-family: sans-serif;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.name-selector {
+  font-size: 14pt;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.5em 1em;
+  margin-bottom: 0.25em;
+}
+
+.name-selector:not(.selected) {
+  background-color: gray;
+  color: white;
+}
+.name-selector.selected {
+  background-color: #6ca437;
+  color: white;
+}
+
+.spinner-buttons {
+  text-align: center;
+  margin-top: 1rem;
+}
+.button {
+  background-color: #bee767;
+  border: 3px solid #66c437;
+  border-radius: 10px;
+  color: white;
+  display: inline-block;
+  font-family: sans-serif;
+  font-weight: bold;
+  padding: .5rem;
+  text-align: center;
+  width: 40%;
+}

@@ -195,16 +195,23 @@ external.handleDeselection = (index, doc = document) => {
   control.trigger.removeIndividual();
 };
 
-external.handleSelection = (event, doc = document) => {
-  const index = +event.target.getAttribute('index');
-  const alreadySelected = event.target.classList.contains('selected');
+external.handleSelection = (event = null, doc = document) => {
+  const selections = doc.querySelectorAll('.group .button.selector');
+  const individuals = doc.querySelectorAll('.group .individual');
+  const spinBtn = doc.querySelectorAll('.group .spin');
+
+  let index, alreadySelected;
+  if (typeof event !== 'number') {
+    index = +event.target.getAttribute('index');
+    alreadySelected = event.target.classList.contains('selected');  
+  } else if (typeof event === 'number') {
+    index = event;
+    alreadySelected = false;
+  }
   if (alreadySelected) {
     external.handleDeselection(index);
     return;
   }
-  const selections = doc.querySelectorAll('.group .button.selector');
-  const individuals = doc.querySelectorAll('.group .individual');
-  const spinBtn = doc.querySelectorAll('.group .spin');
 
   selections.forEach((select, i) => {
     if (i === index) {
@@ -275,6 +282,7 @@ external.showWinner = (index, doc = document, store = storage) => {
   const spinBtns = doc.querySelectorAll(`.group [index="${ index }"] .spin`);
   const noButtons = doc.querySelector(`.group [index="${ index }"] .no-buttons`);
   individualSelected.classList.remove('selected');
+  individualSelected.classList.remove('remote-selection');
   individualSelected.innerText = external.calculateDisplayName(person);
   buttons.forEach(btn => {
     btn.classList.add('hidden');
@@ -299,6 +307,7 @@ external.hideWinner = (doc = document) => {
 };
 
 external.closeWinner = () => {
+  peer.closeWinner();
   control.trigger.closeWinner();
   external.hideWinner();
 };
@@ -313,6 +322,10 @@ external.setSound = (sound, store = storage) => {
 
 external.triggerSeePrizes = () => {
   control.trigger.seePrizes();
+};
+
+external.triggerSeePeerLink = () => {
+  control.trigger.seePeerLink();
 };
 
 external.triggerClearPrizes = (store = storage) => {

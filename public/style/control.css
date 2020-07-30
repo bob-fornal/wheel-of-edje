@@ -132,10 +132,18 @@ body {
 .individual {
   display: inline-block;
   cursor: pointer;
+  padding: 0.5em;
+  width: 385px;
 }
 .individual.selected {
   font-weight: bold;
 }
+
+.individual.remote-selection {
+  background-color: #6ca437;
+  color: white;
+}
+
 .panel {
   display: inline-block;
   padding: 0.5em 1em;
