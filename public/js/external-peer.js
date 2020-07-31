@@ -47,11 +47,7 @@ peer.onmessage = (event) => {
 
   switch (true) {
     case (command === 'peer.init'):
-      const message = JSON.stringify({
-        from: 'external', command: 'group',
-        group: peer.group
-      });
-      peer.socket.send(message);
+      peer.sendGroup();
       break;
     case (command === 'peer.group'):
       const selected = data.group;
@@ -96,4 +92,20 @@ peer.closeWinner = () => {
 
   const message = JSON.stringify({ from: 'external', command: 'close-winner' });
   peer.socket.send(message);
+};
+
+peer.clear = () => {
+  group.forEach((individual) => {
+    individual.selected = false;
+  });
+
+  peer.sendGroup();
+};
+
+peer.sendGroup = () => {
+  const message = JSON.stringify({
+    from: 'external', command: 'group',
+    group: peer.group
+  });
+  peer.socket.send(message);  
 };
