@@ -4,6 +4,7 @@ const ctrl = {};
 ctrl.init = () => {};
 
 ctrl.mock = {
+  init: () => {},
   spinner: {}
 };
 

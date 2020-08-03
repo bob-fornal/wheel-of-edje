@@ -5,14 +5,20 @@ const external = {
   panels: null
 };
 
-external.init = (ctrl = control, store = storage) => {
+external.reset = () => {
+  external.activeSound = 'SILENT';
+  external.group = null;
+  external.panels = null;
+};
+
+external.init = (ctrl = control, store = storage, pr = peer) => {
   ctrl.init();
   store.editInit();
 
-  external.activeSound = storage.getActiveSound();
+  external.activeSound = store.getActiveSound();
   external.updateDisplay();
 
-  peer.init();
+  pr.init();
 };
 
 external.updateDisplay = () => {
@@ -429,3 +435,8 @@ external.handlePanelDisable = (event, doc = document, store = storage) => {
 
   control.trigger.panelRefresh();
 };
+
+// For Unit Testing
+if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
+  module.exports = external;
+}

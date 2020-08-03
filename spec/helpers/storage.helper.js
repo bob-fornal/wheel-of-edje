@@ -8,6 +8,8 @@ store.init = () => {
 };
 
 store.mock = {
+    editInit: () => {},
+    
     getActiveSound: () => {},
     saveActiveSound: () => {},
 
