@@ -42,6 +42,9 @@ describe('external', () => {
     expect(external.handleDeselection).toEqual(jasmine.any(Function));
     expect(external.handleSelection).toEqual(jasmine.any(Function));
     expect(external.showGroup).toEqual(jasmine.any(Function));
+    expect(external.updateWinnerModals).toEqual(jasmine.any(Function));
+    expect(external.updateWinner).toEqual(jasmine.any(Function));
+    expect(external.updateWinnerIndividual).toEqual(jasmine.any(Function));
     expect(external.showWinner).toEqual(jasmine.any(Function));
     expect(external.hideWinner).toEqual(jasmine.any(Function));
     expect(external.closeWinner).toEqual(jasmine.any(Function));
@@ -612,6 +615,118 @@ describe('external', () => {
   });
 
   it('expects "showGroup" to reset HTML and add a row for each individual', () => {
+    const group = [1, 2];
+    spyOn(storage, 'getGroup').and.returnValue(group);
+    spyOn(external, 'addGroupButtons').and.stub();
+    spyOn(external, 'addIndividual').and.stub();
+
+    external.showGroup(storage, document);
+    const node = document.getElement('.group .content');
+    const row1 = document.getElement('UNDEFINED-0');
+    const row2 = document.getElement('UNDEFINED-1');
+    expect(node.innerHTML).toEqual('');
+    expect(row1.classList.list.includes('row'));
+    expect(row1.attributes.index).toEqual(0);
+    expect(row2.classList.list.includes('row'));
+    expect(row2.attributes.index).toEqual(1);
+    expect(external.addGroupButtons).toHaveBeenCalledTimes(2);
+    expect(external.addIndividual).toHaveBeenCalledTimes(2);
+  });
+
+  it('expects "updateWinnerModals" to switch visible modals', () => {
+    external.updateWinnerModals(document);
+    const spinning = document.getElement('.modal-wrapper .modal-spinning');
+    const winner = document.getElement('.modal-wrapper .modal-winner');
+    expect(spinning.classList.list.includes('hidden')).toEqual(true);
+    expect(winner.classList.list.includes('hidden')).toEqual(false);
+  });
+
+  it('expects "updateWinner" to set text with additional', () => {
+    const person = { name: 'Bob', prize: 'prize', additional: 'additional' };
     
+    external.updateWinner(person, document);
+    const individual = document.getElement('.individual-winner');
+    const prize = document.getElement('.prize');
+    const prizeAdditional = document.getElement('.prize-additional');
+    expect(individual.innerText).toEqual('Bob');
+    expect(prize.innerText).toEqual('prize');
+    expect(prizeAdditional.innerText).toEqual('additional');
+    expect(prizeAdditional.classList.list.includes('hidden')).toEqual(false);
+  });
+
+  it('expects "updateWinner" to set text without additional', () => {
+    const person = { name: 'Bob', prize: 'prize', additional: '' };
+    
+    external.updateWinner(person, document);
+    const individual = document.getElement('.individual-winner');
+    const prize = document.getElement('.prize');
+    const prizeAdditional = document.getElement('.prize-additional');
+    expect(individual.innerText).toEqual('Bob');
+    expect(prize.innerText).toEqual('prize');
+    expect(prizeAdditional.innerText).not.toEqual('additional');
+    expect(prizeAdditional.classList.list.includes('hidden')).toEqual(true);
+  });
+
+  it('expects "updateWinnerIndividual" to set name and update button states', () => {
+    const index = 0;
+    const person = {};
+    let countButtonAdd = 0;
+    let countButtonRemove = 0;
+    const buttons = [{
+      classList: { add: () => { countButtonAdd++; }, remove: () => { countButtonRemove++; } }
+    },{
+      classList: { add: () => { countButtonAdd++; }, remove: () => { countButtonRemove++; } }
+    },{
+      classList: { add: () => { countButtonAdd++; }, remove: () => { countButtonRemove++; } }
+    }];
+    let countSpinAdd = 0;
+    let countSpinRemove = 0;
+    const spins = [{
+      classList: { add: () => { countSpinAdd++; }, remove: () => { countSpinRemove++; } }
+    },{
+      classList: { add: () => { countSpinAdd++; }, remove: () => { countSpinRemove++; } }
+    },{
+      classList: { add: () => { countSpinAdd++; }, remove: () => { countSpinRemove++; } }
+    }];
+    document.configurationFn = (type) => {
+      let result = null;
+      switch(true) {
+        case (type === '.group [index="0"] .button'):
+          result = buttons;
+          break;
+        case (type === '.group [index="0"] .spin'):
+          result = spins;
+          break;
+      }
+      return result;
+    };
+    spyOn(external, 'calculateDisplayName').and.returnValue('Bob');
+
+    external.updateWinnerIndividual(index, person, document);
+    const selected = document.getElement('.group [index="0"] .individual');
+    const noButtons = document.getElement('.group [index="0"] .no-buttons');
+    expect(selected.classList.list.includes('selected')).toEqual(false);
+    expect(selected.classList.list.includes('remote-selection')).toEqual(false);
+    expect(selected.innerText).toEqual('Bob');
+    expect(countButtonAdd).toEqual(3);
+    expect(countButtonRemove).toEqual(3);
+    expect(countSpinAdd).toEqual(3);
+    expect(countSpinRemove).toEqual(0);
+    expect(noButtons.classList.list.includes('hidden')).toEqual(false);
+  });
+
+  it('expects "showWinner" to get group and set state', () => {
+    const index = 0;
+    const group = [{ name: 'Bob' }];
+    spyOn(storage, 'getGroup').and.returnValue(group);
+    spyOn(external, 'updateWinnerModals').and.stub();
+    spyOn(external, 'updateWinner').and.stub();
+    spyOn(external, 'updateWinnerIndividual').and.stub();
+
+    external.showWinner(index, storage);
+    expect(storage.getGroup).toHaveBeenCalled();
+    expect(external.updateWinnerModals).toHaveBeenCalled();
+    expect(external.updateWinner).toHaveBeenCalled();
+    expect(external.updateWinnerIndividual).toHaveBeenCalled();
   });
 });

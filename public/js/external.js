@@ -258,13 +258,15 @@ external.showGroup = (store = storage, doc = document) => {
   });
 };
 
-external.showWinner = (index, doc = document, store = storage) => {
-  external.group = store.getGroup();
-  const person = external.group[index];
-
+external.updateWinnerModals = (doc = document) => {
   const spinning = doc.querySelector('.modal-wrapper .modal-spinning');
   const winner = doc.querySelector('.modal-wrapper .modal-winner');
 
+  spinning.classList.add('hidden');
+  winner.classList.remove('hidden');
+};
+
+external.updateWinner = (person, doc = document) => {
   const individual = doc.querySelector('.individual-winner');
   const prize = doc.querySelector('.prize');
   const prizeAdditional = doc.querySelector('.prize-additional');
@@ -277,17 +279,17 @@ external.showWinner = (index, doc = document, store = storage) => {
   } else {
     prizeAdditional.classList.add('hidden');
   }
+};
 
-  spinning.classList.add('hidden');
-  winner.classList.remove('hidden');
-
+external.updateWinnerIndividual = (index, person, doc = document) => {
   const individualSelected = doc.querySelector(`.group [index="${ index }"] .individual`);
-  const buttons = doc.querySelectorAll(`.group [index="${ index }"] .button`);
-  const spinBtns = doc.querySelectorAll(`.group [index="${ index }"] .spin`);
-  const noButtons = doc.querySelector(`.group [index="${ index }"] .no-buttons`);
   individualSelected.classList.remove('selected');
   individualSelected.classList.remove('remote-selection');
   individualSelected.innerText = external.calculateDisplayName(person);
+
+  const buttons = doc.querySelectorAll(`.group [index="${ index }"] .button`);
+  const spinBtns = doc.querySelectorAll(`.group [index="${ index }"] .spin`);
+  const noButtons = doc.querySelector(`.group [index="${ index }"] .no-buttons`);
   buttons.forEach(btn => {
     btn.classList.add('hidden');
     btn.classList.remove('selected');
@@ -296,6 +298,15 @@ external.showWinner = (index, doc = document, store = storage) => {
     btn.classList.add('hidden');
   });
   noButtons.classList.remove('hidden');
+};
+
+external.showWinner = (index, store = storage) => {
+  external.group = store.getGroup();
+  const person = external.group[index];
+
+  external.updateWinnerModals();
+  external.updateWinner(person);
+  external.updateWinnerIndividual(index, person);
 };
 
 external.hideWinner = (doc = document) => {
