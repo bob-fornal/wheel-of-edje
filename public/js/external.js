@@ -27,12 +27,11 @@ external.updateDisplay = () => {
   external.showPanels();
 };
 
-external.triggerSpin = (direction = 'clockwise') => {
-  console.log(direction);
+external.triggerSpin = (direction = 'clockwise', ctrl = control) => {
   if (direction === 'clockwise') {
-    control.trigger.spinClockwise();
+    ctrl.trigger.spinClockwise();
   } else {
-    control.trigger.spinCounterClockwise();
+    ctrl.trigger.spinCounterClockwise();
   }
   external.showSpinning();
 };
@@ -184,10 +183,9 @@ external.handleDisableBtn = (event, doc = document, store = storage) => {
   const person = external.group[index];
   person.enabled = false;
   store.saveGroup(external.group);
-
 };
 
-external.handleDeselection = (index, doc = document) => {
+external.handleDeselection = (index, ctrl = control, doc = document) => {
   const selections = doc.querySelectorAll('.group .button.selector');
   const individuals = doc.querySelectorAll('.group .individual');
   const spins = doc.querySelectorAll(`.group [index="${ index }"] .spin`);
@@ -198,10 +196,10 @@ external.handleDeselection = (index, doc = document) => {
     spinBtn.classList.remove('enabled');
   });
 
-  control.trigger.removeIndividual();
+  ctrl.trigger.removeIndividual();
 };
 
-external.handleSelection = (event = null, doc = document) => {
+external.handleSelection = (event = null, ctrl = control, doc = document) => {
   const selections = doc.querySelectorAll('.group .button.selector');
   const individuals = doc.querySelectorAll('.group .individual');
   const spinBtn = doc.querySelectorAll('.group .spin');
@@ -241,7 +239,7 @@ external.handleSelection = (event = null, doc = document) => {
       btn.classList.remove('enabled');
     }
   });
-  control.trigger.selectIndividual(index);
+  ctrl.trigger.selectIndividual(index);
 };
 
 external.showGroup = (store = storage, doc = document) => {

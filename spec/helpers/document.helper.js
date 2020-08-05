@@ -11,6 +11,7 @@ doc.init = () => {
         created: 0,
         types: []
     };
+    doc.mock.configurationFn = null;
 };
 
 doc.mock = {
@@ -30,22 +31,19 @@ doc.mock = {
         if (id in doc.elements) {
             if (doc.mock.configurationFn !== null) {
                 doc.mock.configurationFn(doc.elements[id]);
-                doc.mock.configurationFn = null;
             }
             return doc.elements[id];
         }
         doc.elements[id] = doc.handleDocumentObjectCreation(id);
         if (doc.mock.configurationFn !== null) {
             doc.mock.configurationFn(doc.elements[id]);
-            doc.mock.configurationFn = null;
         }
         return doc.elements[id];
     },
     querySelectorAll: (name) => {
         if (doc.mock.configurationFn !== null) {
-            const result = doc.mock.configurationFn();
+            const result = doc.mock.configurationFn(name);
             // process.stdout.write(name);
-            doc.mock.configurationFn = null;
             return result;
         }
         return [];
@@ -54,14 +52,12 @@ doc.mock = {
         if (name in doc.elements) {
             if (doc.mock.configurationFn !== null) {
                 doc.mock.configurationFn(doc.elements[name]);
-                doc.mock.configurationFn = null;
             }
             return doc.elements[name];
         }
         doc.elements[name] = doc.handleDocumentObjectCreation(name);
         if (doc.mock.configurationFn !== null) {
             doc.mock.configurationFn(doc.elements[name]);
-            doc.mock.configurationFn = null;
         }
         return doc.elements[name];
     },
