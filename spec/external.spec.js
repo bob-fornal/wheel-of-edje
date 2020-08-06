@@ -729,4 +729,41 @@ describe('external', () => {
     expect(external.updateWinner).toHaveBeenCalled();
     expect(external.updateWinnerIndividual).toHaveBeenCalled();
   });
+
+  it('expects "hideWinner" to set state appropriately', () => {
+    external.hideWinner(document);
+    const wrapper = document.getElement('.modal-wrapper');
+    const spinning = document.getElement('.modal-wrapper .modal-spinning');
+    const winner = document.getElement('.modal-wrapper .modal-winner');
+    const prizeAdditional = document.getElement('.prize-additional');
+    expect(wrapper.classList.list.includes('hidden')).toEqual(true);
+    expect(spinning.classList.list.includes('hidden')).toEqual(false);
+    expect(winner.classList.list.includes('hidden')).toEqual(true);
+    expect(prizeAdditional.classList.list.includes('hidden')).toEqual(true);
+  });
+
+  it('expects "closeWinner" to initiate close throughout the systems', () => {
+    spyOn(peer, 'closeWinner').and.stub();
+    spyOn(control.trigger, 'closeWinner').and.stub();
+    spyOn(external, 'hideWinner').and.stub();
+
+    external.closeWinner(peer, control);
+    expect(peer.closeWinner).toHaveBeenCalled();
+    expect(control.trigger.closeWinner).toHaveBeenCalled();
+    expect(external.hideWinner).toHaveBeenCalled();
+  });
+
+  it('expects "setSound" to set, show, and save the active sound', () => {
+    const sound = 'sound';
+    external.activeSound = '';
+    spyOn(external, 'showActiveSound').and.stub();
+    spyOn(storage, 'saveActiveSound').and.stub();
+    spyOn(control.trigger, 'setSound').and.stub();
+
+    external.setSound(sound, control, storage);
+    expect(external.activeSound).toEqual(sound);
+    expect(external.showActiveSound).toHaveBeenCalled();
+    expect(storage.saveActiveSound).toHaveBeenCalled();
+    expect(control.trigger.setSound).toHaveBeenCalled();
+  });
 });

@@ -321,18 +321,18 @@ external.hideWinner = (doc = document) => {
   prizeAdditional.classList.add('hidden');
 };
 
-external.closeWinner = () => {
-  peer.closeWinner();
-  control.trigger.closeWinner();
+external.closeWinner = (pr = peer, ctrl = control) => {
+  pr.closeWinner();
+  ctrl.trigger.closeWinner();
   external.hideWinner();
 };
 
-external.setSound = (sound, store = storage) => {
+external.setSound = (sound, ctrl = control, store = storage) => {
   external.activeSound = sound;
   external.showActiveSound();
+  
   store.saveActiveSound(sound);
-
-  control.trigger.setSound(sound);
+  ctrl.trigger.setSound(sound);
 };
 
 external.triggerSeePrizes = () => {
