@@ -330,17 +330,17 @@ external.closeWinner = (pr = peer, ctrl = control) => {
 external.setSound = (sound, ctrl = control, store = storage) => {
   external.activeSound = sound;
   external.showActiveSound();
-  
+
   store.saveActiveSound(sound);
   ctrl.trigger.setSound(sound);
 };
 
-external.triggerSeePrizes = () => {
-  control.trigger.seePrizes();
+external.triggerSeePrizes = (ctrl = control) => {
+  ctrl.trigger.seePrizes();
 };
 
-external.triggerSeePeerLink = () => {
-  control.trigger.seePeerLink();
+external.triggerSeePeerLink = (ctrl = control) => {
+  ctrl.trigger.seePeerLink();
 };
 
 external.triggerClearPrizes = (store = storage) => {

@@ -4,7 +4,8 @@
 
 ### Ideas for Development
 
-2. Import / Export of Data to named json-file.
+1. Import / Export of Data to named json-file.
+2. Remote Spinning without a Group,
 
 ### Add Unit Tests
 

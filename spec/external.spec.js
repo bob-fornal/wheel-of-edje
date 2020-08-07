@@ -766,4 +766,18 @@ describe('external', () => {
     expect(storage.saveActiveSound).toHaveBeenCalled();
     expect(control.trigger.setSound).toHaveBeenCalled();
   });
+
+  it('expects "triggerSeePrizes" to call control trigger', () => {
+    spyOn(control.trigger, 'seePrizes').and.stub();
+
+    external.triggerSeePrizes(control);
+    expect(control.trigger.seePrizes).toHaveBeenCalled();
+  });
+
+  it('expects "triggerSeePeerLink" to call control trigger', () => {
+    spyOn(control.trigger, 'seePeerLink').and.stub();
+
+    external.triggerSeePeerLink(control);
+    expect(control.trigger.seePeerLink).toHaveBeenCalled();
+  });
 });

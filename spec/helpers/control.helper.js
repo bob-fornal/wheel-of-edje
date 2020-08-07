@@ -13,6 +13,8 @@ ctrl.mock.spinner.winnerDisplay = () => {};
 
 ctrl.mock.trigger.closeWinner = () => {};
 ctrl.mock.trigger.removeIndividual = () => {};
+ctrl.mock.trigger.seePeerLink = () => {};
+ctrl.mock.trigger.seePrizes = () => {};
 ctrl.mock.trigger.selectIndividual = () => {};
 ctrl.mock.trigger.setSound = () => {};
 ctrl.mock.trigger.spinClockwise = () => {};
