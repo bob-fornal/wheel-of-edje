@@ -5,7 +5,8 @@
 ### Ideas for Development
 
 1. Import / Export of Data to named json-file.
-2. Remote Spinning without a Group,
+2. Start Group spin ... automatically select the next, until done.
+3. Remote Spinning without a Group.
 
 ### Add Unit Tests
 
