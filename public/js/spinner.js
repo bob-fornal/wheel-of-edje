@@ -90,7 +90,7 @@ spinner.settings = spinner.configure();
 spinner.fixed = {
 	width: spinner.settings.narrower / 2,
 	height: spinner.settings.narrower / 2,
-	radius: spinner.settings.narrower / 20,
+	radius: (spinner.settings.narrower / 20) <= 36 ? 36 : spinner.settings.narrower / 20,
 	radiusAdjust: 20,
 
 	textMargin: spinner.settings.narrower / 20,
