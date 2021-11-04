@@ -19,7 +19,11 @@ All other JavaScript files have appropriate unit tests.
 5. external-peer.js
 6. dedicated-peer.js
 
-## Firebase
+## GitHub Deployment
+
+Automatic.
+
+## Firebase (deprecated)
 
 ### Development
 
