@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
+    <link rel="stylesheet" href="../style/fonts.css?cache=1" />
+    <link rel="stylesheet" href="../style/peers.css?cache=1" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1 class="header">Wheel Of EDJE</h1>
+
+      <div class="subheader">Select Name</div>
+      <div class="list-of-names"></div>
+
+      <div class="spinner-buttons hidden">
+        <div class="button" onClick="peer.spin('counter-clockwise')" title="Spin Counter-Clockwise">
+          <img src="../images/counter-clockwise.png" />
+        </div>
+        <div class="button" onClick="peer.spin('clockwise')" title="Spin Clockwise">
+          <img src="../images/clockwise.png" />        
+        </div>
+      </div>
+    </div>
+
+    <script src="dedicated-peer.js?cache=1"></script>
+    <script>
+      peer.init()
+    </script>
+  </body>
+</html>

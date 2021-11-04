@@ -1,0 +1,217 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 2em;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: bold;
+  border-bottom: 1px solid silver;
+}
+
+.tooling {
+  margin-top: 1em;
+}
+
+.row:first-of-type {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+.row:last-of-type {
+  margin-bottom: 0;
+}
+.row:not(:first-of-type):not(:last-of-type) {
+  margin-bottom: 0.5em;
+}
+
+.button {
+  box-sizing: border-box;
+  margin: 0 0.5em 0 0;
+  border: 3px solid silver;
+  border-radius: 9px;
+  display: inline-block;
+}
+.button.white {
+  background-color: white;
+}
+.button.green {
+  background-color: #bee767;
+}
+.button.orange {
+  background-color: #ffa500;
+}
+.button.selected {
+  background-color: #bee767;
+}
+.button.single {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 12pt;
+  font-weight: normal;
+}
+
+.button .left {
+  padding: 0.5rem 1rem;
+  border-right: 1px solid silver;
+  margin: 0;
+  font-weight: bold;
+}
+.button .left.feature {
+  background-color: silver;
+}
+.button .left,
+.button .middle,
+.button .right {
+  box-sizing: border-box;
+  display: inline-block;
+}
+.button .middle {
+  height: 34px;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  border-right: 1px solid silver;
+  cursor: pointer;
+  margin: 0;
+}
+.button .middle.selected,
+.button .right.selected {
+    font-weight: bold;
+}
+.button .right {
+  height: 34px;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  cursor: pointer;
+  margin: 0;
+}
+.button .middle img,
+.button .right img {
+  height: 14px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.modal-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-spinning,
+.modal-winner {
+  position: relative;
+  margin: 2em;
+  padding: 2em;
+  background-color: #ffffff;
+  border: 3px solid black;
+  border-radius: 20px;
+  display: inline-block;
+  text-align: center;
+  font-size: 14pt;
+}
+
+.section {
+  border-top: 1px solid silver;
+  margin: 1rem 0;
+  padding: 1rem 0;
+}
+.section .subtitle {
+  font-size: 14pt;
+  font-weight: bold;
+}
+
+.button.w100 {
+  width: 100px;
+  text-align: center;
+}
+
+.individual {
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.5em;
+  width: 385px;
+}
+.individual.selected {
+  font-weight: bold;
+}
+
+.individual.remote-selection {
+  background-color: #6ca437;
+  color: white;
+}
+
+.panel {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  width: 250px;
+  margin-right: 0.25em;
+}
+.panel-additional {
+  display: inline-block;
+  padding: 0.5em 1em;
+  width: 250px;
+}
+.panel-additional:not(.hide-borders) {
+  border: 1px solid black;
+}
+.panel-additional.hide-borders {
+  color: silver;
+}
+
+
+.group .button.enable:not(.hidden) {
+  margin-right: calc(100px + 1em);
+}
+
+.no-buttons {
+  color: transparent;
+  width: calc(264px + 0.5em);
+  padding: calc(0.5rem + 3px) 1rem;
+  margin-bottom: 0;
+  box-sizing: border-box;
+  margin: 0 0.5em 0 0;
+  display: inline-block;
+}
+
+.clear-left {
+  margin-left: calc(100px + 0.5em);
+}
+
+.spin {
+  display: inline-block;
+  height: 21px;
+  margin: 0;
+}
+
+.spin.clockwise {
+  padding: 0.5rem 0 0.5rem 0.5rem;
+}
+.spin.counter-clockwise {
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+}
+.spin img {
+  height: 14px;
+}
+.spin .img-enabled {
+  cursor: pointer;
+}
+
+.spin:not(.enabled) .img-enabled {
+  display: none;
+}
+.spin.enabled .img-disabled {
+  display: none;
+}
+
+.edit {
+  display: inline-block;
+  cursor: pointer;
+}
+.edit img {
+  height: 1em;
+}

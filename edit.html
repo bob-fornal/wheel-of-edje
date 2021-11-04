@@ -1,0 +1,62 @@
+<html>
+    <head>
+		<link rel="stylesheet" href="style/edit.css?cache=1" />
+    </head>
+
+    <body>
+        <div class="outer-wrapper">
+            <div class="return">
+                <img onClick="edit.back()" src="images/return.png" />
+            </div>
+            <div class="wrapper">
+                <div class="title">Edit <span class="specific">...</span></div>
+
+                <div class="tooling">
+                    <div class="enter-to-save">
+                        <span class="left">
+                            ENTER to SAVE?
+                        </span>
+                        <span class="right">...</span>
+                    </div>
+                    <div class="preview-available">
+                        <span class="left">
+                            PREVIEW?
+                        </span>
+                        <span class="right">...</span>
+                    </div>
+
+                    <div class="edit-as-type hidden">
+                        <span class="left selected" onClick="edit.selectEditAsType('LIST')">
+                            LIST
+                        </span><span class="middle">
+                            or
+                        </span><span class="right" onClick="edit.selectEditAsType('CSV')">
+                            CSV
+                        </span>
+                    </div>
+
+                    <div class="addition-button" onClick="edit.handleAddition()">
+                        <span class="left">
+                            ADD <span class="add-type">...</span>
+                        </span>
+                        <span class="right">+</span>
+                    </div>
+                    <div class="delete-all-button" onClick="edit.handleDeleteAll()">
+                        <span class="left">
+                            DELETE ALL <span class="delete-type">...</span>
+                        </span>
+                        <span class="right">-</span>
+                    </div>
+                </div>
+
+                <div class="content"></div>    
+            </div>
+        </div>
+
+        <script src="js/storage.js?cache=1"></script>
+        <script src="js/edit-page.js?cache=1"></script>
+        <script>
+            edit.init();
+        </script>
+    </body>
+</html>

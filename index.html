@@ -1,0 +1,225 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="style/fade-out.css?cache=1" />
+		<link rel="stylesheet" href="style/fonts.css?cache=1" />
+		<link rel="stylesheet" href="style/spinner.css?cache=1" />
+	</head>
+	
+	<body>
+		<div class="loader">
+			<div class="background-image"></div>
+			<div class="content">
+				WHEEL Of EDJE
+			</div>
+		</div>
+
+		<img id="eddie" class="eddie hidden" src="images/eddie.png" />
+		<div class="title-left">WHEEL OF EDJE</div>
+
+		<canvas class="underbody" width="400" height="400"></canvas>
+		<canvas class="spinner" width="400" height="400"></canvas>
+		<canvas class="dongle" width="400" height="400"></canvas>
+		<canvas class="overlay" width="400" height="400"></canvas>
+
+		<div class="left" onClick="spinner.toggleSpin('counter-clockwise')"></div>
+		<div class="right" onClick="spinner.toggleSpin('clockwise')"></div>
+
+		<div class="peer-wrapper hidden" onClick="peer.closeWrapper()">
+			<div class="url">http://wheel-of-edje.web.app/peer</div>
+			<img src="images/peer-qr-code-transparent.png" />
+		</div>
+
+		<div class="winner-wrapper hidden" onClick="winner.close()">
+			<div class="winner-card">
+				<div class="content">
+					<div class="header"><span id="prize-who"></span> won ...</div>
+					<div class="prize">
+						<span id="prize"></span><span>!</span>
+					</div>	
+					<div class="prize-additional-information hidden">
+						(<span id="prize-additional-information"></span>)
+					</div>	
+				</div>
+			</div>
+		</div>
+
+		<img class="menu-icon" onClick="menu.toggle()" src="images/settings.png" />
+		<div class="menu-wrapper hidden" onClick="menu.toggle(event)">
+			<div class="menu">
+				<div class="title">
+					<span class="header">MENU</span>
+					<a class="controller" href="control.html" target="_blank">External Control</a>
+				</div>
+
+				<div class="section sound">
+					<div class="title">Sounds</div>
+
+					<div>
+						<input type="radio" id="metronome" name="sound" value="metronome" />
+						<label for="metronome">Metronome</label>	
+					</div>
+					<div>
+						<input type="radio" id="zippo" name="sound" value="zippo" />
+						<label for="zippo">Zippo</label>	
+					</div>
+					<div>
+						<input type="radio" id="SILENT" name="sound" value="SILENT" />
+						<label for="SILENT">SILENT</label>	
+					</div>
+				</div>
+
+				<div class="section group-mode">
+					<div class="title">Group Spin</div>
+					<div class="edit group-mode" onClick="editing.editGroupMode()"><img src="images/edit.png" /></div>
+
+					<div>
+						<input type="checkbox" id="group" name="group" />
+						<label for="group">Enabled Group List</label>	
+					</div>
+					<div class="content panel-group-content"></div>
+				</div>
+
+				<div class="section panels">
+					<div class="title">Reward Panels</div>
+					<div class="edit panels" onClick="editing.editPanels()"><img src="images/edit.png" /></div>
+
+					<div class="content panel-content"></div>
+				</div>
+
+			</div>
+		</div>
+
+		<img class="group-icon disabled hidden" src="images/group-gray.png" />
+		<img class="group-icon enabled" onClick="menu.toggleGroup()" src="images/group.png" />
+		<div class="group-active-person hidden"></div>
+		<div class="group-menu-wrapper hidden" onClick="menu.toggleGroup(event)">
+			<div class="group-menu"></div>
+		</div>
+
+		<img class="help-icon" onClick="menu.toggleHelp()" src="images/help.png" />
+		<div class="help-wrapper hidden" onClick="menu.toggleHelp(event)">
+			<div class="help">
+				<div class="title">About Wheel-of-EDJE</div>
+				
+				<div class="help-inner-wrapper">
+					<div class="section">
+						<div class="subtitle">Additional Information</div>
+						<div class="content">
+							<p>There is additional data for each panel that is displayed when a spin is
+							complete and the prize displayed, and when the list of prizes for a group is
+							displayed.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">External Controls</div>
+						<div class="content">
+							<p>There is a section under the main menu that enables controls in another browser
+							tab. This allows for clean dual-screen use. This functionality blocks much of the
+							main screen's functionality. Try not to mix the two, use one or the other.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Spinning the Wheel</div>
+						<div class="content">
+							<p>Clicking on the <span class="highlight">left</span> or <span class="highlight">right</span>
+							side of the screen will cause the wheel to spin counter-clockwise or clockwise
+							respectively. Alternatively, the <span class="highlight">left</span> and
+							<span class="highlight">right</span> arrow or <span class="highlight">L</span> and
+							<span class="highlight">R</span> keys will do the same.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Quick Change</div>
+						<div class="content">
+							<p>Panels and people can be quickly removed from the wheel and group list
+							respectively with the checkboxes on the main menu.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Group Spinning</div>
+						<div class="content">
+							<p>There is an option for a "group" to be defined and a person selected
+							for each spin. When this is done, the information is recorded and can be
+							displayed when spinning is done. Spinning needs to occur for each individual
+							listed.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Remote Spinning</div>
+						<div class="content">
+							<p>There is a means of allowing individuals to spin the wheel from a phone
+							or another computer. For this to work the <span class="highlight">
+							external controls</span> must be open.</p>
+							
+							<p>There is an option there to show the link and QR-code. Someone following
+							that link can select and individual from the <span class="highlight">group
+							list</span> and spin clockwise or counter-clockwise.</p>
+
+							<p>There is no code in place to stop an individual from spinning whenever
+							they want. The expectation is that they have some level of self control.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Editing Panels and Groups</div>
+						<div class="content">
+							<p>There are two types of data that can be edited: Panels and Groups.</p>
+							<p>Panels need quite a bit of data, so there is only a list view available.
+							The panel editor does display a preview of the text, foreground color, and
+							background color.</p>
+							<p>Groups, defined previously, are simpler. A basic list has the individual's
+							name and storage space for the prize won. Because of this, there is a CSV
+							option available in the editor.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">Sounds</div>
+						<div class="content">
+							<p>There are two available sounds: <span class="highlight">metronome</span> and
+							<span class="highlight">zippo</span>. There is also an option to run
+							<span class="highlight">SILENT</span></p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">The Code</div>
+						<div class="content">
+							<p>The code within this project is not minified or mangled to allow it
+							to be examined at any point.</p>
+							<p>The code and unit tests are <a href="https://github.com/bob-fornal/wheel-of-edje">on GITHUB, HERE</a>.</p>
+						</div>
+					</div>
+					<div class="section">
+						<div class="subtitle">About</div>
+						<div class="content">
+							<p>Written by Bob Fornal, June-July 2020.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="prizes-wrapper hidden" onClick="menu.closePrizes()">
+			<div class="prizes">
+				<div class="title">People with Prizes</div>
+				<div class="content"></div>
+			</div>
+		</div>
+
+		<!-- The core Firebase JS SDK is always required and must be listed first -->
+		<script src="/__/firebase/7.15.5/firebase-app.js"></script>
+		<!-- Initialize Firebase -->
+		<script src="/__/firebase/init.js"></script>
+
+		<script src="js/menu.js?cache=1"></script>
+		<script src="js/storage.js?cache=1"></script>
+		<script src="js/sounds.js?cache=1"></script>
+		<script src="js/edit.js?cache=1"></script>
+		<script src="js/winner.js?cache=1"></script>
+		<script src="js/overlay.js?cache=1"></script>
+		<script src="js/spinner.js?cache=1"></script>
+		<script src="js/control.js?cache=1"></script>
+		<script>
+			storage.init();
+			control.init('spinner');
+		</script>
+	</body>
+</html>
