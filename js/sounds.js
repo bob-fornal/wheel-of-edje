@@ -7,8 +7,8 @@ const sound = {
 
 sound.defineSounds = (win = window) => {
     sound.sounds = {
-        metronome: new win.Audio('../audio/short-metronome.mp3'),
-        zippo: new win.Audio('../audio/short-zippo.mp3'),
+        metronome: new win.Audio('./audio/short-metronome.mp3'),
+        zippo: new win.Audio('./audio/short-zippo.mp3'),
         SILENT: null
     };    
 };
