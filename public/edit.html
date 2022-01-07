@@ -12,6 +12,27 @@
                 <div class="title">Edit <span class="specific">...</span></div>
 
                 <div class="tooling">
+                    <div class="save-panels button" onClick="edit.download()">
+                        <span class="left">Save Panels</span>
+                        <span class="right">
+                            <img class="icon" src="images/download.png" />
+                        </span>
+                    </div>
+                    <a class="hidden" id="downloadElement" href=""></a>
+
+                    <div class="load-panels button" onClick="edit.upload()">
+                        <span class="left">Load Panels</span>
+                        <span class="right">
+                            <img class="icon" src="images/upload.png" />
+                        </span>
+                    </div>
+                    <label for="selected-file" class="custom-file-upload">
+                        Select File<span class="file-name"></span>
+                    </label>
+                    <input type="file" id="selected-file" value="Import" />
+                </div>
+
+                <div class="tooling">
                     <div class="enter-to-save">
                         <span class="left">
                             ENTER to SAVE?
