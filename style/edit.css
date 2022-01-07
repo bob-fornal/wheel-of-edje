@@ -47,6 +47,18 @@
             background-color: silver;
         }
 
+    .tooling .button {
+        margin: 1rem 0;
+        border: 3px solid black;
+        border-radius: 9px;
+        display: inline-block;
+        background-color: #bee767;
+        cursor: pointer;
+    }
+    .tooling .button .right .icon {
+        width: 1rem;
+    }
+
     .tooling .addition-button {
         margin: 1rem 0;
         border: 3px solid black;
@@ -248,3 +260,17 @@
         top: 10px;
         cursor: pointer;
     }
+
+input[type=file] {
+    display: none;
+}
+.custom-file-upload {
+    border: 3px solid black;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.load-panels {
+    margin-left: 2em !important;
+}
+

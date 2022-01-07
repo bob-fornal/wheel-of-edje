@@ -60,6 +60,9 @@ edit.init = async(store = storage) => {
     } else {
         edit.showCSV();
     }
+
+    const fileWatcher = document.getElementById('selected-file');
+    fileWatcher.addEventListener('change', edit.handleFileChange);
 };
 
 edit.generateQueries = (doc = document) => {
@@ -695,6 +698,39 @@ edit.showCSV = (doc = document) => {
     saveButton.onclick = edit.saveAllViaCSV;
     saveDiv.appendChild(saveButton);
     content.appendChild(saveDiv);
+};
+
+edit.handleFileChange = (event) => {
+    const [file] = event.target.files;
+    const { name: filename } = file;
+    document.querySelector('.file-name').textContent = `: ${ filename }`;
+};
+
+edit.upload = () => {
+    const file = document.getElementById('selected-file').files;
+    console.log(file);
+    if (file.length <= 0) return false;
+
+    const reader = new FileReader();
+
+    reader.onload = edit.handleUpload;
+    reader.readAsText(file.item(0));
+};
+
+edit.handleUpload = async (event) => {
+    const result = JSON.parse(event.target.result);
+    await storage.savePie(result);
+    edit.init();
+    document.querySelector('.file-name').textContent = '';
+};
+
+edit.download = async () => {
+    const data = await storage.getPie();
+    const dataString = `data:text/json;charset=utf-8,${ encodeURIComponent(JSON.stringify(data)) }`;
+    const downloadAnchorElement = document.getElementById('downloadElement');
+    downloadAnchorElement.setAttribute('href', dataString);
+    downloadAnchorElement.setAttribute('download', 'wheel.json');
+    downloadAnchorElement.click();
 };
 
 // For Unit Testing
