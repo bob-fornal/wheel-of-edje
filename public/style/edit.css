@@ -118,7 +118,7 @@
         border-top: 1px solid silver;
         overflow-y: auto;
         overflow-x: hidden;
-        height: calc(100% - 107px);
+        height: calc(100% - 11em);
         position: relative;
     }
 

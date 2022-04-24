@@ -27,12 +27,4 @@ Automatic.
 
 ### Development
 
-```script
-$ firebase serve
-```
-
-### Deployment
-
-```script
-$ firebase deploy --only hosting:wheel-of-edje
-```
+This project is no longer on Firebase.

@@ -282,6 +282,11 @@ html, body {
     padding: 0.5rem 0.5rem 1rem 0.5rem;
     position: relative;
 }
+.section.panels {
+    max-height: 21em;
+    overflow: hidden;
+    overflow-y: auto;
+}
 .edit img {
     width: 40px;
 }
