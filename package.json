@@ -1,0 +1,7 @@
+{
+  "name": "cards-angular",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "npx jasmine **/*.spec.js"
+  }
+}

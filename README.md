@@ -1,12 +1,16 @@
 # WHEEL-OF-EDJE
 
+## Testing
+
+```script
+npm test
+```
+
 ## Future Work
 
 ### Ideas for Development
 
-1. Import / Export of Data to named json-file.
-2. Start Group spin ... automatically select the next, until done.
-3. Remote Spinning without a Group.
+1. Remote Spinning without a Group.
 
 ### Add Unit Tests
 
@@ -22,9 +26,3 @@ All other JavaScript files have appropriate unit tests.
 ## GitHub Deployment
 
 Automatic.
-
-## Firebase (deprecated)
-
-### Development
-
-This project is no longer on Firebase.
